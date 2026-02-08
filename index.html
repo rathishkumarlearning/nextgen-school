@@ -471,7 +471,7 @@ function finishOnboarding() {
 
 // ===== NAVIGATION =====
 function showLanding() {
-  document.getElementById('landing').style.display = '';
+  document.getElementById('landing').style.display = 'block';
   document.getElementById('course-view').style.display = 'none';
   document.getElementById('badge-gallery').style.display = 'none';
 }
@@ -484,6 +484,8 @@ function showBadges() {
   document.getElementById('landing').style.display = 'none';
   document.getElementById('course-view').style.display = 'none';
   document.getElementById('badge-gallery').style.display = 'block';
+  document.getElementById('badge-gallery').style.position = 'relative';
+  document.getElementById('badge-gallery').style.zIndex = '1';
   renderBadges();
   window.scrollTo(0, 0);
 }
@@ -565,7 +567,7 @@ function openCourse(id) {
   STATE.currentChapter = 0;
   document.getElementById('landing').style.display = 'none';
   document.getElementById('badge-gallery').style.display = 'none';
-  document.getElementById('course-view').style.display = '';
+  document.getElementById('course-view').style.display = 'block';
   document.getElementById('course-title').textContent = COURSES[id].title;
   renderSidebar();
   loadChapter(0);
