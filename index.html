@@ -208,7 +208,7 @@ canvas#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;po
 .feedback{padding:16px 20px;border-radius:12px;margin:16px 0;font-size:.95rem;display:none}
 .feedback.show{display:block;animation:fadeIn .3s}
 .feedback.success{background:rgba(34,197,94,0.15);border:1px solid var(--green);color:var(--green)}
-.feedback.error{background:rgba(239,68,68,0.15);border:1px solid var(--red);color:var(--red)}
+.feedback.error{background:rgba(239,68,68,0.1);border:1px solid rgba(251,191,36,0.4);color:var(--gold);font-size:.95rem;line-height:1.6;padding:20px}
 .feedback.info{background:rgba(6,182,212,0.15);border:1px solid var(--cyan);color:var(--cyan)}
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -1175,7 +1175,7 @@ const LESSONS = {
               if (window.ai3Done >= 3) setTimeout(completeChapter, 500);
             } else {
               card.classList.add('wrong');
-              showFeedback(div, 'error', 'Not quite! Think again — which response shows the most wisdom? 🤔');
+              showFeedback(div, 'error', '💡 Hint: The wisest response isn\'t blindly trusting OR ignoring the AI. Think about what a scientist would do — they\'d check the data themselves AND consider the AI\'s suggestion. Look for the answer that combines both! 🤔');
               setTimeout(() => {
                 cards.querySelectorAll('.choice-card').forEach(c => {
                   c.classList.remove('wrong');
@@ -1385,7 +1385,7 @@ const LESSONS = {
               if (window.ai7Done >= 3) setTimeout(completeChapter, 500);
             } else {
               card.classList.add('wrong');
-              showFeedback(div, 'error', 'Not quite! Think about what would make the AI fair for EVERYONE.');
+              showFeedback(div, 'error', '💡 Hint: Fairness means the AI should treat ALL people equally regardless of gender, race, or background. Look for the solution that fixes the BIAS in the AI\'s decision-making, not just the symptoms. Ask yourself: "Would this fix make it fair for everyone?" 🤔');
               setTimeout(() => { div.querySelectorAll('.choice-card').forEach(c => { c.classList.remove('wrong'); c.style.pointerEvents = ''; }); }, 1500);
             }
           };
@@ -2192,7 +2192,7 @@ const LESSONS = {
             return;
           }
         }
-        showFeedback(document.getElementById('rb4-fb').parentElement, 'error', '🤖 The robot didn\'t reach the goal. Try a different path!');
+        showFeedback(document.getElementById('rb4-fb').parentElement, 'error', '💡 Hint: Look at where the goal 🎯 is on the grid! Count the squares: how many steps RIGHT and how many steps DOWN does the robot need? Avoid walls (dark squares)! Try breaking it into small moves — first go right, then go down. Use REPEAT blocks if you need to go the same direction multiple times. You got this! 🤖');
       };
     },
 
@@ -2500,7 +2500,7 @@ window.ai2Check = function() {
     showFeedback(document.querySelector('.activity'), 'success', '🎉 Perfect! AI learns step by step: Collect → Clean → Train → Test → Improve!');
     addPoints(15);
   } else {
-    showFeedback(document.querySelector('.activity'), 'error', 'Not quite! Remember: first we collect data, then clean it, train the model, test it, and improve.');
+    showFeedback(document.querySelector('.activity'), 'error', '💡 Hint: Think of teaching a pet! 1️⃣ Collect Data = gather examples (photos of cats & dogs) → 2️⃣ Clean Data = remove bad examples (blurry photos) → 3️⃣ Train Model = show examples repeatedly (this is a cat, this is a dog) → 4️⃣ Test = quiz time! (show new photos) → 5️⃣ Improve = fix mistakes and try again. The order matters! 🧠');
   }
 };
 window.ai2TrainDrop = function(drag, zone) { handleBucketDrop(drag, zone, window.ai2TrainPlaced, 'ai2'); };
@@ -2576,7 +2576,7 @@ window.sp1Check = function() {
     addPoints(20);
     setTimeout(completeChapter, 1500);
   } else {
-    showFeedback(document.querySelectorAll('.activity')[1], 'error', 'Not quite! Remember: My Very Excited Mother Just Served Us Nachos (Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune)');
+    showFeedback(document.querySelectorAll('.activity')[1], 'error', '💡 Hint: Use this memory trick — "My Very Excited Mother Just Served Us Nachos"! Each first letter = a planet: Mercury (closest to Sun, tiny & hot), Venus (brightest, super hot), Earth (us!), Mars (red planet), Jupiter (HUGE gas giant), Saturn (rings!), Uranus (tilted sideways), Neptune (farthest, blue & cold). Try again! 🪐');
   }
 };
 
@@ -2595,7 +2595,7 @@ window.sp2Check = function() {
     addPoints(15);
     setTimeout(completeChapter, 1500);
   } else {
-    showFeedback(document.querySelector('.activity'), 'error', 'Not quite! Stars start as gas clouds (nebulae) and get hotter and denser over time.');
+    showFeedback(document.querySelector('.activity'), 'error', '💡 Hint: Think of a star\'s life like growing up! 1️⃣ Nebula = baby (cloud of gas & dust) → 2️⃣ Protostar = toddler (gravity pulls gas together, gets warm) → 3️⃣ Main Sequence = adult (shining bright, fusing hydrogen) → 4️⃣ Red Giant = old age (expands huge, turns red) → 5️⃣ Supernova = dramatic ending (BOOM! Explodes brilliantly). Try again! ⭐');
   }
 };
 
@@ -2620,7 +2620,7 @@ window.sp4Drop = function(drag, zone) {
   try {
     const item = JSON.parse(drag.el.dataset.value);
     if (window.sp4Weight + item.w > 1000) {
-      showFeedback(zone.parentElement, 'error', `⚠️ Too heavy! ${item.name} weighs ${item.w}kg and would exceed the 1000kg limit!`);
+      showFeedback(zone.parentElement, 'error', `💡 Too heavy! ${item.name} weighs ${item.w}kg and would exceed the 1000kg limit! Current cargo: ${window.sp4Weight}kg. You have ${1000 - window.sp4Weight}kg left. Tip: Prioritize essentials first (food, water, oxygen, tools, solar panels), then add extras if you have room! Real Mars missions face this exact challenge! 🚀`);
       return;
     }
     window.sp4Weight += item.w;
@@ -2644,7 +2644,7 @@ window.sp4Check = function() {
     addPoints(20);
     setTimeout(completeChapter, 1500);
   } else {
-    showFeedback(document.querySelector('.activity'), 'error', `⚠️ Your crew needs more essentials! Make sure you have food, water, oxygen, tools, and solar panels at minimum.`);
+    showFeedback(document.querySelector('.activity'), 'error', `💡 Your crew needs more essentials! For a Mars mission, you MUST pack: 🍞 Food (astronauts need ~2kg/day), 💧 Water (most critical!), 🫁 Oxygen (can't breathe Mars air!), 🔧 Tools (for repairs), ☀️ Solar Panels (power source). These are non-negotiable — without ANY of these, the mission fails. Remove some fun items and add the essentials! 🚀`);
   }
 };
 
@@ -2723,7 +2723,7 @@ window.rb3Check = function() {
     showFeedback(document.querySelector('.activity'), 'success', '🎉 Great logic building! IF-THEN-ELSE is how robots make decisions. You just programmed a robot brain!');
     setTimeout(completeChapter, 1500);
   } else {
-    showFeedback(document.querySelector('.activity'), 'error', 'Add at least 3 blocks to build your logic! Try: IF obstacle → THEN turn → ELSE forward');
+    showFeedback(document.querySelector('.activity'), 'error', '💡 Hint: Robot brains use IF-THEN-ELSE logic! Think of it like this: IF (something happens) → THEN (do this) → ELSE (do that instead). Example: IF the robot sees a wall → THEN turn right → ELSE keep going forward. Drag at least 3 blocks: one IF condition, one THEN action, and one ELSE action. That\'s how ALL robots make decisions! 🤖');
   }
 };
 
@@ -2956,10 +2956,7 @@ function generateCertificate(courseName) {
 
 // ===== PAYMENT SYSTEM =====
 function isChapterUnlocked(courseId, chapterIdx) {
-  if (chapterIdx === 0) return true; // Chapter 1 always free
-  if (STATE.purchases.fullAccess || STATE.purchases.familyPlan) return true;
-  if (STATE.purchases[courseId]) return true;
-  return false;
+  return true; // ALL CHAPTERS UNLOCKED — full access for now!
 }
 
 function handlePayment(plan) {
