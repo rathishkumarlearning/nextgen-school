@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextGen School — Mind Over Machines: AI Literacy for Kids</title>
+<meta name="description" content="Raising children for the AI future. Critical thinking, not just coding. For ages 9-13.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0a0a2e;--bg2:#0d0d3a;--red:#ef4444;--gold:#fbbf24;--cyan:#06b6d4;
+--purple:#8b5cf6;--green:#22c55e;--text:#e2e8f0;--text2:#94a3b8;
+--glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.1);
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+h1,h2,h3,h4{font-family:'Fredoka',sans-serif;font-weight:600}
+code,.mono{font-family:'JetBrains Mono',monospace}
+
+/* Canvas Background */
+#stars-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* Utility */
+.container{max-width:1100px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+.glass{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:16px}
+.section{padding:100px 0;position:relative}
+.accent-red{color:var(--red)}.accent-gold{color:var(--gold)}.accent-cyan{color:var(--cyan)}.accent-purple{color:var(--purple)}.accent-green{color:var(--green)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:50px;font-family:'Fredoka',sans-serif;font-size:1.1rem;font-weight:600;border:none;cursor:pointer;transition:all .3s ease;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;box-shadow:0 4px 24px rgba(6,182,212,0.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(6,182,212,0.5)}
+.btn-secondary{background:transparent;border:2px solid var(--cyan);color:var(--cyan)}
+.btn-secondary:hover{background:var(--cyan);color:var(--bg)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#f59e0b);color:#000;box-shadow:0 4px 24px rgba(251,191,36,0.3)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(251,191,36,0.5)}
+
+/* ===== HERO ===== */
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;padding:40px 20px}
+#hero .hero-content{max-width:800px}
+.hero-badge{display:inline-block;padding:8px 20px;border-radius:50px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);color:var(--purple);font-size:.85rem;font-weight:600;margin-bottom:24px;letter-spacing:1px;text-transform:uppercase}
+#hero h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.15;margin-bottom:20px}
+#hero h1 .gradient-text{background:linear-gradient(135deg,var(--cyan),var(--gold),var(--red));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#hero .tagline{font-size:clamp(1.05rem,2.5vw,1.35rem);color:var(--text2);margin-bottom:12px;max-width:600px;margin-left:auto;margin-right:auto}
+.hero-features{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin:32px 0 40px}
+.hero-feature{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-size:.9rem;color:var(--text2)}
+.hero-feature span.icon{font-size:1.1rem}
+.hero-cta-group{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:20px}
+.hero-illustration{margin-top:48px;font-size:6rem;opacity:.9;filter:drop-shadow(0 0 40px rgba(6,182,212,0.3))}
+.scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);animation:bounce 2s infinite;color:var(--text2);font-size:.85rem;display:flex;flex-direction:column;align-items:center;gap:4px}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-10px)}}
+
+/* ===== WIZARD ===== */
+#wizard-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+#wizard-overlay.active{display:flex}
+.wizard-card{width:100%;max-width:580px;padding:40px;border-radius:24px;background:linear-gradient(145deg,rgba(13,13,58,0.98),rgba(10,10,46,0.98));border:1px solid var(--glass-border);position:relative;max-height:90vh;overflow-y:auto}
+.wizard-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text2);font-size:1.5rem;cursor:pointer}
+.wizard-progress{display:flex;gap:8px;margin-bottom:32px}
+.wizard-progress .dot{width:100%;height:4px;border-radius:4px;background:rgba(255,255,255,0.1);transition:background .3s}
+.wizard-progress .dot.active{background:var(--cyan)}
+.wizard-progress .dot.done{background:var(--green)}
+.wizard-step{display:none}.wizard-step.active{display:block}
+.wizard-step h2{font-size:1.6rem;margin-bottom:8px}
+.wizard-step p{color:var(--text2);margin-bottom:24px}
+.wizard-input{width:100%;padding:14px 18px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:1rem;font-family:'Nunito',sans-serif;outline:none;transition:border .3s}
+.wizard-input:focus{border-color:var(--cyan)}
+.wizard-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' fill='none' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+.input-row{display:flex;gap:12px;margin-bottom:16px}
+.input-row>*{flex:1}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.pick-card{padding:16px 12px;border-radius:14px;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);text-align:center;cursor:pointer;transition:all .25s;user-select:none}
+.pick-card:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.07)}
+.pick-card.selected{border-color:var(--cyan);background:rgba(6,182,212,0.1);box-shadow:0 0 20px rgba(6,182,212,0.15)}
+.pick-card .card-icon{font-size:2rem;margin-bottom:6px}
+.pick-card .card-label{font-size:.85rem;font-weight:600}
+.concern-card{padding:14px 16px;border-radius:12px;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.concern-card:hover{border-color:rgba(255,255,255,0.2)}
+.concern-card.selected{border-color:var(--gold);background:rgba(251,191,36,0.08)}
+.concern-card .cc-icon{font-size:1.4rem}
+.concern-card .cc-text{font-size:.95rem}
+.wizard-nav{display:flex;gap:12px;margin-top:28px;justify-content:flex-end}
+.summary-box{padding:20px;border-radius:14px;background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);margin:16px 0}
+.summary-box h4{color:var(--cyan);margin-bottom:8px}
+.summary-box ul{list-style:none;padding:0}.summary-box li{padding:4px 0;color:var(--text2);font-size:.95rem}
+.summary-box li::before{content:'✓ ';color:var(--green)}
+
+/* ===== DEMO SECTION ===== */
+#demo-section{display:none;padding:60px 0}
+.demo-header{text-align:center;margin-bottom:48px}
+.demo-header h2{font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:8px}
+.demo-header .child-greeting{color:var(--gold);font-size:1.1rem}
+/* Mission cards */
+.mission-card{padding:28px;border-radius:20px;margin-bottom:24px;position:relative;overflow:hidden}
+.mission-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple))}
+.mission-card h3{font-size:1.3rem;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.mission-card .story-text{color:var(--text2);line-height:1.7;margin-bottom:16px;font-size:1rem}
+.mission-card .story-text em{color:var(--gold);font-style:normal;font-weight:600}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+@media(max-width:500px){.choice-grid{grid-template-columns:1fr}}
+.choice-btn{padding:16px;border-radius:14px;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);cursor:pointer;text-align:left;transition:all .3s;color:var(--text)}
+.choice-btn:hover{border-color:var(--cyan);background:rgba(6,182,212,0.06)}
+.choice-btn.correct{border-color:var(--green)!important;background:rgba(34,197,94,0.1)!important}
+.choice-btn.wrong{border-color:var(--red)!important;background:rgba(239,68,68,0.08)!important}
+.choice-btn h4{font-size:1rem;margin-bottom:4px}.choice-btn p{font-size:.85rem;color:var(--text2)}
+.feedback-box{padding:16px;border-radius:12px;margin-top:12px;display:none;font-size:.95rem;line-height:1.6}
+.feedback-box.show{display:block}
+.feedback-box.success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);color:var(--green)}
+.feedback-box.info{background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.2);color:var(--cyan)}
+/* Question builder */
+.question-area{display:flex;flex-direction:column;gap:12px}
+.question-area textarea{width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Nunito',sans-serif;font-size:1rem;resize:none;outline:none;min-height:60px}
+.question-area textarea:focus{border-color:var(--cyan)}
+.question-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+@media(max-width:500px){.question-compare{grid-template-columns:1fr}}
+.q-box{padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03)}
+.q-box .q-label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:6px}
+.q-box .q-text{font-size:.95rem}
+/* Code snippet */
+.code-block{padding:20px;border-radius:14px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.8;overflow-x:auto;margin:16px 0;color:var(--text2)}
+.code-block .kw{color:var(--purple)}.code-block .str{color:var(--green)}.code-block .cm{color:#64748b}.code-block .fn{color:var(--cyan)}.code-block .num{color:var(--gold)}.code-block .var{color:var(--red)}
+/* Badge/Points animation */
+.reward-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);z-index:2000;text-align:center;padding:40px;border-radius:24px;background:linear-gradient(145deg,rgba(13,13,58,0.98),rgba(10,10,46,0.98));border:2px solid var(--gold);box-shadow:0 0 60px rgba(251,191,36,0.2);transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.reward-popup.show{transform:translate(-50%,-50%) scale(1)}
+.reward-popup .badge-icon{font-size:4rem;margin-bottom:12px}
+.reward-popup h3{font-size:1.4rem;color:var(--gold);margin-bottom:4px}
+.reward-popup p{color:var(--text2);font-size:.95rem}
+.points-float{position:fixed;pointer-events:none;z-index:2001;font-family:'Fredoka',sans-serif;font-size:1.5rem;font-weight:700;color:var(--gold);text-shadow:0 0 12px rgba(251,191,36,0.5)}
+
+/* Progress Path */
+.progress-path{padding:40px 20px;text-align:center;margin:40px 0}
+.progress-path h3{margin-bottom:24px;font-size:1.3rem}
+.path-container{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;max-width:600px;margin:0 auto}
+.path-node{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:3px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);position:relative;transition:all .4s}
+.path-node.completed{border-color:var(--green);background:rgba(34,197,94,0.15);box-shadow:0 0 16px rgba(34,197,94,0.2)}
+.path-node.current{border-color:var(--gold);background:rgba(251,191,36,0.12);box-shadow:0 0 16px rgba(251,191,36,0.2);animation:pulse-node 2s infinite}
+@keyframes pulse-node{0%,100%{box-shadow:0 0 16px rgba(251,191,36,0.2)}50%{box-shadow:0 0 28px rgba(251,191,36,0.4)}}
+.path-line{width:40px;height:3px;background:rgba(255,255,255,0.1);flex-shrink:0}
+.path-line.completed{background:var(--green)}
+.path-node .node-label{position:absolute;top:64px;font-size:.7rem;white-space:nowrap;color:var(--text2)}
+
+/* ===== PRINCIPLES ===== */
+.principles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.principle-card{padding:28px;border-radius:20px;text-align:center;transition:transform .3s}
+.principle-card:hover{transform:translateY(-4px)}
+.principle-card .p-icon{font-size:2.8rem;margin-bottom:16px}
+.principle-card h3{font-size:1.15rem;margin-bottom:10px}
+.principle-card p{color:var(--text2);font-size:.9rem;line-height:1.6}
+/* Pyramid */
+.pyramid-container{max-width:500px;margin:40px auto;text-align:center}
+.pyramid-level{padding:14px;margin:0 auto;border-radius:10px;font-weight:600;font-size:.9rem;transition:transform .3s}
+.pyramid-level:hover{transform:scale(1.03)}
+.pyr-1{width:50%;background:linear-gradient(135deg,var(--red),#dc2626);color:#fff;border-radius:10px 10px 0 0}
+.pyr-2{width:65%;background:linear-gradient(135deg,var(--gold),#f59e0b);color:#000;margin-top:2px}
+.pyr-3{width:80%;background:linear-gradient(135deg,var(--cyan),#0891b2);color:#fff;margin-top:2px}
+.pyr-4{width:95%;background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;margin-top:2px;border-radius:0 0 10px 10px}
+/* Triangle model */
+.triangle-model{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:32px 0}
+.tri-item{flex:1;min-width:160px;max-width:220px;padding:24px;border-radius:16px;text-align:center}
+.tri-item .tri-icon{font-size:2.2rem;margin-bottom:8px}
+.tri-item h4{font-size:1rem;margin-bottom:6px}
+.tri-item p{font-size:.82rem;color:var(--text2)}
+/* Curriculum path */
+.curr-path{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:32px 0}
+.curr-node{padding:14px 20px;border-radius:14px;text-align:center;min-width:140px}
+.curr-node h4{font-size:.9rem;margin-bottom:4px}
+.curr-node p{font-size:.78rem;color:var(--text2)}
+.curr-arrow{font-size:1.5rem;color:var(--cyan)}
+@media(max-width:600px){.curr-arrow{transform:rotate(90deg)}}
+
+/* ===== CTA / ENROLL ===== */
+#enroll{text-align:center;padding:80px 0 100px}
+#enroll h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:12px}
+#enroll p{color:var(--text2);max-width:500px;margin:0 auto 32px;font-size:1.05rem}
+.social-links{display:flex;justify-content:center;gap:16px;margin-top:24px}
+.social-links a{width:44px;height:44px;border-radius:50%;background:var(--glass);border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.2rem;transition:all .3s}
+.social-links a:hover{background:rgba(6,182,212,0.15);border-color:var(--cyan)}
+.footer{text-align:center;padding:24px;color:var(--text2);font-size:.8rem;border-top:1px solid rgba(255,255,255,0.05)}
+.founders{display:flex;justify-content:center;gap:32px;margin:24px 0}
+.founder{display:flex;align-items:center;gap:10px;padding:12px 20px;border-radius:14px;background:var(--glass);border:1px solid var(--glass-border)}
+.founder .f-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.founder .f-info .f-name{font-weight:700;font-size:.95rem}
+.founder .f-info .f-loc{font-size:.78rem;color:var(--text2)}
+
+/* Gamification Levels */
+.levels-row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin:32px 0}
+.level-item{text-align:center;padding:20px;border-radius:16px;min-width:120px}
+.level-item .l-icon{font-size:2.4rem;margin-bottom:8px}
+.level-item h4{font-size:.95rem}
+.level-item p{font-size:.78rem;color:var(--text2)}
+.badges-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:20px 0}
+.badge-item{padding:10px 18px;border-radius:50px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);font-size:.85rem;font-weight:600;color:var(--gold)}
+
+/* Responsive */
+@media(max-width:768px){
+.section{padding:60px 0}
+.wizard-card{padding:24px}
+.card-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+.founders{flex-direction:column;align-items:center}
+.input-row{flex-direction:column}
+}
+
+/* Animations */
+.reveal{opacity:0;transform:translateY(30px)}
+.reveal.visible{opacity:1;transform:translateY(0);transition:all .8s cubic-bezier(.25,.46,.45,.94)}
+
+/* Navbar */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;transition:background .3s}
+nav.scrolled{background:rgba(10,10,46,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.05)}
+.nav-brand{font-family:'Fredoka',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-brand span{font-size:1.3rem}
+.nav-links{display:flex;gap:24px;align-items:center}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:.9rem;transition:color .3s}
+.nav-links a:hover{color:var(--cyan)}
+@media(max-width:600px){.nav-links{display:none}}
+
+/* Sparkle */
+.sparkle{position:absolute;pointer-events:none;z-index:3}
+</style>
+</head>
+<body>
+
+<canvas id="stars-canvas"></canvas>
+
+<!-- Navbar -->
+<nav id="navbar">
+  <a href="#" class="nav-brand"><span>🧠</span> NextGen School</a>
+  <div class="nav-links">
+    <a href="#principles">Our Approach</a>
+    <a href="#enroll">Enroll</a>
+    <a href="#" onclick="openWizard();return false" class="btn btn-primary" style="padding:8px 20px;font-size:.85rem">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🚀 Now Enrolling — Ages 9 to 13</div>
+    <h1><span class="gradient-text">Mind Over Machines</span><br>Raising Children for the AI Future</h1>
+    <p class="tagline">Your child doesn't need to code like a machine.<br>They need to <strong style="color:var(--gold)">think</strong> like a human.</p>
+    <p class="tagline" style="font-size:.95rem;margin-top:4px">"Tools change. Thinking skills don't."</p>
+    <div class="hero-features">
+      <div class="hero-feature"><span class="icon">🧠</span> Critical Thinking First</div>
+      <div class="hero-feature"><span class="icon">🎮</span> Gamified Learning</div>
+      <div class="hero-feature"><span class="icon">🚫</span> No Exams, No Pressure</div>
+      <div class="hero-feature"><span class="icon">🤖</span> AI as Tool, Not Authority</div>
+    </div>
+    <div class="hero-cta-group">
+      <button class="btn btn-primary" onclick="openWizard()">Start Your Child's Journey ✨</button>
+      <a href="#principles" class="btn btn-secondary">Learn More ↓</a>
+    </div>
+    <div class="hero-illustration">🧒🤝🤖</div>
+  </div>
+  <div class="scroll-hint"><span>↓</span>Scroll to explore</div>
+</section>
+
+<!-- WIZARD OVERLAY -->
+<div id="wizard-overlay">
+  <div class="wizard-card">
+    <button class="wizard-close" onclick="closeWizard()">✕</button>
+    <div class="wizard-progress"><div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div><div class="dot" id="d4"></div></div>
+
+    <!-- Step 1 -->
+    <div class="wizard-step active" id="ws1">
+      <h2>👋 Let's Get to Know Your Child</h2>
+      <p>We personalize every learning journey. Start with the basics!</p>
+      <div class="input-row">
+        <div>
+          <label style="font-size:.85rem;color:var(--text2);display:block;margin-bottom:6px">Child's Name</label>
+          <input type="text" class="wizard-input" id="child-name" placeholder="e.g., Aiden" maxlength="30">
+        </div>
+        <div>
+          <label style="font-size:.85rem;color:var(--text2);display:block;margin-bottom:6px">Age</label>
+          <select class="wizard-input wizard-select" id="child-age">
+            <option value="">Select age</option>
+            <option>7</option><option>8</option><option>9</option><option>10</option>
+            <option>11</option><option>12</option><option>13</option><option>14</option>
+          </select>
+        </div>
+      </div>
+      <div class="wizard-nav"><button class="btn btn-primary" onclick="wizardNext(1)">Next →</button></div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="wizard-step" id="ws2">
+      <h2>🎯 What Excites Your Child?</h2>
+      <p>Pick one or more interests — we'll theme their learning around it!</p>
+      <div class="card-grid" id="interest-grid">
+        <div class="pick-card" data-val="Space" onclick="toggleCard(this)"><div class="card-icon">🚀</div><div class="card-label">Space</div></div>
+        <div class="pick-card" data-val="Gaming" onclick="toggleCard(this)"><div class="card-icon">🎮</div><div class="card-label">Gaming</div></div>
+        <div class="pick-card" data-val="Animals" onclick="toggleCard(this)"><div class="card-icon">🐾</div><div class="card-label">Animals</div></div>
+        <div class="pick-card" data-val="Sports" onclick="toggleCard(this)"><div class="card-icon">⚽</div><div class="card-label">Sports</div></div>
+        <div class="pick-card" data-val="Music" onclick="toggleCard(this)"><div class="card-icon">🎵</div><div class="card-label">Music</div></div>
+        <div class="pick-card" data-val="Art" onclick="toggleCard(this)"><div class="card-icon">🎨</div><div class="card-label">Art</div></div>
+        <div class="pick-card" data-val="Science" onclick="toggleCard(this)"><div class="card-icon">🔬</div><div class="card-label">Science</div></div>
+        <div class="pick-card" data-val="Cooking" onclick="toggleCard(this)"><div class="card-icon">🍳</div><div class="card-label">Cooking</div></div>
+      </div>
+      <div class="wizard-nav"><button class="btn btn-secondary" onclick="wizardBack(2)">← Back</button><button class="btn btn-primary" onclick="wizardNext(2)">Next →</button></div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="wizard-step" id="ws3">
+      <h2>💭 What Concerns You About AI?</h2>
+      <p>Select all that apply — this helps us focus on what matters to you.</p>
+      <div id="concern-list">
+        <div class="concern-card" data-val="blind-trust" onclick="toggleConcern(this)"><span class="cc-icon">🤖</span><span class="cc-text">My child trusts AI blindly</span></div>
+        <div class="concern-card" data-val="no-question" onclick="toggleConcern(this)"><span class="cc-icon">❓</span><span class="cc-text">They don't question what they read online</span></div>
+        <div class="concern-card" data-val="screen-time" onclick="toggleConcern(this)"><span class="cc-icon">📱</span><span class="cc-text">Screen time worries</span></div>
+        <div class="concern-card" data-val="critical-thinking" onclick="toggleConcern(this)"><span class="cc-icon">🧠</span><span class="cc-text">I want them to think critically</span></div>
+      </div>
+      <div class="wizard-nav"><button class="btn btn-secondary" onclick="wizardBack(3)">← Back</button><button class="btn btn-primary" onclick="wizardNext(3)">Next →</button></div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="wizard-step" id="ws4">
+      <h2>🎉 Here's What We'll Build Together</h2>
+      <p>A personalized, theme-based learning path just for <strong id="summary-name">your child</strong>.</p>
+      <div class="summary-box">
+        <h4>🗺️ Your Child's Learning Path</h4>
+        <ul>
+          <li>Theme-based missions around their interests</li>
+          <li>Critical thinking challenges (not syntax drills!)</li>
+          <li>AI awareness — know when to trust, when to question</li>
+          <li>Python basics woven into fun scenarios</li>
+          <li>Badges, levels & encouragement (zero pressure!)</li>
+        </ul>
+      </div>
+      <div class="summary-box" id="personalized-summary" style="display:none">
+        <h4>📋 Personalized For <span id="sum-child"></span></h4>
+        <ul id="sum-list"></ul>
+      </div>
+      <div class="wizard-nav"><button class="btn btn-secondary" onclick="wizardBack(4)">← Back</button><button class="btn btn-gold" onclick="launchDemo()">🚀 Launch Demo Experience</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO SECTION (shown after wizard) -->
+<section id="demo-section">
+  <div class="container">
+    <div class="demo-header">
+      <p class="child-greeting" id="demo-greeting">Welcome, Explorer! 🔭</p>
+      <h2>Your <span id="demo-theme-text" class="accent-cyan">Space</span> Mission Begins</h2>
+    </div>
+
+    <!-- Progress Path -->
+    <div class="progress-path">
+      <h3>🗺️ Mission Progress</h3>
+      <div class="path-container" id="progress-nodes">
+        <div class="path-node completed" id="pn1">📡<span class="node-label">Briefing</span></div>
+        <div class="path-line completed"></div>
+        <div class="path-node current" id="pn2">🛸<span class="node-label">Mission 1</span></div>
+        <div class="path-line"></div>
+        <div class="path-node" id="pn3">🔬<span class="node-label">Mission 2</span></div>
+        <div class="path-line"></div>
+        <div class="path-node" id="pn4">🏅<span class="node-label">Badge!</span></div>
+      </div>
+    </div>
+
+    <!-- Mission Briefing -->
+    <div class="mission-card glass" id="mission-briefing">
+      <h3>📡 Mission Briefing: What is AI?</h3>
+      <div class="story-text" id="briefing-story">
+        <p>Commander <em id="story-name">Explorer</em>, welcome aboard the <em>Starship Curiosity</em>! 🚀</p>
+        <br>
+        <p>Your ship has an AI co-pilot called <em>NOVA</em>. NOVA can process millions of data points in seconds — star maps, radiation levels, fuel calculations. Pretty impressive, right?</p>
+        <br>
+        <p>But here's the thing: <strong style="color:var(--red)">NOVA doesn't actually understand space.</strong> It finds patterns in data. It doesn't know <em>why</em> a star explodes or <em>what</em> it feels like to discover a new planet.</p>
+        <br>
+        <p>That's where <strong style="color:var(--gold)">YOU</strong> come in. Your job as Commander is to use NOVA's data — but <em>think for yourself</em>. Because AI is a powerful tool, but <strong style="color:var(--cyan)">you are the thinker</strong>.</p>
+      </div>
+      <div class="code-block">
+        <span class="cm"># Your first Python concept: Variables!</span><br>
+        <span class="cm"># Think of variables as labels on containers in your spaceship</span><br><br>
+        <span class="var">commander_name</span> = <span class="str">"<span id="code-name">Explorer</span>"</span><br>
+        <span class="var">fuel_level</span> = <span class="num">100</span> &nbsp;&nbsp;<span class="cm"># Full tank!</span><br>
+        <span class="var">trust_ai_blindly</span> = <span class="kw">False</span> &nbsp;&nbsp;<span class="cm"># Never! 🧠</span><br><br>
+        <span class="fn">print</span>(<span class="str">f"Welcome Commander </span>{<span class="var">commander_name</span>}<span class="str">!"</span>)<br>
+        <span class="fn">print</span>(<span class="str">f"Fuel: </span>{<span class="var">fuel_level</span>}<span class="str">% — Ready for launch!"</span>)
+      </div>
+    </div>
+
+    <!-- Mission 1: Scenario Choice -->
+    <div class="mission-card glass" id="mission-1">
+      <h3>🛸 Mission 1: The Landing Decision</h3>
+      <div class="story-text">
+        <p>NOVA suggests landing on <em>Planet Zephyr-7</em>. It says: <em>"92% match for habitable conditions."</em></p>
+        <br>
+        <p>But you check the raw data and notice: radiation levels are <strong style="color:var(--red)">3x higher</strong> than safe limits. NOVA didn't flag this because it was optimizing for atmosphere composition, not radiation.</p>
+        <br>
+        <p><strong>What do you do, Commander?</strong></p>
+      </div>
+      <div class="choice-grid" id="m1-choices">
+        <div class="choice-btn" onclick="handleChoice(this,'wrong')">
+          <h4>🤖 Trust NOVA</h4>
+          <p>"92% sounds great! Land immediately."</p>
+        </div>
+        <div class="choice-btn" onclick="handleChoice(this,'correct')">
+          <h4>🧠 Question & Investigate</h4>
+          <p>"Wait — let me check the radiation data myself first."</p>
+        </div>
+        <div class="choice-btn" onclick="handleChoice(this,'partial')">
+          <h4>❌ Ignore NOVA completely</h4>
+          <p>"AI is never right. Skip this planet."</p>
+        </div>
+        <div class="choice-btn" onclick="handleChoice(this,'correct')">
+          <h4>🔍 Ask NOVA Better Questions</h4>
+          <p>"NOVA, recalculate including radiation safety limits."</p>
+        </div>
+      </div>
+      <div class="feedback-box" id="m1-feedback"></div>
+      <div class="code-block" style="display:none" id="m1-code">
+        <span class="cm"># Mission 1: if/else = Mission Decisions!</span><br><br>
+        <span class="var">radiation</span> = <span class="num">3.2</span> &nbsp;&nbsp;<span class="cm"># measured level</span><br>
+        <span class="var">safe_limit</span> = <span class="num">1.0</span><br><br>
+        <span class="kw">if</span> <span class="var">radiation</span> > <span class="var">safe_limit</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"⚠️ Danger! Radiation too high."</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"Good thinking, Commander! 🧠"</span>)<br>
+        <span class="kw">else</span>:<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">"✅ Safe to land!"</span>)
+      </div>
+    </div>
+
+    <!-- Mission 2: Question Builder -->
+    <div class="mission-card glass" id="mission-2">
+      <h3>🔬 Mission 2: Ask Better Questions</h3>
+      <div class="story-text">
+        <p>A core skill of every great Commander: <em>asking the right questions</em>.</p>
+        <br>
+        <p>AI gives better answers when you ask <strong style="color:var(--gold)">specific, clear questions</strong>. Let's practice!</p>
+        <br>
+        <p>Try turning a vague question into a great one:</p>
+      </div>
+      <div class="question-area">
+        <div style="padding:12px 16px;border-radius:10px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15)">
+          <span style="font-size:.78rem;color:var(--red);font-weight:600">❌ VAGUE QUESTION</span>
+          <p style="margin-top:4px" id="vague-q">"Tell me about space."</p>
+        </div>
+        <textarea id="better-question" placeholder="Type a better, more specific version of this question..."></textarea>
+        <button class="btn btn-primary" onclick="submitQuestion()" style="align-self:flex-start;padding:10px 24px;font-size:.95rem">Submit My Question ✨</button>
+        <div class="question-compare" id="q-compare" style="display:none">
+          <div class="q-box"><div class="q-label" style="color:var(--red)">Before</div><div class="q-text" id="q-before"></div></div>
+          <div class="q-box" style="border-color:rgba(34,197,94,0.2)"><div class="q-label" style="color:var(--green)">Your Improved Version ✨</div><div class="q-text" id="q-after"></div></div>
+        </div>
+        <div class="feedback-box" id="m2-feedback"></div>
+      </div>
+      <div class="code-block">
+        <span class="cm"># Mission 2: Loops = Orbit Calculations!</span><br>
+        <span class="cm"># Every orbit is a loop around a planet</span><br><br>
+        <span class="var">orbits_needed</span> = <span class="num">5</span><br><br>
+        <span class="kw">for</span> <span class="var">orbit</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">1</span>, <span class="var">orbits_needed</span> + <span class="num">1</span>):<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">f"🌍 Orbit </span>{<span class="var">orbit</span>}<span class="str"> complete!"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="var">data_collected</span> = <span class="var">orbit</span> * <span class="num">20</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">print</span>(<span class="str">f"📊 Data: </span>{<span class="var">data_collected</span>}<span class="str">% gathered"</span>)<br><br>
+        <span class="fn">print</span>(<span class="str">"✅ All orbits complete! Ready to analyze."</span>)
+      </div>
+    </div>
+
+    <!-- Gamification Display -->
+    <div class="glass" style="padding:32px;border-radius:20px;text-align:center;margin-top:24px">
+      <h3 style="margin-bottom:8px">🏆 Your Explorer Profile</h3>
+      <p style="color:var(--text2);margin-bottom:20px">Level up by completing missions — no competition, just growth!</p>
+      <div class="levels-row">
+        <div class="level-item glass"><div class="l-icon">🔭</div><h4 class="accent-cyan">Explorer</h4><p>You are here!</p></div>
+        <div class="level-item glass" style="opacity:.5"><div class="l-icon">🔧</div><h4>Builder</h4><p>Coming soon</p></div>
+        <div class="level-item glass" style="opacity:.3"><div class="l-icon">🚀</div><h4>Creator</h4><p>The summit!</p></div>
+      </div>
+      <div class="badges-row" id="badges-display">
+        <div class="badge-item" id="badge-ct" style="opacity:.3">🧠 Critical Thinker</div>
+        <div class="badge-item" style="opacity:.3">❓ Question Master</div>
+        <div class="badge-item" style="opacity:.3">🔍 Bias Detective</div>
+        <div class="badge-item" style="opacity:.3">🛡️ Responsible User</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:40px">
+      <button class="btn btn-gold" onclick="document.getElementById('principles').scrollIntoView({behavior:'smooth'})">See Our Full Approach ↓</button>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section id="principles" class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px" class="reveal">
+      <h2 style="font-size:clamp(1.8rem,4vw,2.6rem)">Our <span class="accent-cyan">Approach</span></h2>
+      <p style="color:var(--text2);max-width:550px;margin:8px auto 0">Not just another coding class. A thinking revolution.</p>
+    </div>
+
+    <!-- Black Box Problem -->
+    <div class="glass" style="padding:32px;border-radius:20px;margin-bottom:40px" class="reveal">
+      <h3 style="text-align:center;margin-bottom:24px;font-size:1.3rem">🔮 The Black Box Problem</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;text-align:center">
+        <div style="padding:20px;border-radius:14px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.12)">
+          <div style="font-size:2rem;margin-bottom:8px">😶</div>
+          <h4 style="color:var(--red);margin-bottom:6px">Blind Trust</h4>
+          <p style="color:var(--text2);font-size:.85rem">"The AI said so, it must be right."<br>No questioning. No understanding.</p>
+        </div>
+        <div style="padding:20px;border-radius:14px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.12)">
+          <div style="font-size:2rem;margin-bottom:8px">🤔</div>
+          <h4 style="color:var(--green);margin-bottom:6px">Active Curiosity</h4>
+          <p style="color:var(--text2);font-size:.85rem">"Interesting! But how does it know? Let me check."<br>Critical thinking in action.</p>
+        </div>
+      </div>
+      <p style="text-align:center;margin-top:16px;color:var(--gold);font-weight:600">We turn blind users into curious thinkers. 🧠</p>
+    </div>
+
+    <!-- What Parents Want Pyramid -->
+    <div class="reveal" style="margin-bottom:40px">
+      <h3 style="text-align:center;margin-bottom:24px;font-size:1.3rem">📊 What Parents Really Want</h3>
+      <div class="pyramid-container">
+        <div class="pyramid-level pyr-1">🎯 Future-Ready Child</div>
+        <div class="pyramid-level pyr-2">🧠 Critical Thinking & AI Literacy</div>
+        <div class="pyramid-level pyr-3">💻 Tech Skills + Ethical Awareness</div>
+        <div class="pyramid-level pyr-4">🛡️ Safe, Responsible AI Usage</div>
+      </div>
+    </div>
+
+    <!-- Blended Learning Triangle -->
+    <div class="reveal" style="margin-bottom:40px">
+      <h3 style="text-align:center;margin-bottom:8px;font-size:1.3rem">🔺 Blended Learning Model</h3>
+      <p style="text-align:center;color:var(--text2);margin-bottom:16px;font-size:.9rem">Three pillars working together</p>
+      <div class="triangle-model">
+        <div class="tri-item glass"><div class="tri-icon">📹</div><h4 class="accent-cyan">Live Virtual Classes</h4><p>Interactive sessions with real mentors</p></div>
+        <div class="tri-item glass"><div class="tri-icon">📝</div><h4 class="accent-gold">Theme Missions</h4><p>Hands-on assignments tied to interests</p></div>
+        <div class="tri-item glass"><div class="tri-icon">🏆</div><h4 class="accent-purple">Gamification</h4><p>Badges, levels & encouragement</p></div>
+      </div>
+    </div>
+
+    <!-- Curriculum Architecture -->
+    <div class="reveal" style="margin-bottom:40px">
+      <h3 style="text-align:center;margin-bottom:8px;font-size:1.3rem">🏗️ Curriculum Architecture</h3>
+      <p style="text-align:center;color:var(--text2);margin-bottom:16px;font-size:.9rem">Awareness before complexity</p>
+      <div class="curr-path">
+        <div class="curr-node glass" style="border-left:3px solid var(--cyan)"><h4 class="accent-cyan">Foundation</h4><p>What is AI? How does it work?</p></div>
+        <div class="curr-arrow">→</div>
+        <div class="curr-node glass" style="border-left:3px solid var(--gold)"><h4 class="accent-gold">Pillars</h4><p>Critical thinking, bias, ethics</p></div>
+        <div class="curr-arrow">→</div>
+        <div class="curr-node glass" style="border-left:3px solid var(--green)"><h4 class="accent-green">Capstone</h4><p>Build & present AI projects</p></div>
+      </div>
+    </div>
+
+    <!-- Core Principles Cards -->
+    <div class="principles-grid reveal">
+      <div class="principle-card glass"><div class="p-icon">🧠</div><h3>Thinking > Typing</h3><p>We teach reasoning and logic first. Python is the vehicle, not the destination.</p></div>
+      <div class="principle-card glass"><div class="p-icon">🎯</div><h3>Personalized Themes</h3><p>Space fan? Animal lover? Every child learns through what excites them.</p></div>
+      <div class="principle-card glass"><div class="p-icon">🤝</div><h3>Humans > Machines</h3><p>AI is a powerful assistant. But YOUR child is the decision maker.</p></div>
+      <div class="principle-card glass"><div class="p-icon">💚</div><h3>Zero Pressure</h3><p>No exams. No grades. No leaderboards. Just encouragement and growth.</p></div>
+    </div>
+
+    <!-- Outcome -->
+    <div class="glass reveal" style="padding:32px;border-radius:20px;text-align:center;margin-top:40px;border:1px solid rgba(34,197,94,0.15)">
+      <h3 style="font-size:1.4rem;margin-bottom:8px">🌟 The Outcome: <span class="accent-green">Future-Ready Kids</span></h3>
+      <p style="color:var(--text2);max-width:500px;margin:0 auto;line-height:1.7">Children who can think critically about AI, ask better questions, spot bias, use technology responsibly — and have <em>fun</em> doing it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLL CTA -->
+<section id="enroll" class="section">
+  <div class="container">
+    <div class="reveal">
+      <h2>Ready to <span class="accent-gold">Future-Proof</span> Your Child?</h2>
+      <p>Join our upcoming pilot cohort. Limited spots — we keep classes small and personal.</p>
+      <div style="margin-bottom:24px">
+        <a href="https://nextgenschool.aiupskills.com" target="_blank" class="btn btn-gold">Enroll for the Pilot Cohort 🚀</a>
+      </div>
+      <div class="founders">
+        <div class="founder">
+          <div class="f-avatar">🇺🇸</div>
+          <div class="f-info"><div class="f-name">Rathish</div><div class="f-loc">USA</div></div>
+        </div>
+        <div class="founder">
+          <div class="f-avatar">🇮🇳</div>
+          <div class="f-info"><div class="f-name">Sathish</div><div class="f-loc">India</div></div>
+        </div>
+      </div>
+      <p style="color:var(--text2);font-size:.9rem;margin-top:16px">A collaboration across continents, united by one mission:<br><strong style="color:var(--cyan)">Raise thinkers, not just users.</strong></p>
+      <div class="social-links">
+        <a href="https://nextgenschool.aiupskills.com" target="_blank" title="Website">🌐</a>
+        <a href="mailto:rathishkumarlearning@gmail.com" title="Email">📧</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  <p>© 2026 NextGen School — Mind Over Machines. Built with 🧠 and ❤️</p>
+</div>
+
+<!-- Reward Popup -->
+<div class="reward-popup" id="reward-popup">
+  <div class="badge-icon" id="reward-icon">🧠</div>
+  <h3 id="reward-title">Badge Earned!</h3>
+  <p id="reward-desc">Critical Thinker — You questioned the AI!</p>
+  <button class="btn btn-primary" style="margin-top:16px" onclick="closeReward()">Awesome! 🎉</button>
+</div>
+
+<script>
+// ===== STARRY CANVAS =====
+const canvas=document.getElementById('stars-canvas'),ctx=canvas.getContext('2d');
+let stars=[];
+function initStars(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.5+.5,a:Math.random(),s:Math.random()*.5+.1})}
+function drawStars(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(s=>{s.a+=s.s*.01;const a=.3+Math.abs(Math.sin(s.a))*.7;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${a})`;ctx.fill()});requestAnimationFrame(drawStars)}
+initStars();drawStars();window.addEventListener('resize',initStars);
+
+// ===== NAV =====
+window.addEventListener('scroll',()=>{document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50)});
+
+// ===== SCROLL REVEALS =====
+gsap.registerPlugin(ScrollTrigger);
+document.querySelectorAll('.reveal').forEach(el=>{gsap.fromTo(el,{opacity:0,y:30},{opacity:1,y:0,duration:.8,scrollTrigger:{trigger:el,start:'top 85%'}})});
+
+// Hero animations
+gsap.from('#hero .hero-badge',{opacity:0,y:-20,duration:.8,delay:.2});
+gsap.from('#hero h1',{opacity:0,y:20,duration:.8,delay:.4});
+gsap.from('#hero .tagline',{opacity:0,y:20,duration:.8,delay:.6,stagger:.15});
+gsap.from('.hero-features .hero-feature',{opacity:0,y:15,duration:.5,delay:.9,stagger:.1});
+gsap.from('.hero-cta-group',{opacity:0,y:20,duration:.8,delay:1.3});
+gsap.from('.hero-illustration',{opacity:0,scale:.8,duration:1,delay:1.5,ease:'back.out(1.7)'});
+
+// ===== WIZARD =====
+let wizardData={name:'',age:'',interests:[],concerns:[]};
+function openWizard(){document.getElementById('wizard-overlay').classList.add('active');document.body.style.overflow='hidden';updateDots(1)}
+function closeWizard(){document.getElementById('wizard-overlay').classList.remove('active');document.body.style.overflow=''}
+function updateDots(step){for(let i=1;i<=4;i++){const d=document.getElementById('d'+i);d.className='dot';if(i<step)d.classList.add('done');if(i===step)d.classList.add('active')}}
+function showStep(n){document.querySelectorAll('.wizard-step').forEach(s=>s.classList.remove('active'));document.getElementById('ws'+n).classList.add('active');updateDots(n)}
+function wizardNext(from){
+  if(from===1){const n=document.getElementById('child-name').value.trim(),a=document.getElementById('child-age').value;if(!n||!a){alert('Please enter your child\'s name and age.');return}wizardData.name=n;wizardData.age=a}
+  if(from===2){const sel=document.querySelectorAll('#interest-grid .pick-card.selected');if(!sel.length){alert('Please pick at least one interest!');return}wizardData.interests=[...sel].map(c=>c.dataset.val)}
+  if(from===3){wizardData.concerns=[...document.querySelectorAll('#concern-list .concern-card.selected')].map(c=>c.dataset.val)}
+  if(from===3){buildSummary()}
+  showStep(from+1);
+}
+function wizardBack(from){showStep(from-1)}
+function toggleCard(el){el.classList.toggle('selected')}
+function toggleConcern(el){el.classList.toggle('selected')}
+function buildSummary(){
+  document.getElementById('summary-name').textContent=wizardData.name;
+  const ps=document.getElementById('personalized-summary'),sc=document.getElementById('sum-child'),sl=document.getElementById('sum-list');
+  sc.textContent=wizardData.name;sl.innerHTML='';
+  sl.innerHTML+=`<li>Age: ${wizardData.age} years old</li>`;
+  sl.innerHTML+=`<li>Interests: ${wizardData.interests.join(', ')}</li>`;
+  if(wizardData.concerns.length){const map={'blind-trust':'Address blind AI trust','no-question':'Build questioning habits','screen-time':'Productive screen time','critical-thinking':'Deep critical thinking focus'};wizardData.concerns.forEach(c=>{if(map[c])sl.innerHTML+=`<li>${map[c]}</li>`})}
+  ps.style.display='block';
+}
+function launchDemo(){
+  localStorage.setItem('nextgen-wizard',JSON.stringify(wizardData));
+  closeWizard();
+  const ds=document.getElementById('demo-section');ds.style.display='block';
+  const theme=wizardData.interests[0]||'Space';
+  const themeEmoji={'Space':'🚀','Gaming':'🎮','Animals':'🐾','Sports':'⚽','Music':'🎵','Art':'🎨','Science':'🔬','Cooking':'🍳'};
+  document.getElementById('demo-greeting').textContent=`Welcome, ${wizardData.name}! ${themeEmoji[theme]||'🔭'}`;
+  document.getElementById('demo-theme-text').textContent=theme;
+  document.getElementById('story-name').textContent=wizardData.name;
+  document.getElementById('code-name').textContent=wizardData.name;
+  // Update story for non-space themes
+  if(theme!=='Space'){
+    const stories={
+      'Gaming':{briefing:`Player <em>${wizardData.name}</em>, welcome to the <em>Game Design Lab</em>! 🎮<br><br>Your AI assistant <em>PIXEL</em> can generate game levels, balance difficulty, and create NPCs. But here\'s the catch: <strong style="color:var(--red)">PIXEL doesn\'t actually play games.</strong> It crunches numbers and patterns.<br><br>A good game needs <em>heart</em> — creativity, surprise, emotion. That\'s what <strong style="color:var(--gold)">YOU</strong> bring. PIXEL is your tool; <strong style="color:var(--cyan)">you are the game designer</strong>.`},
+      'Animals':{briefing:`Ranger <em>${wizardData.name}</em>, welcome to the <em>Wildlife Research Station</em>! 🐾<br><br>Your AI assistant <em>FAUNA</em> can identify species, track migration patterns, and analyze habitats. But here\'s the thing: <strong style="color:var(--red)">FAUNA doesn\'t understand animals.</strong> It matches patterns in photos and data.<br><br>Real conservation needs <em>empathy</em> and <em>judgment</em>. That\'s what <strong style="color:var(--gold)">YOU</strong> bring. FAUNA is your tool; <strong style="color:var(--cyan)">you are the wildlife expert</strong>.`},
+      'Science':{briefing:`Scientist <em>${wizardData.name}</em>, welcome to the <em>Discovery Lab</em>! 🔬<br><br>Your AI assistant <em>EUREKA</em> can process experiments, find correlations, and suggest hypotheses. But: <strong style="color:var(--red)">EUREKA doesn\'t truly understand science.</strong> It finds statistical patterns.<br><br>Real breakthroughs need <em>curiosity</em> and <em>creative thinking</em>. That\'s <strong style="color:var(--gold)">YOU</strong>. EUREKA is your tool; <strong style="color:var(--cyan)">you are the scientist</strong>.`}
+    };
+    if(stories[theme]){document.getElementById('briefing-story').innerHTML=`<p>${stories[theme].briefing}</p>`}
+  }
+  setTimeout(()=>{ds.scrollIntoView({behavior:'smooth'})},200);
+  gsap.from('#demo-section .mission-card',{opacity:0,y:30,duration:.6,stagger:.2,delay:.3});
+  gsap.from('#demo-section .progress-path',{opacity:0,y:20,duration:.6,delay:.1});
+}
+
+// ===== MISSION INTERACTIONS =====
+let mission1Done=false,mission2Done=false;
+function handleChoice(btn,type){
+  if(mission1Done)return;mission1Done=true;
+  const fb=document.getElementById('m1-feedback');
+  document.querySelectorAll('#m1-choices .choice-btn').forEach(b=>{b.style.pointerEvents='none';b.style.opacity='.5'});
+  btn.style.opacity='1';
+  if(type==='correct'){
+    btn.classList.add('correct');
+    fb.className='feedback-box show success';
+    fb.innerHTML='<strong>🎉 Excellent thinking, Commander!</strong><br>You didn\'t blindly trust OR blindly reject the AI. You investigated the data yourself and asked better questions. That\'s exactly what a critical thinker does!';
+    document.getElementById('m1-code').style.display='block';
+    gsap.from('#m1-code',{opacity:0,y:15,duration:.5});
+    awardPoints(50);
+    setTimeout(()=>unlockBadge('Critical Thinker 🧠','You questioned AI instead of blindly trusting!'),1500);
+    // Update progress
+    document.getElementById('pn2').classList.remove('current');document.getElementById('pn2').classList.add('completed');
+    document.getElementById('pn3').classList.add('current');document.querySelectorAll('.path-line')[1].classList.add('completed');
+  }else if(type==='wrong'){
+    btn.classList.add('wrong');
+    fb.className='feedback-box show info';
+    fb.innerHTML='<strong>🤔 Careful, Commander!</strong><br>Trusting AI without checking the data could be dangerous. AI doesn\'t understand context the way you do. Always verify important decisions! <strong style="color:var(--green)">Try again in your mind — what would a critical thinker do?</strong>';
+  }else{
+    btn.classList.add('wrong');
+    fb.className='feedback-box show info';
+    fb.innerHTML='<strong>🤔 Almost!</strong><br>Ignoring AI completely means missing useful data. The best approach: use AI\'s analysis but <em>verify</em> it with your own judgment. AI + Human thinking = best results!';
+  }
+}
+
+function submitQuestion(){
+  if(mission2Done)return;
+  const q=document.getElementById('better-question').value.trim();
+  if(!q){alert('Type a better version of the question first!');return}
+  mission2Done=true;
+  const vague=document.getElementById('vague-q').textContent;
+  document.getElementById('q-before').textContent=vague;
+  document.getElementById('q-after').textContent=q;
+  document.getElementById('q-compare').style.display='grid';
+  const fb=document.getElementById('m2-feedback');
+  const isGood=q.length>vague.length&&(q.includes('?')||q.length>20);
+  if(isGood){
+    fb.className='feedback-box show success';
+    fb.innerHTML=`<strong>🌟 Great question, Commander!</strong><br>Your question is more specific — AI (and humans!) can give much better answers to specific questions. Remember: <em>the quality of the answer depends on the quality of the question.</em>`;
+    awardPoints(50);
+    document.getElementById('pn3').classList.remove('current');document.getElementById('pn3').classList.add('completed');
+    document.getElementById('pn4').classList.add('current');document.querySelectorAll('.path-line')[2].classList.add('completed');
+  }else{
+    fb.className='feedback-box show info';
+    fb.innerHTML='<strong>Good start!</strong> Try making it even more specific. Instead of broad topics, ask about a <em>particular</em> thing — like "What causes stars to explode into supernovas?" 🎯';
+    mission2Done=false;
+  }
+}
+
+// Points & badges
+let totalPoints=0;
+function awardPoints(pts){
+  totalPoints+=pts;
+  const el=document.createElement('div');el.className='points-float';el.textContent=`+${pts} ⭐`;
+  el.style.left=Math.random()*60+20+'%';el.style.top='50%';
+  document.body.appendChild(el);
+  gsap.fromTo(el,{opacity:1,y:0},{opacity:0,y:-80,duration:1.5,ease:'power2.out',onComplete:()=>el.remove()});
+}
+function unlockBadge(name,desc){
+  const p=document.getElementById('reward-popup');
+  document.getElementById('reward-title').textContent='Badge Earned!';
+  document.getElementById('reward-desc').textContent=`${name} — ${desc}`;
+  p.classList.add('show');
+  // Light up badge
+  const b=document.getElementById('badge-ct');if(b)b.style.opacity='1';
+}
+function closeReward(){document.getElementById('reward-popup').classList.remove('show')}
+
+// Check localStorage for returning users
+(function(){
+  const saved=localStorage.getItem('nextgen-wizard');
+  if(saved){try{const d=JSON.parse(saved);if(d.name){wizardData=d}}catch(e){}}
+})();
+</script>
+</body>
+</html>
