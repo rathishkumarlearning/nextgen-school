@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextGen School — AI Literacy for Kids Ages 9-13 | Mind Over Machines</title>
+<meta name="description" content="Is your child ready for the AI future? NextGen School teaches kids ages 9-13 to understand AI through hands-on adventures. No coding required. Free trial available.">
+<meta name="keywords" content="AI literacy for kids, AI education children, critical thinking AI, STEM for kids, AI courses for kids, mind over machines, nextgen school">
+
+<!-- Open Graph -->
+<meta property="og:title" content="NextGen School — AI Literacy for Kids Ages 9-13">
+<meta property="og:description" content="85% of jobs in 2030 will require AI literacy. Only 3% of schools teach it. We're changing that.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rathishkumarlearning.github.io/nextgen-school/marketing.html">
+<meta property="og:image" content="https://rathishkumarlearning.github.io/nextgen-school/og-marketing.png">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NextGen School — AI Literacy for Kids Ages 9-13">
+<meta name="twitter:description" content="Teach your child to THINK about AI, not just use it. Ages 9-13. No coding required.">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "NextGen School AI Literacy Program",
+  "description": "AI literacy courses for children ages 9-13. Learn AI concepts through visual, hands-on adventures.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Mind Over Machines — NextGen School",
+    "url": "https://nextgenschool.aiupskills.com"
+  },
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student",
+    "suggestedMinAge": 9,
+    "suggestedMaxAge": 13
+  },
+  "hasCourseInstance": [
+    {"@type": "CourseInstance", "name": "AI Adventures", "courseMode": "online"},
+    {"@type": "CourseInstance", "name": "Space Explorers", "courseMode": "online"},
+    {"@type": "CourseInstance", "name": "Robotics Lab", "courseMode": "online"}
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0a1628;--navy-light:#132040;--navy-mid:#1a2d54;
+  --cyan:#06b6d4;--cyan-light:#22d3ee;--gold:#fbbf24;--gold-light:#fcd34d;
+  --blue:#3b82f6;--purple:#8b5cf6;
+  --white:#ffffff;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;
+  --gray-300:#cbd5e1;--gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;
+  --gray-700:#334155;--gray-800:#1e293b;--gray-900:#0f172a;
+  --text-dark:#1e293b;--text-body:#475569;--text-light:#64748b;
+  --success:#22c55e;--danger:#ef4444;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;color:var(--text-body);line-height:1.7;overflow-x:hidden;background:var(--white)}
+h1,h2,h3,h4,h5,h6{font-family:'Fredoka',sans-serif;color:var(--text-dark);line-height:1.3}
+a{text-decoration:none;color:inherit}
+img{max-width:100%}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section-pad{padding:100px 0}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:60px;font-family:'Fredoka',sans-serif;font-size:1.05rem;font-weight:600;border:none;cursor:pointer;transition:all .3s ease;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;box-shadow:0 4px 24px rgba(6,182,212,.3)}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(6,182,212,.45)}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#f59e0b);color:var(--navy);box-shadow:0 4px 24px rgba(251,191,36,.3)}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(251,191,36,.45)}
+.btn-outline{background:transparent;border:2px solid var(--cyan);color:var(--cyan);padding:14px 34px}
+.btn-outline:hover{background:var(--cyan);color:#fff}
+.btn-sm{padding:10px 22px;font-size:.9rem}
+.tag{display:inline-block;padding:6px 16px;border-radius:30px;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* ====== NAVBAR ====== */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;transition:all .3s}
+.navbar.scrolled{background:rgba(255,255,255,.95);backdrop-filter:blur(20px);box-shadow:0 2px 20px rgba(0,0,0,.08);padding:10px 0}
+.navbar .container{display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'Fredoka',sans-serif;font-size:1.4rem;font-weight:700;color:var(--navy)}
+.nav-logo span{color:var(--cyan)}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{font-weight:600;color:var(--gray-600);font-size:.95rem;transition:color .2s}
+.nav-links a:hover{color:var(--cyan)}
+.nav-cta{background:var(--cyan);color:#fff!important;padding:10px 24px;border-radius:50px;font-weight:700!important}
+.nav-cta:hover{background:var(--blue)}
+.mobile-menu{display:none;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--navy)}
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;padding:20px;gap:16px;box-shadow:0 10px 40px rgba(0,0,0,.1)}
+  .nav-links.active{display:flex}
+  .mobile-menu{display:block}
+}
+
+/* ====== HERO ====== */
+.hero{min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 30%,#f0fdf4 70%,#fefce8 100%);position:relative;overflow:hidden;padding-top:80px}
+.hero::before{content:'';position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(6,182,212,.12),transparent 70%);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(251,191,36,.1),transparent 70%);border-radius:50%}
+.hero .container{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
+.hero-tag{background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(59,130,246,.1));color:var(--cyan);border:1px solid rgba(6,182,212,.2);margin-bottom:20px}
+.hero h1{font-size:clamp(2.2rem,5vw,3.8rem);margin-bottom:20px;color:var(--navy)}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:1.2rem;color:var(--gray-600);margin-bottom:32px;max-width:520px}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:36px}
+.hero-stats{display:flex;gap:32px}
+.hero-stat{text-align:center}
+.hero-stat .num{font-family:'Fredoka',sans-serif;font-size:2rem;font-weight:700;color:var(--navy)}
+.hero-stat .label{font-size:.85rem;color:var(--gray-500)}
+.hero-visual{position:relative;display:flex;align-items:center;justify-content:center}
+.hero-illustration{width:100%;max-width:500px;aspect-ratio:1;background:linear-gradient(135deg,rgba(6,182,212,.08),rgba(139,92,246,.08));border-radius:30px;display:flex;align-items:center;justify-content:center;font-size:8rem;border:2px solid rgba(6,182,212,.15)}
+.floating-badge{position:absolute;background:#fff;padding:12px 20px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.1);font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:8px}
+.floating-badge.top-right{top:20px;right:-10px}
+.floating-badge.bottom-left{bottom:30px;left:-10px}
+.floating-badge .icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.floating-badge .icon.cyan{background:rgba(6,182,212,.15)}
+.floating-badge .icon.gold{background:rgba(251,191,36,.15)}
+@media(max-width:768px){
+  .hero .container{grid-template-columns:1fr;text-align:center}
+  .hero-btns,.hero-stats{justify-content:center}
+  .hero-visual{order:-1}
+  .hero-illustration{max-width:300px;font-size:5rem}
+  .floating-badge{display:none}
+}
+
+/* ====== PROBLEM SECTION ====== */
+.problem{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.problem::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.problem h2{color:#fff;text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:16px}
+.problem .subtitle{text-align:center;color:var(--gray-400);margin-bottom:60px;font-size:1.15rem}
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.problem-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px;text-align:center}
+.problem-card.bad{border-color:rgba(239,68,68,.3)}
+.problem-card.good{border-color:rgba(34,197,94,.3)}
+.problem-card .emoji{font-size:4rem;margin-bottom:16px}
+.problem-card h3{color:#fff;font-size:1.4rem;margin-bottom:12px}
+.problem-card p{color:var(--gray-400);font-size:1rem}
+.problem-card.bad h3{color:#f87171}
+.problem-card.good h3{color:#4ade80}
+.problem-stats{display:flex;gap:24px;justify-content:center;margin-top:50px;flex-wrap:wrap}
+.p-stat{background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);border-radius:16px;padding:24px 32px;text-align:center}
+.p-stat .big{font-family:'Fredoka',sans-serif;font-size:2.2rem;font-weight:700;color:var(--cyan)}
+.p-stat .small{color:var(--gray-400);font-size:.9rem;margin-top:4px}
+@media(max-width:768px){.problem-grid{grid-template-columns:1fr}}
+
+/* ====== COURSES ====== */
+.courses h2{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:8px}
+.courses .subtitle{text-align:center;color:var(--text-light);margin-bottom:16px;font-size:1.1rem}
+.courses .no-code{text-align:center;margin-bottom:50px}
+.courses .no-code span{background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(6,182,212,.1));color:var(--success);padding:8px 20px;border-radius:30px;font-weight:700;font-size:.9rem;border:1px solid rgba(34,197,94,.2)}
+.course-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.course-card{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 4px 30px rgba(0,0,0,.06);border:1px solid var(--gray-200);transition:all .3s}
+.course-card:hover{transform:translateY(-8px);box-shadow:0 12px 40px rgba(0,0,0,.12)}
+.course-card-header{padding:40px 30px 24px;text-align:center;position:relative}
+.course-card-header .icon{font-size:4rem;margin-bottom:12px}
+.course-card-header h3{font-size:1.4rem;margin-bottom:8px}
+.course-card-header p{color:var(--text-light);font-size:.95rem}
+.cc-ai .course-card-header{background:linear-gradient(135deg,#eff6ff,#dbeafe)}
+.cc-space .course-card-header{background:linear-gradient(135deg,#f0fdf4,#dcfce7)}
+.cc-robot .course-card-header{background:linear-gradient(135deg,#fef3c7,#fde68a)}
+.course-features{padding:0 30px 30px}
+.course-features li{list-style:none;padding:8px 0;font-size:.95rem;color:var(--text-body);display:flex;align-items:center;gap:10px}
+.course-features li::before{content:'✓';color:var(--success);font-weight:700}
+@media(max-width:768px){.course-cards{grid-template-columns:1fr}}
+
+/* ====== HOW IT WORKS ====== */
+.how-it-works{background:var(--gray-50)}
+.how-it-works h2{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:60px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;position:relative}
+.steps::before{content:'';position:absolute;top:50px;left:15%;right:15%;height:3px;background:linear-gradient(90deg,var(--cyan),var(--gold));border-radius:3px;z-index:0}
+.step{text-align:center;position:relative;z-index:1}
+.step-num{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;font-family:'Fredoka',sans-serif;font-size:1.5rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 4px 15px rgba(6,182,212,.3)}
+.step-icon{font-size:2.5rem;margin-bottom:12px}
+.step h3{font-size:1.1rem;margin-bottom:8px}
+.step p{font-size:.9rem;color:var(--text-light)}
+@media(max-width:768px){
+  .steps{grid-template-columns:1fr 1fr;gap:40px}
+  .steps::before{display:none}
+}
+@media(max-width:480px){.steps{grid-template-columns:1fr}}
+
+/* ====== TESTIMONIALS ====== */
+.testimonials h2{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:8px}
+.testimonials .subtitle{text-align:center;color:var(--text-light);margin-bottom:50px;font-size:1.1rem}
+.testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.testimonial-card{background:#fff;border-radius:20px;padding:32px;box-shadow:0 4px 25px rgba(0,0,0,.06);border:1px solid var(--gray-200)}
+.stars{color:var(--gold);font-size:1.1rem;margin-bottom:16px;letter-spacing:2px}
+.testimonial-card blockquote{font-size:1rem;font-style:italic;color:var(--text-body);margin-bottom:20px;line-height:1.7}
+.testimonial-author{display:flex;align-items:center;gap:12px}
+.author-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem}
+.author-info .name{font-weight:700;color:var(--text-dark);font-size:.95rem}
+.author-info .role{color:var(--text-light);font-size:.85rem}
+@media(max-width:768px){.testimonial-grid{grid-template-columns:1fr}}
+
+/* ====== PRICING ====== */
+.pricing{background:var(--gray-50)}
+.pricing h2{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:8px}
+.pricing .subtitle{text-align:center;color:var(--text-light);margin-bottom:50px}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.price-card{background:#fff;border-radius:24px;padding:36px 28px;text-align:center;border:2px solid var(--gray-200);transition:all .3s;position:relative}
+.price-card:hover{border-color:var(--cyan);transform:translateY(-5px);box-shadow:0 12px 40px rgba(6,182,212,.15)}
+.price-card.popular{border-color:var(--cyan);box-shadow:0 8px 30px rgba(6,182,212,.15)}
+.price-card.popular::before{content:'MOST POPULAR';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;padding:6px 20px;border-radius:30px;font-size:.75rem;font-weight:700;letter-spacing:1px}
+.price-name{font-family:'Fredoka',sans-serif;font-size:1.2rem;color:var(--text-dark);margin-bottom:8px}
+.price-amount{font-family:'Fredoka',sans-serif;font-size:3rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.price-amount span{font-size:1rem;color:var(--text-light);font-weight:400}
+.price-desc{color:var(--text-light);font-size:.9rem;margin-bottom:24px}
+.price-features{list-style:none;text-align:left;margin-bottom:28px}
+.price-features li{padding:8px 0;font-size:.9rem;display:flex;align-items:center;gap:8px;color:var(--text-body)}
+.price-features li::before{content:'✓';color:var(--success);font-weight:700;font-size:1.1rem}
+.price-features li.no::before{content:'✗';color:var(--gray-400)}
+.guarantee{text-align:center;margin-top:40px;padding:20px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:16px;color:var(--success);font-weight:700}
+@media(max-width:900px){.pricing-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.pricing-grid{grid-template-columns:1fr}}
+
+/* ====== FAQ ====== */
+.faq h2{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:50px}
+.faq-list{max-width:750px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--gray-200);padding:20px 0}
+.faq-q{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'Fredoka',sans-serif;font-size:1.1rem;color:var(--text-dark);font-weight:600;gap:16px}
+.faq-q::after{content:'+';font-size:1.5rem;color:var(--cyan);transition:transform .3s;flex-shrink:0}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;color:var(--text-body);line-height:1.7}
+.faq-item.open .faq-a{max-height:300px;padding-top:12px}
+
+/* ====== SOCIAL MEDIA HUB ====== */
+.social-hub{background:var(--navy);color:#fff}
+.social-hub h2{color:#fff;text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:8px}
+.social-hub .subtitle{text-align:center;color:var(--gray-400);margin-bottom:40px}
+.platform-tabs{display:flex;gap:12px;justify-content:center;margin-bottom:40px;flex-wrap:wrap}
+.platform-tab{padding:10px 24px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--gray-300);cursor:pointer;font-weight:600;font-size:.9rem;transition:all .2s}
+.platform-tab.active,.platform-tab:hover{background:var(--cyan);color:#fff;border-color:var(--cyan)}
+.posts-grid{display:grid;gap:16px;max-width:800px;margin:0 auto}
+.post-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.post-card p{color:var(--gray-300);font-size:.95rem;line-height:1.6;flex:1}
+.copy-btn{background:rgba(6,182,212,.2);border:1px solid rgba(6,182,212,.3);color:var(--cyan);padding:8px 18px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.8rem;white-space:nowrap;transition:all .2s;font-family:'Nunito',sans-serif}
+.copy-btn:hover{background:var(--cyan);color:#fff}
+.copy-btn.copied{background:var(--success);color:#fff;border-color:var(--success)}
+.hashtag-box{max-width:800px;margin:40px auto 0;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:24px;text-align:center}
+.hashtag-box h4{color:var(--cyan);margin-bottom:12px}
+.hashtag-box p{color:var(--gray-400);font-size:.9rem;word-spacing:4px}
+.platform-section{display:none}
+.platform-section.active{display:block}
+
+/* ====== EMAIL TEMPLATES ====== */
+.email-templates h2{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:8px}
+.email-templates .subtitle{text-align:center;color:var(--text-light);margin-bottom:50px}
+.email-grid{display:grid;gap:24px;max-width:800px;margin:0 auto}
+.email-card{background:#fff;border:1px solid var(--gray-200);border-radius:20px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.05)}
+.email-card-header{background:var(--gray-50);padding:16px 24px;border-bottom:1px solid var(--gray-200);display:flex;justify-content:space-between;align-items:center}
+.email-card-header h4{font-size:1rem;color:var(--text-dark)}
+.email-card-body{padding:24px;color:var(--text-body);font-size:.95rem;line-height:1.8;white-space:pre-line}
+
+/* ====== FOUNDERS ====== */
+.founders{background:linear-gradient(135deg,#f0f9ff,#fefce8)}
+.founders h2{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:8px}
+.founders .subtitle{text-align:center;color:var(--text-light);margin-bottom:50px;font-size:1.15rem}
+.founders-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-width:800px;margin:0 auto}
+.founder-card{text-align:center;background:#fff;border-radius:24px;padding:40px 30px;box-shadow:0 4px 25px rgba(0,0,0,.06)}
+.founder-avatar{width:120px;height:120px;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;border:4px solid var(--cyan)}
+.founder-avatar.rathish{background:linear-gradient(135deg,#dbeafe,#eff6ff)}
+.founder-avatar.sathish{background:linear-gradient(135deg,#fef3c7,#fefce8)}
+.founder-card h3{font-size:1.3rem;margin-bottom:4px}
+.founder-card .location{color:var(--text-light);font-size:.95rem;margin-bottom:16px}
+.founder-card p{color:var(--text-body);font-size:.95rem}
+@media(max-width:600px){.founders-grid{grid-template-columns:1fr}}
+
+/* ====== CTA FOOTER ====== */
+.cta-footer{background:linear-gradient(135deg,var(--navy),var(--navy-mid));color:#fff;text-align:center}
+.cta-footer h2{color:#fff;font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:16px}
+.cta-footer p{color:var(--gray-400);margin-bottom:36px;font-size:1.1rem}
+.email-form{display:flex;gap:12px;max-width:500px;margin:0 auto 40px;flex-wrap:wrap;justify-content:center}
+.email-form input{flex:1;min-width:240px;padding:16px 24px;border-radius:50px;border:2px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:1rem;font-family:'Nunito',sans-serif;outline:none;transition:border-color .2s}
+.email-form input::placeholder{color:var(--gray-500)}
+.email-form input:focus{border-color:var(--cyan)}
+.social-links{display:flex;gap:16px;justify-content:center;margin-bottom:40px}
+.social-link{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all .2s;cursor:pointer}
+.social-link:hover{background:var(--cyan);border-color:var(--cyan)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:30px;color:var(--gray-500);font-size:.9rem}
+.footer-bottom a{color:var(--cyan)}
+
+/* ====== SCROLL ANIMATIONS ====== */
+.fade-up{opacity:0;transform:translateY(40px);transition:all .6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ====== BACK TO TOP ====== */
+.back-top{position:fixed;bottom:30px;right:30px;width:50px;height:50px;border-radius:50%;background:var(--cyan);color:#fff;border:none;cursor:pointer;font-size:1.3rem;opacity:0;transition:all .3s;z-index:999;box-shadow:0 4px 20px rgba(6,182,212,.4);display:flex;align-items:center;justify-content:center}
+.back-top.show{opacity:1}
+.back-top:hover{transform:translateY(-3px);background:var(--blue)}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="https://nextgenschool.aiupskills.com" class="nav-logo">NextGen<span>School</span></a>
+    <button class="mobile-menu" onclick="document.querySelector('.nav-links').classList.toggle('active')">☰</button>
+    <div class="nav-links">
+      <a href="#courses-section">Courses</a>
+      <a href="#pricing-section">Pricing</a>
+      <a href="#faq-section">FAQ</a>
+      <a href="#founders-section">About</a>
+      <a href="https://nextgenschool.aiupskills.com" class="nav-cta">Start Free Trial</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-text">
+      <span class="tag hero-tag">🚀 AI Literacy for Ages 9-13</span>
+      <h1>Is Your Child Ready for the <em>AI Future?</em></h1>
+      <p>The world is changing fast. Equip your child with the critical thinking and AI literacy skills they need to thrive — not just survive.</p>
+      <div class="hero-btns">
+        <a href="https://nextgenschool.aiupskills.com" class="btn btn-primary">🎯 Start Free Trial</a>
+        <a href="#courses-section" class="btn btn-outline">Explore Courses →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">85%</div><div class="label">Jobs by 2030 need AI skills</div></div>
+        <div class="hero-stat"><div class="num">3%</div><div class="label">Schools teach AI thinking</div></div>
+        <div class="hero-stat"><div class="num">150+</div><div class="label">Students learning</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-illustration">🧒🤖</div>
+      <div class="floating-badge top-right">
+        <div class="icon cyan">🧠</div>
+        <div>Critical Thinking</div>
+      </div>
+      <div class="floating-badge bottom-left">
+        <div class="icon gold">⭐</div>
+        <div>No Coding Needed!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem section-pad" id="problem-section">
+  <div class="container">
+    <h2 class="fade-up">Your Child Uses AI Every Day.<br>But Do They <em style="color:var(--cyan);font-style:normal">Understand</em> It?</h2>
+    <p class="subtitle fade-up">There's a dangerous gap between using AI and understanding AI. Here's what it looks like:</p>
+    <div class="problem-grid fade-up">
+      <div class="problem-card bad">
+        <div class="emoji">😰</div>
+        <h3>Without AI Literacy</h3>
+        <p>Blindly trusts AI answers. Can't tell when AI is wrong. Uses AI as a crutch. No critical thinking. Vulnerable to misinformation. Replaced by AI in the future.</p>
+      </div>
+      <div class="problem-card good">
+        <div class="emoji">🌟</div>
+        <h3>With NextGen School</h3>
+        <p>Questions AI outputs. Understands how AI "thinks." Uses AI as a tool, not a crutch. Strong critical thinking. Creates WITH AI. Leads the AI future.</p>
+      </div>
+    </div>
+    <div class="problem-stats fade-up">
+      <div class="p-stat"><div class="big">73%</div><div class="small">of kids trust AI without questioning</div></div>
+      <div class="p-stat"><div class="big">91%</div><div class="small">of parents worry about AI's impact</div></div>
+      <div class="p-stat"><div class="big">0</div><div class="small">schools teach AI critical thinking</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="courses section-pad" id="courses-section">
+  <div class="container">
+    <h2 class="fade-up">3 Adventures. Infinite Possibilities.</h2>
+    <p class="subtitle fade-up">Choose the path that excites your child most — or try them all!</p>
+    <div class="no-code fade-up"><span>✨ No coding required — all visual, drag-and-drop!</span></div>
+    <div class="course-cards">
+      <div class="course-card cc-ai fade-up">
+        <div class="course-card-header">
+          <div class="icon">🤖</div>
+          <h3>AI Adventures</h3>
+          <p>Discover how AI thinks, learns, and makes decisions</p>
+        </div>
+        <ul class="course-features">
+          <li>How AI recognizes patterns</li>
+          <li>Understanding training data & bias</li>
+          <li>AI decision-making simulations</li>
+          <li>Real-world AI applications</li>
+          <li>Build your own AI logic</li>
+        </ul>
+      </div>
+      <div class="course-card cc-space fade-up">
+        <div class="course-card-header">
+          <div class="icon">🚀</div>
+          <h3>Space Explorers</h3>
+          <p>AI meets the cosmos — explore space with technology</p>
+        </div>
+        <ul class="course-features">
+          <li>How NASA uses AI</li>
+          <li>Design your own space mission</li>
+          <li>Analyze real space data</li>
+          <li>AI-powered telescope simulation</li>
+          <li>Mars rover programming</li>
+        </ul>
+      </div>
+      <div class="course-card cc-robot fade-up">
+        <div class="course-card-header">
+          <div class="icon">🔧</div>
+          <h3>Robotics Lab</h3>
+          <p>Build smart machines and understand automation</p>
+        </div>
+        <ul class="course-features">
+          <li>Design virtual robots</li>
+          <li>Sensors and decision logic</li>
+          <li>Obstacle course challenges</li>
+          <li>Real-world robotics applications</li>
+          <li>Build and test your creations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works section-pad" id="how-section">
+  <div class="container">
+    <h2 class="fade-up">How It Works — 4 Simple Steps</h2>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <div class="step-icon">📝</div>
+        <h3>Sign Up Free</h3>
+        <p>No credit card required. Start your free trial in 30 seconds.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">2</div>
+        <div class="step-icon">🎮</div>
+        <h3>Pick an Adventure</h3>
+        <p>Your child chooses AI Adventures, Space Explorers, or Robotics Lab.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">3</div>
+        <div class="step-icon">🚀</div>
+        <h3>Learn by Doing</h3>
+        <p>Interactive missions, visual puzzles, and hands-on projects. No boring lectures!</p>
+      </div>
+      <div class="step fade-up">
+        <div class="step-num">4</div>
+        <div class="step-icon">🏆</div>
+        <h3>Earn & Track</h3>
+        <p>Earn certificates, track progress, and watch your child's skills grow.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials section-pad" id="testimonials-section">
+  <div class="container">
+    <h2 class="fade-up">Parents & Kids Love NextGen School</h2>
+    <p class="subtitle fade-up">⭐ 150+ students already learning. Here's what families say:</p>
+    <div class="testimonial-grid">
+      <div class="testimonial-card fade-up">
+        <div class="stars">★★★★★</div>
+        <blockquote>"My 11-year-old now questions everything AI tells her. She even corrected her teacher about how ChatGPT works! Best investment we've made in her education."</blockquote>
+        <div class="testimonial-author">
+          <div class="author-avatar">S</div>
+          <div class="author-info"><div class="name">Sarah M.</div><div class="role">Parent of 11-year-old, Texas</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <div class="stars">★★★★★</div>
+        <blockquote>"I was worried it would be too technical, but my 9-year-old absolutely loves the Space Explorers course. He begs to do his 'AI homework' every evening!"</blockquote>
+        <div class="testimonial-author">
+          <div class="author-avatar">J</div>
+          <div class="author-info"><div class="name">James T.</div><div class="role">Parent of 9-year-old, California</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up">
+        <div class="stars">★★★★★</div>
+        <blockquote>"As an engineer, I'm impressed by how well they explain complex AI concepts. My daughter understands bias and data better than most adults I know."</blockquote>
+        <div class="testimonial-author">
+          <div class="author-avatar">P</div>
+          <div class="author-info"><div class="name">Priya K.</div><div class="role">Parent of 12-year-old, New Jersey</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing section-pad" id="pricing-section">
+  <div class="container">
+    <h2 class="fade-up">Simple, Transparent Pricing</h2>
+    <p class="subtitle fade-up">Start free. Upgrade when you're ready. Cancel anytime.</p>
+    <div class="pricing-grid fade-up">
+      <div class="price-card">
+        <div class="price-name">Free Trial</div>
+        <div class="price-amount">$0</div>
+        <div class="price-desc">7 days, no credit card</div>
+        <ul class="price-features">
+          <li>1 course preview</li>
+          <li>5 interactive missions</li>
+          <li>Basic progress tracking</li>
+          <li class="no">Full course access</li>
+          <li class="no">Certificates</li>
+        </ul>
+        <a href="https://nextgenschool.aiupskills.com" class="btn btn-outline btn-sm" style="width:100%;justify-content:center">Start Free</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Explorer</div>
+        <div class="price-amount">$19<span>/mo</span></div>
+        <div class="price-desc">1 course, full access</div>
+        <ul class="price-features">
+          <li>1 full course</li>
+          <li>All missions & projects</li>
+          <li>Progress dashboard</li>
+          <li>Certificate on completion</li>
+          <li class="no">All 3 courses</li>
+        </ul>
+        <a href="https://nextgenschool.aiupskills.com" class="btn btn-primary btn-sm" style="width:100%;justify-content:center">Get Started</a>
+      </div>
+      <div class="price-card popular">
+        <div class="price-name">Adventurer</div>
+        <div class="price-amount">$39<span>/mo</span></div>
+        <div class="price-desc">All 3 courses</div>
+        <ul class="price-features">
+          <li>All 3 courses</li>
+          <li>Unlimited missions</li>
+          <li>Advanced progress tracking</li>
+          <li>All certificates</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="https://nextgenschool.aiupskills.com" class="btn btn-gold btn-sm" style="width:100%;justify-content:center">Best Value</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Family</div>
+        <div class="price-amount">$59<span>/mo</span></div>
+        <div class="price-desc">Up to 3 children</div>
+        <ul class="price-features">
+          <li>All 3 courses</li>
+          <li>Up to 3 child profiles</li>
+          <li>Family dashboard</li>
+          <li>All certificates</li>
+          <li>1-on-1 support session</li>
+        </ul>
+        <a href="https://nextgenschool.aiupskills.com" class="btn btn-primary btn-sm" style="width:100%;justify-content:center">Get Family Plan</a>
+      </div>
+    </div>
+    <div class="guarantee fade-up">🛡️ 30-Day Money-Back Guarantee — Try risk-free. Not happy? Full refund, no questions asked.</div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq section-pad" id="faq-section">
+  <div class="container">
+    <h2 class="fade-up">Frequently Asked Questions</h2>
+    <div class="faq-list fade-up">
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What age is this for?</div>
+        <div class="faq-a">NextGen School is designed specifically for children ages 9-13. Our courses are age-appropriate, engaging, and built to match the cognitive development of this age group. Younger kids (9-10) love the visual, game-like approach, while older kids (11-13) appreciate the deeper concepts.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Does my child need coding experience?</div>
+        <div class="faq-a">Absolutely not! Our entire platform is visual, drag-and-drop. No coding, no command lines, no technical prerequisites. If your child can use a tablet or computer, they can use NextGen School. We focus on AI THINKING skills, not programming.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">How long are the courses?</div>
+        <div class="faq-a">Each course contains 20+ missions that take 15-30 minutes each. Kids can work at their own pace — there's no rush. Most children complete a full course in 4-8 weeks depending on how often they practice.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Is this safe for kids?</div>
+        <div class="faq-a">Absolutely. Safety is our top priority. There's no social features, no chat, no external links within courses. All content is age-appropriate and reviewed by educators. Parents have full visibility into their child's activity through the progress dashboard.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Can I track my child's progress?</div>
+        <div class="faq-a">Yes! Every plan includes a parent dashboard where you can see which missions your child has completed, their scores, time spent learning, and skills developed. The Adventurer and Family plans include advanced analytics and milestone notifications.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">What makes this different from other STEM programs?</div>
+        <div class="faq-a">Most programs teach kids to CODE. We teach kids to THINK. Before a child writes a single line of code, they need to understand how AI works, where it fails, and how to use it responsibly. That's what NextGen School provides — the critical thinking foundation that makes every other skill more valuable.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL MEDIA CONTENT HUB -->
+<section class="social-hub section-pad" id="social-section">
+  <div class="container">
+    <h2 class="fade-up">📱 Social Media Content Hub</h2>
+    <p class="subtitle fade-up">Ready-to-share posts — help us spread the word! Click "Copy" and paste anywhere.</p>
+
+    <div class="platform-tabs fade-up">
+      <div class="platform-tab active" onclick="showPlatform('twitter')">Twitter/X</div>
+      <div class="platform-tab" onclick="showPlatform('instagram')">Instagram</div>
+      <div class="platform-tab" onclick="showPlatform('linkedin')">LinkedIn</div>
+      <div class="platform-tab" onclick="showPlatform('facebook')">Facebook</div>
+    </div>
+
+    <!-- TWITTER -->
+    <div class="platform-section active" id="twitter-posts">
+      <div class="posts-grid">
+        <div class="post-card"><p>🚀 85% of jobs in 2030 will need AI skills. Only 3% of schools teach AI thinking. That's why we built @NextGenSchool — AI literacy for kids 9-13. No coding needed. Free trial → nextgenschool.aiupskills.com #AIforKids #FutureReady</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>Your kid uses ChatGPT, Siri, and AI filters daily. But can they tell when AI is WRONG? 🤔 Critical thinking > blind trust. That's the @NextGenSchool difference. #AIforKids #CriticalThinking #AILiteracy</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>Hot take: Teaching kids to code without teaching them to THINK about AI is like teaching them to drive without traffic rules. 🧠 @NextGenSchool puts thinking first. #AIforKids #EdTech #NextGenSchool</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>My 11yo just explained AI bias to me better than most adults can. Thanks @NextGenSchool 🤖✨ If you have kids 9-13, check it out → nextgenschool.aiupskills.com #ProudParent #AIforKids #MindOverMachines</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>Free trial. No credit card. No coding. Just your kid, some AI missions, and a whole lot of fun. 🎯 @NextGenSchool → nextgenschool.aiupskills.com #AIforKids #STEMforKids #FutureReady</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+      </div>
+    </div>
+
+    <!-- INSTAGRAM -->
+    <div class="platform-section" id="instagram-posts">
+      <div class="posts-grid">
+        <div class="post-card"><p>🤖✨ Is your child ready for the AI future? Here's the truth: 85% of jobs in 2030 will require AI literacy. But only 3% of schools teach AI thinking skills. That's a MASSIVE gap. NextGen School is here to fill it! 🧠 We teach kids ages 9-13 to UNDERSTAND AI — not just use it. No coding. No boring lectures. Just pure, hands-on learning adventures. 🚀 Start your FREE trial today → link in bio! #AIforKids #NextGenSchool #MindOverMachines #AILiteracy #FutureReady #STEMforKids #EdTech #CriticalThinking #ParentingInAI #KidsAndTech</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>⚠️ PARENTS: Your child is using AI every single day. Siri. ChatGPT. AI photo filters. YouTube recommendations. But here's the scary part — most kids can't tell when AI is making things up. 😰 They trust it blindly. At NextGen School, we change that. We teach kids to QUESTION AI, understand HOW it works, and use it as a tool — not a crutch. 💪 Ages 9-13 | No coding required | Free trial → link in bio 🔗 #AIforKids #CriticalThinking #DigitalLiteracy #ParentingInAI #NextGenSchool #MindOverMachines #AILiteracy #TechForKids</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>🎮 3 COURSES. 1 MISSION. INFINITE POSSIBILITIES. 🤖 AI Adventures — Learn how AI thinks 🚀 Space Explorers — AI meets the cosmos 🔧 Robotics Lab — Build smart machines Every course is: ✅ Visual & drag-and-drop ✅ No coding needed ✅ Fun, game-like missions ✅ Perfect for ages 9-13 Which one would YOUR child choose? Drop it in the comments! 👇 #AIforKids #NextGenSchool #STEMforKids #EdTech #CodingForKids #RoboticsForKids #SpaceEducation</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>💡 "My daughter now explains AI bias better than most adults." — Parent review ⭐⭐⭐⭐⭐ That's what happens when kids learn to THINK about AI, not just use it. NextGen School is different. We don't just teach tools. We teach understanding. And that understanding changes everything. 🧠✨ Free trial → link in bio (no credit card needed!) #AIforKids #ParentReview #NextGenSchool #MindOverMachines #FutureReady #AILiteracy #EdTech</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>🌟 THE FUTURE BELONGS TO KIDS WHO UNDERSTAND AI. Not just use it. UNDERSTAND it. • Know how AI makes decisions • Spot when AI is wrong • Use AI as a powerful tool • Think critically about technology That's what NextGen School teaches. For ages 9-13. No coding needed. Start free today 🚀 #AIforKids #FutureReady #NextGenSchool #MindOverMachines #CriticalThinking #STEMeducation #ParentingInAI #KidsAndAI #AILiteracy</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+      </div>
+    </div>
+
+    <!-- LINKEDIN -->
+    <div class="platform-section" id="linkedin-posts">
+      <div class="posts-grid">
+        <div class="post-card"><p>As parents, we prepare our children for the future every day. But are we preparing them for an AI-driven world? 85% of jobs in 2030 will require AI literacy. Yet only 3% of schools teach AI thinking skills. I recently discovered NextGen School — an AI literacy platform designed for children ages 9-13. What impressed me: no coding required, visual learning, and a focus on CRITICAL THINKING about AI, not just using AI tools. Worth a look for any parent thinking about their child's future: nextgenschool.aiupskills.com #AILiteracy #FutureOfWork #EdTech #ParentingInAI #AIforKids</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>A thought experiment: Would you let your child drive a car without understanding traffic rules? Then why do we let them use AI without understanding how it works? Children are using AI daily — ChatGPT, voice assistants, recommendation algorithms. But most have zero understanding of how these systems make decisions, where they fail, or when they shouldn't be trusted. NextGen School addresses this gap with courses designed for ages 9-13. No coding prerequisites. Just critical thinking skills for an AI world. nextgenschool.aiupskills.com #CriticalThinking #AIeducation #FutureReady #EdTech</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>The skill gap we're not talking about enough: AI Literacy for Children. We discuss AI upskilling for professionals daily on LinkedIn. But what about the next generation? Our children are the most exposed to AI and the least educated about it. NextGen School is tackling this head-on with three courses (AI Adventures, Space Explorers, Robotics Lab) designed for kids 9-13. Visual, hands-on, no coding needed. If you're a parent in tech — or any industry — this is worth your attention. nextgenschool.aiupskills.com #AILiteracy #NextGeneration #EdTech #STEMeducation</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>I invested in my child's AI education. Here's what changed: Before: Used AI blindly, trusted every output, no critical thinking about technology. After (4 weeks with NextGen School): Questions AI answers, understands bias, explains how AI "learns," uses AI as a TOOL not a crutch. The ROI on AI literacy for children is immeasurable. It's not about making them coders — it's about making them thinkers. Free trial at nextgenschool.aiupskills.com #ParentingInAI #AIforKids #Education #FutureSkills</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>Founded by two fathers across continents — Rathish (USA) and Sathish (India) — NextGen School represents what I love about modern education: globally-minded, technology-forward, and deeply personal. Their mission: Make every child AI-literate before they're 14. Not by teaching code, but by teaching THINKING. In a world where AI touches everything, this might be the most important educational investment parents can make. Learn more: nextgenschool.aiupskills.com #StartupStory #EdTech #AILiteracy #MindOverMachines</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+      </div>
+    </div>
+
+    <!-- FACEBOOK -->
+    <div class="platform-section" id="facebook-posts">
+      <div class="posts-grid">
+        <div class="post-card"><p>🚨 Parent friends — I need to share this! Did you know 85% of jobs in 2030 will require AI literacy, but only 3% of schools teach it? I found NextGen School and it's been amazing for my kids. It teaches children ages 9-13 to actually UNDERSTAND AI — not just use it. No coding needed! Everything is visual and game-like. My kids actually ASK to do their "AI homework" 😂 Free trial, no credit card needed → nextgenschool.aiupskills.com Anyone else worried about preparing their kids for the AI future? 🤔</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>📢 Looking for something educational AND fun for your 9-13 year old? NextGen School has 3 amazing courses: 🤖 AI Adventures — learn how AI thinks 🚀 Space Explorers — AI meets space exploration 🔧 Robotics Lab — build smart machines Best part? No coding required! It's all visual and drag-and-drop. My kids are obsessed and they're actually learning critical thinking skills. Win-win! 🏆 Free trial → nextgenschool.aiupskills.com Tag a parent who needs to see this! 👇</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>Real talk: Our kids use AI every single day. Siri, ChatGPT, those crazy AI photo filters... But do they understand how any of it works? 🤷‍♀️ Mine didn't — until we found NextGen School. Now my 11-year-old can explain why AI sometimes gives wrong answers, what "training data" means, and how to think critically about technology. I'm honestly learning things from HER now 😂 It's free to try, no credit card → nextgenschool.aiupskills.com #MomRecommendation #AIforKids</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>🌟 Proud parent moment! My son just earned his first AI certificate from NextGen School! He's 10 and can now: ✅ Explain how AI makes decisions ✅ Spot when AI might be wrong ✅ Understand what "data bias" means ✅ Think critically about technology 4 weeks ago he thought "AI" was just a robot from movies 😂 If your kids are 9-13, seriously check this out → nextgenschool.aiupskills.com</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+        <div class="post-card"><p>Question for my parent friends: At what age should kids start learning about AI? 🤔 I used to think "when they're older," but then I realized my 9-year-old was already using AI daily without understanding it. That's like letting them swim without knowing how. We started NextGen School (ages 9-13) and it's been a game-changer. Visual, fun, no coding needed. Thoughts? When did YOUR kids start learning about tech? Drop your answer below! 👇</p><button class="copy-btn" onclick="copyPost(this)">Copy</button></div>
+      </div>
+    </div>
+
+    <div class="hashtag-box fade-up">
+      <h4>📌 Suggested Hashtags</h4>
+      <p>#AIforKids #NextGenSchool #MindOverMachines #AILiteracy #FutureReady #CriticalThinking #ParentingInAI #EdTech #STEMforKids #KidsAndAI #DigitalLiteracy #AIeducation #TechForKids #21stCenturySkills #RaiseInnovators</p>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL TEMPLATES -->
+<section class="email-templates section-pad" id="email-section">
+  <div class="container">
+    <h2 class="fade-up">📧 Share With Other Parents</h2>
+    <p class="subtitle fade-up">Know a parent who'd love this? Copy and send these ready-made messages!</p>
+    <div class="email-grid">
+      <div class="email-card fade-up">
+        <div class="email-card-header">
+          <h4>✉️ "I found this amazing program..."</h4>
+          <button class="copy-btn" onclick="copyEmail(this)">Copy</button>
+        </div>
+        <div class="email-card-body">Hey! I just found this amazing AI learning program for kids and had to share it with you.
+
+It's called NextGen School — it teaches kids ages 9-13 to actually UNDERSTAND artificial intelligence. Not coding, but critical thinking about AI. Everything is visual and game-like, so kids love it.
+
+My [son/daughter] has been doing it and already understands things like AI bias and how AI makes decisions. It's honestly impressive.
+
+They have a free trial (no credit card needed), so there's nothing to lose: nextgenschool.aiupskills.com
+
+Thought of you and your kids! Let me know what you think 😊</div>
+      </div>
+      <div class="email-card fade-up">
+        <div class="email-card-header">
+          <h4>✉️ "Have you heard about AI literacy?"</h4>
+          <button class="copy-btn" onclick="copyEmail(this)">Copy</button>
+        </div>
+        <div class="email-card-body">Hey! Random question — have you heard about AI literacy for kids?
+
+I just read that 85% of jobs by 2030 will need AI skills, but only 3% of schools teach it. Pretty scary, right?
+
+I found this program called NextGen School that's designed for kids 9-13. It teaches them to think critically about AI through fun, visual missions — no coding needed.
+
+They have courses on AI Adventures, Space Exploration with AI, and Robotics. My kids are actually asking to do their "AI homework" 😂
+
+Free trial here if you want to check it out: nextgenschool.aiupskills.com
+
+Would love to hear what you think!</div>
+      </div>
+      <div class="email-card fade-up">
+        <div class="email-card-header">
+          <h4>✉️ "My child is loving this..."</h4>
+          <button class="copy-btn" onclick="copyEmail(this)">Copy</button>
+        </div>
+        <div class="email-card-body">I have to tell you about something — my [son/daughter] is absolutely LOVING this new AI program called NextGen School!
+
+It's for kids 9-13 and teaches them how AI actually works — pattern recognition, data bias, decision-making — all through fun, visual missions. No coding!
+
+After just a few weeks, my kid is questioning AI answers, understanding when technology might be wrong, and thinking more critically about everything. I'm honestly learning from them now 😅
+
+The best part? They have a free trial with no credit card required.
+
+Check it out: nextgenschool.aiupskills.com
+
+I know your [son/daughter] would love the [Space Explorers/Robotics/AI Adventures] course!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDERS -->
+<section class="founders section-pad" id="founders-section">
+  <div class="container">
+    <h2 class="fade-up">Meet the Founders</h2>
+    <p class="subtitle fade-up">"Two fathers who believe the next generation deserves better"</p>
+    <div class="founders-grid fade-up">
+      <div class="founder-card">
+        <div class="founder-avatar rathish">🇺🇸</div>
+        <h3>Rathish</h3>
+        <p class="location">📍 United States</p>
+        <p>Father, technologist, and passionate advocate for AI education. Rathish saw his own children struggling to understand the AI tools they used daily — and knew something had to change.</p>
+      </div>
+      <div class="founder-card">
+        <div class="founder-avatar sathish">🇮🇳</div>
+        <h3>Sathish</h3>
+        <p class="location">📍 India</p>
+        <p>Father, educator, and innovation leader. Sathish brings deep expertise in making complex concepts accessible and engaging for young minds. Together with Rathish, they're on a global mission.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:40px" class="fade-up">
+      <p style="color:var(--text-light);font-size:1.1rem;max-width:600px;margin:0 auto 20px">United across continents by a shared mission: <strong style="color:var(--text-dark)">Raise the first generation of AI-literate thinkers.</strong></p>
+      <a href="https://nextgenschool.aiupskills.com" class="btn btn-primary">Visit NextGen School →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FOOTER -->
+<section class="cta-footer section-pad" id="cta-section">
+  <div class="container">
+    <h2 class="fade-up">Give Your Child the <span style="color:var(--gold)">Ultimate Advantage</span></h2>
+    <p class="fade-up">Join 150+ families already preparing their children for an AI-powered future.</p>
+    <form class="email-form fade-up" onsubmit="event.preventDefault();alert('Thank you! We\'ll be in touch soon.')">
+      <input type="email" placeholder="Enter your email address" required>
+      <button type="submit" class="btn btn-gold">Get Started Free 🚀</button>
+    </form>
+    <div class="social-links fade-up">
+      <a class="social-link" title="Instagram">📸</a>
+      <a class="social-link" title="Twitter/X">🐦</a>
+      <a class="social-link" title="LinkedIn">💼</a>
+      <a class="social-link" title="Facebook">📘</a>
+      <a class="social-link" title="YouTube">▶️</a>
+    </div>
+    <div class="footer-bottom fade-up">
+      <p>© 2026 Mind Over Machines — <a href="https://nextgenschool.aiupskills.com">NextGen School</a>. All rights reserved.</p>
+      <p style="margin-top:8px">Made with ❤️ by Rathish 🇺🇸 & Sathish 🇮🇳 for the next generation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Navbar scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
+  document.getElementById('backTop').classList.toggle('show',window.scrollY>500);
+});
+
+// Scroll animations
+gsap.registerPlugin(ScrollTrigger);
+document.querySelectorAll('.fade-up').forEach(el=>{
+  ScrollTrigger.create({
+    trigger:el,
+    start:'top 85%',
+    onEnter:()=>el.classList.add('visible'),
+    once:true
+  });
+});
+
+// Platform tabs
+function showPlatform(platform){
+  document.querySelectorAll('.platform-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.platform-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(platform+'-posts').classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Copy post
+function copyPost(btn){
+  const text=btn.previousElementSibling.textContent.trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+  });
+}
+
+// Copy email
+function copyEmail(btn){
+  const body=btn.closest('.email-card').querySelector('.email-card-body').textContent.trim();
+  navigator.clipboard.writeText(body).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+  });
+}
+
+// Animate hero stats
+gsap.from('.hero-stat .num',{textContent:0,duration:2,ease:'power1.out',snap:{textContent:1},stagger:.2,
+  scrollTrigger:{trigger:'.hero-stats',start:'top 80%'}
+});
+</script>
+</body>
+</html>
