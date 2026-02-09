@@ -3852,30 +3852,36 @@ function adminPasswordCheck() {
 }
 
 function showAdminTab(tab) {
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-  event?.target?.classList.add('active');
-  const content = document.getElementById('admin-tab-content');
-  
-  const users = DB.getUsers();
-  const children = DB.getChildren();
-  const purchases = DB.getPurchases();
-  const progress = DB.getProgress();
-  const settings = DB.getSettings();
-  
-  switch(tab) {
-    case 'dashboard': renderAdminDashboard(content, users, children, purchases, progress); break;
-    case 'enrollments': renderAdminEnrollments(content, users, children); break;
-    case 'payments': renderAdminPayments(content, purchases); break;
-    case 'analytics': renderAdminAnalytics(content, progress, purchases); break;
-    case 'students': renderAdminStudents(content, children, progress); break;
-    case 'settings': renderAdminSettings(content, settings); break;
+  try {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+    if(event?.target) event.target.classList.add('active');
+    else document.querySelector('.admin-tab[onclick*="' + tab + '"]')?.classList.add('active');
+    const content = document.getElementById('admin-tab-content');
+    
+    const users = DB.getUsers() || [];
+    const children = DB.getChildren() || [];
+    const purchases = DB.getPurchases() || [];
+    const progress = DB.getProgress() || {};
+    const settings = DB.getSettings() || {};
+    
+    switch(tab) {
+      case 'dashboard': renderAdminDashboard(content, users, children, purchases, progress); break;
+      case 'enrollments': renderAdminEnrollments(content, users, children); break;
+      case 'payments': renderAdminPayments(content, purchases); break;
+      case 'analytics': renderAdminAnalytics(content, progress, purchases); break;
+      case 'students': renderAdminStudents(content, children, progress); break;
+      case 'settings': renderAdminSettings(content, settings); break;
+    }
+  } catch(e) { 
+    console.error('Admin tab error:', e);
+    document.getElementById('admin-tab-content').innerHTML = '<div style="padding:40px;text-align:center"><h3>⚠️ Error loading tab</h3><p style="color:var(--text2)">' + e.message + '</p><button class="btn btn-primary" onclick="showAdminTab('' + tab + '')">Retry</button></div>';
   }
 }
 
 function renderAdminDashboard(el, users, children, purchases, progress) {
   const revenue = purchases.filter(p => p.status === 'success').reduce((s, p) => s + (p.amount || 0), 0);
   const failed = purchases.filter(p => p.status === 'failed').length;
-  const totalChaptersDone = Object.values(progress).reduce((s, p) => s + Object.keys(p).length, 0);
+  let totalChaptersDone = 0; try { totalChaptersDone = Object.values(progress).reduce((s, p) => s + Object.keys(p).length, 0); } catch(e) { totalChaptersDone = 0; }
   
   el.innerHTML = `
     <div class="admin-grid">
