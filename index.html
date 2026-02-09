@@ -3409,7 +3409,7 @@ updateProgress();
 // STAGE 1: AUTH SYSTEM + DATABASE LAYER
 // ======================================================================
 
-const DB = {
+var DB = {
   _get(key) { try { return JSON.parse(localStorage.getItem('ngs_db_' + key) || 'null'); } catch { return null; } },
   _set(key, val) { localStorage.setItem('ngs_db_' + key, JSON.stringify(val)); },
   
@@ -3490,7 +3490,7 @@ const DB = {
 DB.seed();
 
 // Session management
-const Session = {
+var Session = {
   get() { try { return JSON.parse(sessionStorage.getItem('ngs_session') || 'null'); } catch { return null; } },
   set(data) { sessionStorage.setItem('ngs_session', JSON.stringify(data)); },
   clear() { sessionStorage.removeItem('ngs_session'); },
