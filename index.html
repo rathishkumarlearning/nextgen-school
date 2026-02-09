@@ -460,6 +460,7 @@ canvas#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;po
     <button class="btn btn-primary" onclick="showCourses()">🚀 Start Learning</button>
     <button class="btn btn-gold" onclick="showBadges()">🏆 My Badges</button>
     <button class="btn btn-back" onclick="showParentDashboard()" style="border-color:var(--purple)">👨‍👩‍👧 Parent Portal</button>
+    <button class="btn btn-back" onclick="showAdmin()" style="border-color:var(--cyan);font-size:.8rem">🔐 Admin</button>
   </div>
 </div>
 </section>
@@ -3822,7 +3823,13 @@ document.addEventListener('click', e => {
 window.addEventListener('hashchange', () => {
   if (location.hash === '#admin') showAdmin();
 });
+// Check on load AND after DOMContentLoaded
 if (location.hash === '#admin') setTimeout(showAdmin, 500);
+document.addEventListener('DOMContentLoaded', () => {
+  if (location.hash === '#admin') setTimeout(showAdmin, 800);
+});
+// Direct URL: add ?admin=true support
+if (location.search.includes('admin=true')) setTimeout(showAdmin, 500);
 
 function showAdmin() {
   document.getElementById('landing').style.display = 'none';
