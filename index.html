@@ -3874,8 +3874,8 @@ function showAdminTab(tab) {
       case 'settings': renderAdminSettings(content, settings); break;
     }
   } catch(e) { 
-    console.error('Admin tab error:', e);
-    document.getElementById('admin-tab-content').innerHTML = '<div style="padding:40px;text-align:center"><h3>Error loading tab</h3><p>' + e.message + '</p></div>';
+    console.error('Admin tab error:', e, e.stack);
+    var el=document.getElementById("admin-tab-content");el.textContent="Error: "+e.message;console.error(e);
   }
 }
 
