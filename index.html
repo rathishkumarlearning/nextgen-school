@@ -3907,7 +3907,7 @@ function renderAdminDashboard(el, users, children, purchases, progress) {
     });
     const revenueByDay = last7.map(day => purchases.filter(p => p.status === 'success' && p.date?.startsWith(day)).reduce((s, p) => s + (p.amount || 0), 0));
     
-    new Chart(document.getElementById('chart-revenue'), {
+    try { new Chart(document.getElementById('chart-revenue'), {
       type: 'bar',
       data: { labels: last7.map(d => d.slice(5)), datasets: [{ label: 'Revenue ($)', data: revenueByDay, backgroundColor: 'rgba(6,182,212,0.5)', borderColor: '#06b6d4', borderWidth: 1 }] },
       options: { responsive: true, plugins: { title: { display: true, text: 'Revenue (Last 7 Days)', color: '#e2e8f0' }, legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
@@ -3915,13 +3915,13 @@ function renderAdminDashboard(el, users, children, purchases, progress) {
     
     // Enrollments chart
     const enrollByDay = last7.map(day => users.filter(u => u.createdAt?.startsWith(day)).length);
-    new Chart(document.getElementById('chart-enrollments'), {
+    } catch(e1){} try { new Chart(document.getElementById('chart-enrollments'), {
       type: 'line',
       data: { labels: last7.map(d => d.slice(5)), datasets: [{ label: 'New Families', data: enrollByDay, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.3 }] },
       options: { responsive: true, plugins: { title: { display: true, text: 'Enrollments (Last 7 Days)', color: '#e2e8f0' }, legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
     });
     
-    // Course completion chart
+    } catch(e2){} // Course completion chart
     const courseNames = ['AI Adventures', 'Space Explorers', 'Robotics Lab'];
     const courseIds = ['ai', 'space', 'robotics'];
     const completionRates = courseIds.map(cid => {
@@ -3931,12 +3931,13 @@ function renderAdminDashboard(el, users, children, purchases, progress) {
       });
       return total > 0 ? Math.round(done / total * 100) : 0;
     });
-    new Chart(document.getElementById('chart-courses'), {
+    try { new Chart(document.getElementById('chart-courses'), {
       type: 'doughnut',
       data: { labels: courseNames, datasets: [{ data: completionRates, backgroundColor: ['#06b6d4', '#8b5cf6', '#ec4899'] }] },
       options: { responsive: true, plugins: { title: { display: true, text: 'Course Completion %', color: '#e2e8f0' } } }
     });
-  }
+  } catch(e3){}
+}
 }
 
 function renderAdminEnrollments(el, users, children) {
@@ -4016,7 +4017,7 @@ function renderAdminAnalytics(el, progress, purchases) {
   html += '</div>';
   el.innerHTML = html;
   
-  if (typeof Chart !== 'undefined') {
+  if (typeof Chart !== 'undefined') { try {
     courseIds.forEach(cid => {
       let chapterCounts = Array(8).fill(0);
       Object.values(progress).forEach(p => {
@@ -4028,7 +4029,8 @@ function renderAdminAnalytics(el, progress, purchases) {
         options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
       });
     });
-  }
+  } catch(ce){}
+}
 }
 
 function renderAdminStudents(el, children, progress) {
