@@ -3877,7 +3877,7 @@ function showAdminTab(tab) {
     }
   } catch(e) { 
     console.error('Admin tab error:', e);
-    document.getElementById('admin-tab-content').innerHTML = '<div style="padding:40px;text-align:center"><h3>⚠️ Error loading tab</h3><p style="color:var(--text2)">' + e.message + '</p><button class="btn btn-primary" onclick="showAdminTab('' + tab + '')">Retry</button></div>';
+    document.getElementById('admin-tab-content').innerHTML = '<div style="padding:40px;text-align:center"><h3>Error loading tab</h3><p>' + e.message + '</p></div>';
   }
 }
 
