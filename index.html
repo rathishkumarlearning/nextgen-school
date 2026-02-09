@@ -1008,6 +1008,7 @@ function renderSidebar() {
 
 function updateProgress() {
   const course = COURSES[STATE.currentCourse];
+  if (!course) return;
   const total = course.chapters.length;
   let done = 0;
   for (let i = 0; i < total; i++) {
