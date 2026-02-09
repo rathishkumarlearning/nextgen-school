@@ -3906,15 +3906,13 @@ function renderAdminDashboard(el, users, children, purchases, progress) {
       return d.toISOString().split('T')[0];
     });
     const revenueByDay = last7.map(day => purchases.filter(p => p.status === 'success' && p.date?.startsWith(day)).reduce((s, p) => s + (p.amount || 0), 0));
+    const enrollByDay = last7.map(day => users.filter(u => u.createdAt?.startsWith(day)).length);
     
     try { new Chart(document.getElementById('chart-revenue'), {
       type: 'bar',
       data: { labels: last7.map(d => d.slice(5)), datasets: [{ label: 'Revenue ($)', data: revenueByDay, backgroundColor: 'rgba(6,182,212,0.5)', borderColor: '#06b6d4', borderWidth: 1 }] },
       options: { responsive: true, plugins: { title: { display: true, text: 'Revenue (Last 7 Days)', color: '#e2e8f0' }, legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
     });
-    
-    // Enrollments chart
-    const enrollByDay = last7.map(day => users.filter(u => u.createdAt?.startsWith(day)).length);
     } catch(e1){} try { new Chart(document.getElementById('chart-enrollments'), {
       type: 'line',
       data: { labels: last7.map(d => d.slice(5)), datasets: [{ label: 'New Families', data: enrollByDay, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.3 }] },
