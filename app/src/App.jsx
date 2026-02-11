@@ -34,7 +34,7 @@ function AppRouter() {
   return (
     <>
       <Starfield />
-      <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', maxWidth: '100vw' }}>
         <Sidebar />
         <main className="main-content">
           {currentView === 'home' && <Landing />}
