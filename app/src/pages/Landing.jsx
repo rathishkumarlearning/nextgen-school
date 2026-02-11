@@ -92,18 +92,6 @@ export default function Landing() {
             <button className="btn btn-primary" onClick={() => {
               document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' });
             }}>🚀 Start Learning</button>
-            <button className="btn btn-gold" onClick={() => navigate('badges')}>🏆 My Badges</button>
-            <button className="btn btn-back" onClick={() => navigate('parent-dashboard')} style={{ borderColor: 'var(--purple)' }}>
-              👨‍👩‍👧 Parent Portal
-            </button>
-            <a
-              href="#admin"
-              onClick={(e) => { e.preventDefault(); navigate('admin'); }}
-              className="btn btn-back"
-              style={{ borderColor: 'var(--cyan)', fontSize: '.9rem', display: 'inline-block', textDecoration: 'none', cursor: 'pointer', position: 'relative', zIndex: 50 }}
-            >
-              🔐 Admin Panel
-            </a>
           </div>
         </div>
       </section>

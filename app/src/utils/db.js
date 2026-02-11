@@ -23,7 +23,51 @@ const DB = {
   getPurchasesByUser(userId) { return this.getPurchases().filter(p => p.userId === userId); },
   hasCourseAccess(userId, courseId) {
     const purchases = this.getPurchasesByUser(userId);
-    return purchases.some(p => p.status === 'success' && (p.plan === 'fullAccess' || p.plan === 'familyPlan' || (p.plan === 'singleCourse' && p.courseId === courseId)));
+    const hasPurchase = purchases.some(p => p.status === 'success' && (p.plan === 'fullAccess' || p.plan === 'familyPlan' || (p.plan === 'singleCourse' && p.courseId === courseId)));
+    if (hasPurchase) return true;
+    const grants = this.getUserCourseAccess(userId);
+    return grants.some(g => g.courseId === courseId || g.courseId === 'all');
+  },
+
+  // Course Access Management
+  getCourseAccess() { return this._get('course_access') || []; },
+  saveCourseAccess(a) { this._set('course_access', a); },
+  grantCourseAccess(userId, courseId, grantedBy, reason) {
+    const a = this.getCourseAccess();
+    a.push({ id: 'ca_' + Date.now(), userId, courseId, grantedBy, reason, grantedAt: new Date().toISOString(), active: true });
+    this.saveCourseAccess(a);
+    this.logEvent('course_access_granted', { userId, courseId, reason });
+  },
+  revokeCourseAccess(accessId) {
+    const a = this.getCourseAccess();
+    const item = a.find(x => x.id === accessId);
+    if (item) { item.active = false; item.revokedAt = new Date().toISOString(); }
+    this.saveCourseAccess(a);
+  },
+  getUserCourseAccess(userId) {
+    return this.getCourseAccess().filter(a => a.userId === userId && a.active);
+  },
+
+  // User Management
+  updateUser(userId, updates) {
+    const users = this.getUsers();
+    const idx = users.findIndex(u => u.id === userId);
+    if (idx >= 0) { Object.assign(users[idx], updates); this.saveUsers(users); }
+  },
+  deactivateUser(userId) {
+    this.updateUser(userId, { active: false, deactivatedAt: new Date().toISOString() });
+    this.logEvent('user_deactivated', { userId });
+  },
+  reactivateUser(userId) {
+    this.updateUser(userId, { active: true });
+    this.logEvent('user_reactivated', { userId });
+  },
+  deleteUser(userId) {
+    const users = this.getUsers().filter(u => u.id !== userId);
+    this.saveUsers(users);
+    const children = this.getChildren().filter(c => c.parentId !== userId);
+    this.saveChildren(children);
+    this.logEvent('user_deleted', { userId });
   },
   
   // Progress (per-child)

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import Starfield from './components/Starfield.jsx';
+import Sidebar from './components/Sidebar.jsx';
 import Landing from './pages/Landing.jsx';
 import CourseView from './pages/CourseView.jsx';
 import BadgeGallery from './pages/BadgeGallery.jsx';
@@ -33,12 +34,17 @@ function AppRouter() {
   return (
     <>
       <Starfield />
-      {currentView === 'home' && <Landing />}
-      {currentView === 'courses' && <CourseView />}
-      {currentView === 'badges' && <BadgeGallery />}
-      {currentView === 'parent' && <ParentDashboard />}
-      {currentView === 'admin' && <Admin />}
-      {currentView === 'onboarding' && <Onboarding />}
+      <div style={{ display: 'flex', minHeight: '100vh' }}>
+        <Sidebar />
+        <main className="main-content">
+          {currentView === 'home' && <Landing />}
+          {currentView === 'courses' && <CourseView />}
+          {currentView === 'badges' && <BadgeGallery />}
+          {currentView === 'parent' && <ParentDashboard />}
+          {currentView === 'admin' && <Admin />}
+          {currentView === 'onboarding' && <Onboarding />}
+        </main>
+      </div>
       <AuthModal />
     </>
   );
