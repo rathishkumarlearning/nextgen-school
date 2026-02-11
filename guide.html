@@ -44,19 +44,22 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
 .glass h3{font-size:1.2rem;margin-bottom:8px;color:var(--cyan)}
 .glass h4{font-size:1rem;margin-bottom:6px;color:var(--purple)}
 .glass p,.glass li{color:var(--muted);font-size:0.95rem}
-.glass ul{padding-left:20px;margin-top:8px}
+.glass ul,.glass ol{padding-left:20px;margin-top:8px}
 .glass li{margin-bottom:4px}
 
 /* Screenshot */
 .screenshot{width:100%;border-radius:12px;border:1px solid var(--border);margin:16px 0;display:block;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 .screenshot-caption{text-align:center;color:var(--muted);font-size:0.85rem;margin-top:-8px;margin-bottom:16px;font-style:italic}
 
-/* Tip box */
+/* Tip / Warning / Info boxes */
 .tip{background:rgba(6,182,212,0.08);border-left:3px solid var(--cyan);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:0.9rem}
 .tip strong{color:var(--cyan)}
 
 .warning{background:rgba(239,68,68,0.08);border-left:3px solid var(--red);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:0.9rem}
 .warning strong{color:var(--red)}
+
+.info{background:rgba(139,92,246,0.08);border-left:3px solid var(--purple);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:0.9rem}
+.info strong{color:var(--purple)}
 
 .credential{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);padding:16px 20px;border-radius:12px;margin:16px 0;font-family:monospace;font-size:0.95rem}
 .credential code{color:var(--purple);font-weight:bold}
@@ -65,10 +68,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:768px){.grid-2{grid-template-columns:1fr}}
 
+/* Three-col grid */
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:768px){.grid-3{grid-template-columns:1fr}}
+
 /* Tabs visual */
 .tabs-preview{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .tabs-preview span{background:var(--card);border:1px solid var(--border);padding:6px 14px;border-radius:8px;font-size:0.8rem;color:var(--muted)}
 .tabs-preview span.active{background:rgba(139,92,246,0.2);border-color:var(--purple);color:var(--purple)}
+
+/* Quick start steps */
+.quick-step{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
+.quick-step .step-num{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
+.quick-step .step-content{flex:1}
+.quick-step .step-content h4{color:var(--text);margin-bottom:4px;font-size:1rem}
+.quick-step .step-content p{color:var(--muted);font-size:0.9rem;margin:0}
 
 /* Divider */
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:48px 0}
@@ -80,6 +94,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
 /* Back to top */
 .back-top{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:99;opacity:0.8;transition:opacity 0.2s}
 .back-top:hover{opacity:1}
+
+/* Flow diagram */
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0;font-size:0.9rem;color:var(--muted)}
+.flow .arrow{color:var(--cyan);font-weight:bold}
+.flow .flow-step{background:var(--card);border:1px solid var(--border);padding:4px 12px;border-radius:8px}
+
+/* Indicator legend */
+.indicator{display:inline-flex;align-items:center;gap:6px;margin-right:16px;margin-bottom:8px;font-size:0.9rem}
+.indicator .dot{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700}
+.dot-green{background:rgba(34,197,94,0.2);border:1px solid var(--green);color:var(--green)}
+.dot-purple{background:rgba(139,92,246,0.2);border:1px solid var(--purple);color:var(--purple)}
+.dot-grey{background:rgba(148,163,184,0.15);border:1px solid rgba(148,163,184,0.3);color:var(--muted)}
 </style>
 </head>
 <body>
@@ -93,12 +119,60 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
   <div class="badge-row">
     <span>📖 User Guide</span>
     <span>🛡️ Admin Manual</span>
-    <span>v1.0 — Feb 2026</span>
+    <span>v2.0 — Feb 2026</span>
   </div>
   <h1>NextGen School</h1>
   <p class="subtitle">Admin & User Guide — Mind Over Machines</p>
   <p style="color:var(--muted);font-size:0.95rem;margin-top:8px">The futuristic school where kids master AI, explore space, and build robots</p>
 </div>
+
+<!-- QUICK START -->
+<div class="section" id="quickstart">
+  <h2 class="section-title"><span class="emoji">🚀</span> Quick Start — 5 Steps to Get Going</h2>
+  <p class="section-desc">New to NextGen School? Follow these five steps to get your child learning in under 2 minutes.</p>
+
+  <div class="glass">
+    <div class="quick-step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Visit the Landing Page</h4>
+        <p>Open NextGen School in any modern browser. You'll see the hero section with three courses and a "Start Learning" button.</p>
+      </div>
+    </div>
+    <div class="quick-step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Sign Up as a Parent</h4>
+        <p>Click "Start Learning" → fill in your name, email, password, and add your child's name, age, and a 4-digit PIN they'll use to log in independently.</p>
+      </div>
+    </div>
+    <div class="quick-step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h4>Choose a Course</h4>
+        <p>Pick from AI Adventures, Space Explorers, or Robotics Lab. Chapter 1 is always free — no payment needed to start.</p>
+      </div>
+    </div>
+    <div class="quick-step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h4>Let Your Child Learn</h4>
+        <p>Your child reads the lesson, completes the interactive activities (drag-and-drop, sorting, quizzes), then clicks "Complete & Continue" to earn XP and unlock the next chapter.</p>
+      </div>
+    </div>
+    <div class="quick-step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h4>Track Progress</h4>
+        <p>Visit the Parent Dashboard to see chapters completed, badges earned, learning streaks, and AI-generated conversation prompts about what your child learned.</p>
+      </div>
+    </div>
+
+    <div class="tip"><strong>💡 Tip:</strong> Want to explore the full platform without paying? Ask an admin to enable <strong>Demo Mode</strong> — it unlocks all content instantly for testing.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
 
 <!-- TOC -->
 <nav class="toc">
@@ -106,14 +180,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
   <ol>
     <li><a href="#overview">Platform Overview</a></li>
     <li><a href="#landing">Landing Page</a></li>
+    <li><a href="#signup">Sign Up / Registration</a></li>
     <li><a href="#courses">Courses & Learning</a></li>
     <li><a href="#activities">Interactive Activities</a></li>
+    <li><a href="#completion">Chapter Completion & Gamification</a></li>
     <li><a href="#badges">Badge Gallery</a></li>
+    <li><a href="#pricing">Pricing & Payment</a></li>
     <li><a href="#parent">Parent Dashboard</a></li>
     <li><a href="#admin">Admin Panel</a></li>
     <li><a href="#admin-tabs">Admin Tabs Deep Dive</a></li>
     <li><a href="#demo">Demo Mode</a></li>
     <li><a href="#settings">Settings & Configuration</a></li>
+    <li><a href="#technical">Technical Notes</a></li>
   </ol>
 </nav>
 
@@ -124,16 +202,41 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
   
   <div class="glass">
     <h3>Key Features</h3>
+    <p>NextGen School was designed from the ground up to make STEM education engaging, visual, and self-paced. Every feature exists to keep kids curious and parents informed. The platform runs entirely in the browser — no downloads, no installations, no accounts on third-party services.</p>
     <ul>
-      <li><strong>3 Full Courses</strong> — AI Adventures, Space Explorers, Robotics Lab (8 chapters each)</li>
-      <li><strong>150+ Interactive Activities</strong> — Drag-and-drop, sorting, ordering, quizzes</li>
+      <li><strong>3 Full Courses</strong> — AI Adventures, Space Explorers, Robotics Lab (8 chapters each, 24 total)</li>
+      <li><strong>150+ Interactive Activities</strong> — Drag-and-drop sorting, sequence ordering, matching, quizzes, and mazes</li>
       <li><strong>Badge System</strong> — 24 unique badges, one per chapter completion</li>
-      <li><strong>XP & Levels</strong> — Explorer → Scientist → Master progression</li>
-      <li><strong>Parent Dashboard</strong> — Track your child's progress</li>
-      <li><strong>Admin Panel</strong> — Full control over enrollments, payments, analytics</li>
+      <li><strong>XP & Levels</strong> — Explorer → Thinker → Builder → Creator progression</li>
+      <li><strong>Parent Dashboard</strong> — Track your child's progress, streaks, and get AI-generated conversation prompts</li>
+      <li><strong>Admin Panel</strong> — Full control over enrollments, payments, analytics, and settings (6 tabs)</li>
       <li><strong>Dual Payment</strong> — Stripe (international) + Razorpay (India)</li>
-      <li><strong>Demo Mode</strong> — Bypass payments for testing</li>
+      <li><strong>Demo Mode</strong> — Bypass payments for testing and demonstrations</li>
+      <li><strong>Fully Responsive</strong> — Works on desktop, tablet, and mobile</li>
+      <li><strong>Offline-Ready</strong> — All data stored in localStorage; no server required</li>
     </ul>
+  </div>
+
+  <div class="glass">
+    <h3>Who Is This For?</h3>
+    <div class="grid-2">
+      <div>
+        <h4>👧 Students (Ages 9–13)</h4>
+        <p>Kids navigate courses independently using their PIN. They read visual lessons, complete hands-on activities, earn XP, level up, and collect badges. The content is written at a 4th–7th grade reading level with plenty of emojis, illustrations, and analogies.</p>
+      </div>
+      <div>
+        <h4>👨‍👩‍👧 Parents</h4>
+        <p>Parents sign up, manage child profiles, monitor progress through the Parent Dashboard, and receive AI-generated conversation prompts like "Ask your child what they learned about neural networks today." Parents can also download completion certificates.</p>
+      </div>
+      <div>
+        <h4>🛡️ Admins</h4>
+        <p>Admins have full platform control: view enrollment stats, track payments, analyze course completion data, manage individual students, configure pricing, toggle Demo Mode, and export data to CSV.</p>
+      </div>
+      <div>
+        <h4>🏫 Schools & Tutors</h4>
+        <p>The Family Plan ($59) supports up to 3 child profiles, making it ideal for small tutoring groups. Demo Mode lets educators preview everything before committing.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -142,182 +245,624 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
 <!-- 2. LANDING PAGE -->
 <div class="section" id="landing">
   <h2 class="section-title"><span class="emoji">🏠</span> Landing Page</h2>
-  <p class="section-desc">The landing page showcases the platform's mission, courses, pricing, and call-to-action buttons.</p>
+  <p class="section-desc">The landing page is the front door of NextGen School. It showcases the platform's mission, introduces the three courses, displays pricing, and provides navigation buttons to every major section.</p>
 
   <div class="glass">
     <h3>Hero Section — "Mind Over Machines"</h3>
-    <p>The hero features the school's tagline, three feature badges (Ages 9-13, Visual Learning, Interactive), and quick navigation buttons: Start Learning, My Badges, Parent Portal, and Admin Panel.</p>
+    <p>The hero section is the first thing visitors see. It features the school name in a gradient title (cyan → purple → pink), the tagline "Mind Over Machines," and a brief description of what the platform offers.</p>
+
+    <p>Below the title you'll find <strong>three hero badges</strong> that communicate the platform's core identity at a glance:</p>
+    <ul>
+      <li><strong>🎯 Ages 9-13</strong> — Tells parents exactly which age group the content is designed for. All lessons use vocabulary, analogies, and examples appropriate for 4th–7th graders.</li>
+      <li><strong>👁️ Visual Learning</strong> — Signals that this isn't a text-heavy textbook. Every concept is taught through illustrations, diagrams, interactive elements, and color-coded visual aids.</li>
+      <li><strong>🎮 Interactive</strong> — Emphasizes that kids learn by doing, not just reading. Every chapter has hands-on activities — drag-and-drop, sorting, ordering, and quizzes.</li>
+    </ul>
+
+    <p>The hero also contains four action buttons that serve as the primary navigation for the entire platform:</p>
+    <ul>
+      <li><strong>🚀 Start Learning</strong> — Takes new users to the sign-up/registration flow</li>
+      <li><strong>🏆 My Badges</strong> — Opens the Badge Gallery showing all 24 collectible badges</li>
+      <li><strong>👨‍👩‍👧 Parent Portal</strong> — Opens the parent login screen</li>
+      <li><strong>🛡️ Admin Panel</strong> — Opens the admin login gate (password-protected)</li>
+    </ul>
+
     <img src="guide-assets/hero.jpg" alt="NextGen School Hero Section" class="screenshot">
-    <p class="screenshot-caption">The hero section with gradient title and action buttons</p>
+    <p class="screenshot-caption">The hero section with gradient title, hero badges, and action buttons</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> The hero buttons use hash-based routing (e.g., <code>#signup</code>, <code>#badges</code>, <code>#parent</code>, <code>#admin</code>). You can link directly to any section by appending the hash to the URL.</div>
   </div>
 
   <div class="glass">
-    <h3>Metrics, Principles & Course Cards</h3>
-    <p>Below the hero: live metrics counters (Students Learning, Chapters Completed, Badges Earned), six core principles (Think Critically, Create & Build, Ethics First, Dream Big, Stay Curious, Think Global), and three course cards.</p>
+    <h3>Live Metrics Counters</h3>
+    <p>Immediately below the hero, three animated counters display real-time platform statistics. These numbers are pulled from localStorage and update every time the page loads:</p>
+    <ul>
+      <li><strong>👨‍🎓 Students Learning</strong> — The total number of registered child profiles across all families. This shows prospective parents that real students are using the platform.</li>
+      <li><strong>📖 Chapters Completed</strong> — The total number of chapter completions across all students combined. A high number signals that students are actively engaged, not just signing up.</li>
+      <li><strong>🏆 Badges Earned</strong> — The total number of badges earned platform-wide. Since each badge requires completing an entire chapter with its activities, this is a strong engagement metric.</li>
+    </ul>
+    <p>The counters animate on page load with a counting-up effect that draws the eye and creates a sense of momentum. In Demo Mode, these numbers reflect the seeded sample data.</p>
+
+    <div class="info"><strong>ℹ️ Info:</strong> If no students have signed up yet, the counters will show zero. Enable Demo Mode to populate them with sample data for presentations.</div>
+  </div>
+
+  <div class="glass">
+    <h3>Six Core Principles</h3>
+    <p>The landing page features six guiding principles that shape the entire curriculum. These aren't just decorative — they represent the pedagogical philosophy behind every lesson and activity:</p>
+
+    <div class="grid-3">
+      <div>
+        <h4>🧠 Think Critically</h4>
+        <p>Every lesson presents real-world scenarios that require analysis, not memorization. Kids evaluate AI decisions, question assumptions, and consider multiple perspectives.</p>
+      </div>
+      <div>
+        <h4>🔨 Create & Build</h4>
+        <p>Hands-on activities simulate building: assembling robot parts, designing AI pipelines, planning space missions. Learning happens through construction.</p>
+      </div>
+      <div>
+        <h4>⚖️ Ethics First</h4>
+        <p>AI bias, data privacy, responsible robotics — ethical considerations are woven into every course, not bolted on as an afterthought.</p>
+      </div>
+      <div>
+        <h4>🌙 Dream Big</h4>
+        <p>From terraforming Mars to building companion robots, the courses encourage ambitious thinking while grounding it in real science.</p>
+      </div>
+      <div>
+        <h4>🔍 Stay Curious</h4>
+        <p>Lessons end with open-ended "What If?" questions. The goal is to spark exploration, not just deliver answers.</p>
+      </div>
+      <div>
+        <h4>🌍 Think Global</h4>
+        <p>Technology impacts everyone. Courses highlight how AI, space tech, and robotics affect communities worldwide, fostering global awareness.</p>
+      </div>
+    </div>
+
     <img src="guide-assets/metrics-principles.jpg" alt="Metrics and Core Principles" class="screenshot">
-    <p class="screenshot-caption">Live metrics and the six core principles</p>
-    <img src="guide-assets/courses.jpg" alt="Course Cards and Pricing" class="screenshot">
-    <p class="screenshot-caption">Course selection cards and pricing section</p>
+    <p class="screenshot-caption">Live metrics counters and the six core principles</p>
   </div>
 
   <div class="glass">
-    <h3>Pricing Plans</h3>
-    <p>Four pricing tiers designed for flexibility:</p>
+    <h3>Course Cards</h3>
+    <p>Three course cards give visitors a preview of what's inside each course. Each card shows the course icon, title, brief description, chapter count, and a "Start Course" button.</p>
+
+    <div class="grid-3">
+      <div>
+        <h4>🤖 AI Adventures</h4>
+        <p><strong>Best for ages 10–13.</strong> Covers what AI is, how it learns, neural networks, computer vision, natural language processing, AI ethics, generative AI, and the future of AI. Activities include sorting AI vs non-AI examples, ordering training steps, and building simple AI pipelines.</p>
+      </div>
+      <div>
+        <h4>🚀 Space Explorers</h4>
+        <p><strong>Best for ages 9–12.</strong> Covers the solar system, rocket science, life in space, Mars exploration, telescopes, exoplanets, space stations, and the future of space travel. Activities include planet matching, mission planning, and gravity simulations.</p>
+      </div>
+      <div>
+        <h4>🔧 Robotics Lab</h4>
+        <p><strong>Best for ages 10–13.</strong> Covers robot anatomy, sensors, actuators, programming logic, types of robots, industrial robots, companion robots, and building your own robot concept. Activities include wiring diagrams, sensor matching, and robot assembly.</p>
+      </div>
+    </div>
+
+    <img src="guide-assets/courses.jpg" alt="Course Cards" class="screenshot">
+    <p class="screenshot-caption">Three course cards — AI Adventures, Space Explorers, and Robotics Lab</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> Chapter 1 of every course is free. Parents can let their child try all three courses before purchasing to find the best fit.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 3. SIGN UP / REGISTRATION -->
+<div class="section" id="signup">
+  <h2 class="section-title"><span class="emoji">📝</span> Sign Up / Registration</h2>
+  <p class="section-desc">The registration flow is designed so parents set up the account, and children can log in independently using a simple PIN — no email or password needed for kids.</p>
+
+  <div class="glass">
+    <h3>Step-by-Step Registration Walkthrough</h3>
+    <p>Clicking "Start Learning" on the landing page takes you to the sign-up form. Here's what each field does and why it matters:</p>
+
+    <h4>Parent Information</h4>
+    <ol>
+      <li><strong>Parent Name</strong> — Your full name. Displayed on the Parent Dashboard, admin enrollment records, and completion certificates. Use your real name since certificates are downloadable PDFs.</li>
+      <li><strong>Email Address</strong> — Used to log into the Parent Dashboard. Also used by admins to search enrollments. Each email can only be registered once — attempting to re-register shows an error.</li>
+      <li><strong>Password</strong> — Protects the parent account. Must be at least 6 characters. Used for Parent Dashboard login. Stored in localStorage (not sent to a server).</li>
+    </ol>
+
+    <h4>Child Information</h4>
+    <ol start="4">
+      <li><strong>Child's Name</strong> — Your child's first name. Displayed in the course header, badge gallery, progress screens, and certificates. Kids love seeing their name on screen!</li>
+      <li><strong>Child's Age</strong> — A number between 5 and 18. Helps the platform tailor the experience and is visible on admin reports. The content is optimized for ages 9–13, but younger or older kids can still use it.</li>
+      <li><strong>4-Digit PIN</strong> — <strong>This is the most important field for kids.</strong> The PIN lets your child log in independently without needing to type an email or password. They just enter their PIN on the login screen and they're in. Choose something memorable but not obvious (avoid 1234 or 0000).</li>
+    </ol>
+
+    <div class="info"><strong>ℹ️ Why the PIN matters:</strong> The PIN system was specifically designed for children's independence. A 9-year-old can open NextGen School and start learning without asking a parent for a password. The PIN is numeric-only and exactly 4 digits, making it easy for small hands to type on any device.</div>
+
+    <h4>What Happens After Sign Up?</h4>
+    <p>After clicking "Create Account," the system:</p>
+    <ol>
+      <li>Validates all fields (checks for empty inputs, email format, PIN length)</li>
+      <li>Checks if the email is already registered (prevents duplicates)</li>
+      <li>Creates the family record in localStorage with parent info and child profile</li>
+      <li>Automatically logs the child in and redirects to the course selection screen</li>
+      <li>The child's progress, badges, and XP start at zero — ready to learn!</li>
+    </ol>
+
+    <div class="tip"><strong>💡 Tip:</strong> The Family Plan ($59) supports up to 3 child profiles under one parent account. After initial sign-up, you can add more children from the Parent Dashboard.</div>
+
+    <div class="warning"><strong>⚠️ Warning:</strong> Data is stored in your browser's localStorage. Clearing browser data will erase all progress. There is no cloud backup — consider this a local-first application.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 4. COURSES & LEARNING -->
+<div class="section" id="courses">
+  <h2 class="section-title"><span class="emoji">📚</span> Courses & Learning</h2>
+  <p class="section-desc">Each course has 8 chapters with rich content, interactive activities, and a "Complete & Continue" flow. The course view is where students spend most of their time.</p>
+
+  <div class="glass">
+    <h3>The Course View Layout</h3>
+    <p>When a student opens a course, they see a split layout designed for focused learning:</p>
+
+    <h4>📌 Left Sidebar — Chapter Navigation</h4>
+    <p>The sidebar lists all 8 chapters vertically. Each chapter shows its number, title, and a progress indicator. The sidebar is collapsible on mobile (tap the hamburger icon) and always visible on desktop. Students can click any <em>unlocked</em> chapter to jump directly to it.</p>
+
+    <p>The sidebar uses a color-coded indicator system to show chapter status at a glance:</p>
+    <div style="margin:12px 0">
+      <span class="indicator"><span class="dot dot-green">✓</span> <strong>Green checkmark</strong> — Chapter completed. All activities done, XP earned.</span><br>
+      <span class="indicator"><span class="dot dot-purple">3</span> <strong>Purple number</strong> — Chapter available. Number shows how many activities are inside.</span><br>
+      <span class="indicator"><span class="dot dot-grey">🔒</span> <strong>Grey lock</strong> — Chapter locked. Either payment required or previous chapter not yet completed.</span>
+    </div>
+
+    <h4>📖 Main Content Area</h4>
+    <p>The right side (or full-width on mobile) displays the current chapter's lesson content. Each chapter includes:</p>
+    <ul>
+      <li>A chapter title and introductory paragraph</li>
+      <li>2–4 content sections with visuals, analogies, and key concepts</li>
+      <li>1–3 interactive activities embedded inline</li>
+      <li>A "Key Ideas" summary box at the end</li>
+      <li>A "Complete & Continue" button to finish the chapter</li>
+    </ul>
+
+    <h4>🎯 Top Header Bar</h4>
+    <p>The course header shows the course name, a progress bar (percentage of chapters completed), the student's XP count, current level, and a badge notification bell that lights up when new badges are earned.</p>
+
+    <img src="guide-assets/course-view.jpg" alt="Course View - AI Adventures" class="screenshot">
+    <p class="screenshot-caption">Chapter 1: "What is AI?" with sidebar, progress bar, and drag-and-drop activity</p>
+    <div class="tip"><strong>💡 Tip:</strong> Progress is saved automatically after every action. Students can close the browser mid-chapter and come back later — they'll pick up exactly where they left off.</div>
+  </div>
+
+  <div class="glass">
+    <h3>XP & Level System</h3>
+    <p>NextGen School uses a gamified progression system to keep students motivated. Here's how it works:</p>
+
+    <ul>
+      <li><strong>XP (Experience Points)</strong> — Students earn <strong>+25 XP</strong> each time they complete a chapter by clicking "Complete & Continue." XP accumulates across all courses.</li>
+      <li><strong>Levels</strong> — As XP accumulates, students level up through four tiers:</li>
+    </ul>
+
+    <div class="grid-2" style="margin:12px 0">
+      <div>
+        <h4>🌱 Explorer (0–99 XP)</h4>
+        <p>The starting level. You're just beginning your journey into STEM.</p>
+      </div>
+      <div>
+        <h4>🧠 Thinker (100–249 XP)</h4>
+        <p>You've completed several chapters and are developing real understanding.</p>
+      </div>
+      <div>
+        <h4>🔨 Builder (250–499 XP)</h4>
+        <p>You're applying concepts and tackling complex activities with confidence.</p>
+      </div>
+      <div>
+        <h4>🎨 Creator (500+ XP)</h4>
+        <p>The highest level. You've mastered multiple courses and earned dozens of badges.</p>
+      </div>
+    </div>
+
+    <p>The current level and XP are displayed in the course header and on the Parent Dashboard. Leveling up triggers a celebration animation on screen.</p>
+
+    <div class="info"><strong>ℹ️ Info:</strong> With 24 chapters total (8 per course × 3 courses), a student who completes everything earns 600 XP — enough to reach Creator level!</div>
+  </div>
+
+  <div class="glass">
+    <h3>Chapter Navigation — Moving Between Chapters</h3>
+    <p>Clicking a chapter in the sidebar loads new content immediately without a page reload. The transition is seamless — the sidebar highlights the current chapter, the content area updates, and the progress bar adjusts.</p>
+    <p>Each chapter has unique activities tailored to its topic. For example, Chapter 2 of AI Adventures ("How AI Learns") features "Put the Steps in Order" (drag-to-reorder the AI training pipeline) and "Train the AI" (sort images into cats vs dogs to simulate training data).</p>
+
+    <img src="guide-assets/chapter2.jpg" alt="Chapter 2 - How AI Learns" class="screenshot">
+    <p class="screenshot-caption">Chapter 2: "How AI Learns" with ordering and classification activities</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> On <strong>mobile devices</strong>, the sidebar collapses into a slide-out menu. Tap the ☰ icon in the top-left to open it. On <strong>desktop</strong>, the sidebar is always visible for easy navigation.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 5. INTERACTIVE ACTIVITIES -->
+<div class="section" id="activities">
+  <h2 class="section-title"><span class="emoji">🎮</span> Interactive Activities</h2>
+  <p class="section-desc">Every chapter includes hands-on activities that teach concepts through doing. Activities are the heart of NextGen School — kids learn by interacting, not just reading.</p>
+
+  <div class="glass">
+    <h3>Activity Types Explained</h3>
+    <p>NextGen School features five distinct activity types. Each one is designed to reinforce a specific cognitive skill — categorization, sequencing, association, recall, or spatial reasoning.</p>
+
+    <div class="grid-2">
+      <div>
+        <h4>🎯 Drag & Drop Sorting</h4>
+        <p>Students drag items (colored pills/cards) from a pool into the correct category bucket. For example, dragging "Siri" and "Self-driving cars" into "Uses AI" while dragging "Toaster" into "No AI." This builds <strong>categorization skills</strong> — the ability to classify things by shared properties.</p>
+        <p><em>Desktop:</em> Click and drag items. <em>Mobile:</em> Touch, hold, and drag. Items snap into place with a satisfying animation.</p>
+      </div>
+      <div>
+        <h4>📋 Sequence Ordering</h4>
+        <p>Students arrange shuffled steps into the correct chronological order. For example, putting the AI training pipeline in order: Collect Data → Clean Data → Train Model → Test Model → Deploy. This builds <strong>logical thinking</strong> — understanding cause-and-effect chains.</p>
+        <p>Items are displayed as numbered cards that can be dragged up or down to reorder.</p>
+      </div>
+      <div>
+        <h4>🔗 Matching</h4>
+        <p>Students connect items from Column A to items in Column B. For example, matching planet names to their characteristics, or matching robot sensors to their functions. This builds <strong>association skills</strong> — linking related concepts together.</p>
+      </div>
+      <div>
+        <h4>❓ Quizzes</h4>
+        <p>Multiple-choice questions with instant feedback. Students select an answer and see immediately whether they're correct. Wrong answers show an encouraging message ("Not quite! Think about...") rather than just "Wrong." This builds <strong>recall and comprehension</strong>.</p>
+      </div>
+      <div>
+        <h4>🧩 Mazes & Spatial Challenges</h4>
+        <p>Some chapters include maze-like activities where students guide a robot through obstacles or plot a spacecraft's trajectory. These build <strong>spatial reasoning</strong> and planning ahead.</p>
+      </div>
+      <div>
+        <h4>🐱 Classification (Train the AI)</h4>
+        <p>A specialized drag-and-drop where students sort images/items to simulate training an AI model. For example, sorting 10 images into "Cat" vs "Dog" categories to teach a virtual AI. This builds understanding of <strong>how machine learning datasets work</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass">
+    <h3>How Feedback Works</h3>
+    <p>NextGen School uses an <strong>encouraging feedback model</strong> — the platform never says "Wrong!" or makes kids feel bad about mistakes. Here's the feedback flow:</p>
+
+    <ol>
+      <li><strong>Student completes activity</strong> — drags all items, orders steps, or answers questions</li>
+      <li><strong>Student clicks "Check My Answers"</strong> — the blue button at the bottom of each activity</li>
+      <li><strong>Visual feedback appears:</strong>
+        <ul>
+          <li>✅ <strong>Correct answers</strong> glow green with a checkmark</li>
+          <li>❌ <strong>Incorrect answers</strong> highlight red with a gentle shake animation</li>
+        </ul>
+      </li>
+      <li><strong>Encouraging message displays:</strong>
+        <ul>
+          <li>All correct: "🎉 Amazing! You got them all right!"</li>
+          <li>Some wrong: "Almost there! Try moving the highlighted items. You've got this! 💪"</li>
+          <li>Many wrong: "Good try! Let's think about this differently. Hint: [contextual hint]"</li>
+        </ul>
+      </li>
+      <li><strong>Students can retry</strong> — there are no limits on attempts. They can rearrange and check again until they get it right</li>
+    </ol>
+
+    <p>This feedback model is inspired by growth mindset pedagogy — mistakes are learning opportunities, not failures. The goal is to keep kids trying rather than giving up after a wrong answer.</p>
+
+    <div class="info"><strong>ℹ️ Info:</strong> Activities don't block chapter completion. A student can click "Complete & Continue" even if they haven't perfected every activity. The activities are for learning, not gatekeeping.</div>
+
+    <div class="tip"><strong>💡 Tip:</strong> On mobile, drag-and-drop uses touch events. If a student is struggling to drag on a small screen, try rotating to landscape mode — the larger touch targets make it easier.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 6. CHAPTER COMPLETION & GAMIFICATION -->
+<div class="section" id="completion">
+  <h2 class="section-title"><span class="emoji">🎯</span> Chapter Completion & Gamification</h2>
+  <p class="section-desc">The completion flow is designed to give students a dopamine hit after every chapter — XP, level-ups, badges, and streak tracking keep them coming back.</p>
+
+  <div class="glass">
+    <h3>The Complete & Continue Flow</h3>
+    <p>Here's exactly what happens when a student finishes a chapter:</p>
+
+    <div class="flow">
+      <span class="flow-step">Read lesson</span>
+      <span class="arrow">→</span>
+      <span class="flow-step">Complete activities</span>
+      <span class="arrow">→</span>
+      <span class="flow-step">Click "Complete & Continue"</span>
+      <span class="arrow">→</span>
+      <span class="flow-step">+25 XP earned</span>
+      <span class="arrow">→</span>
+      <span class="flow-step">Badge unlocked</span>
+      <span class="arrow">→</span>
+      <span class="flow-step">Sidebar updates ✓</span>
+      <span class="arrow">→</span>
+      <span class="flow-step">Next chapter loads</span>
+    </div>
+
+    <p>Let's break down each step in detail:</p>
+    <ol>
+      <li><strong>Read the lesson content</strong> — Students scroll through the chapter text, visuals, and key ideas</li>
+      <li><strong>Complete the interactive activities</strong> — Students work through 1–3 embedded activities (optional but encouraged)</li>
+      <li><strong>Click "Complete & Continue"</strong> — The button at the very bottom of the chapter. It's large, colorful, and unmissable</li>
+      <li><strong>+25 XP is awarded</strong> — A pop-up animation shows "+25 XP" floating upward. The XP counter in the header updates instantly</li>
+      <li><strong>Badge is unlocked</strong> — A badge notification appears. The bell icon in the header may glow if there are uncollected badges. The badge is added to the Badge Gallery</li>
+      <li><strong>Sidebar updates</strong> — The completed chapter's indicator changes from a purple number to a green ✓. The next chapter unlocks (lock icon disappears)</li>
+      <li><strong>Next chapter auto-loads</strong> — The content area smoothly transitions to the next chapter's content</li>
+    </ol>
+
+    <div class="tip"><strong>💡 Tip:</strong> If the student has earned enough XP to level up (e.g., from Explorer to Thinker), a special level-up celebration appears with confetti and a congratulatory message!</div>
+  </div>
+
+  <div class="glass">
+    <h3>Gamification Elements</h3>
+    <p>NextGen School uses four interlocking gamification systems to maintain student engagement over weeks and months:</p>
+
+    <div class="grid-2">
+      <div>
+        <h4>⭐ XP Points</h4>
+        <p>The fundamental currency. +25 XP per chapter completion. Visible in the course header, Parent Dashboard, and admin student view. XP accumulates across all courses — a student doing all 3 courses earns 600 total XP.</p>
+      </div>
+      <div>
+        <h4>📈 Levels</h4>
+        <p>Four progression tiers based on total XP: Explorer (0–99), Thinker (100–249), Builder (250–499), Creator (500+). Each level has a unique icon and color scheme. Leveling up triggers a celebration animation.</p>
+      </div>
+      <div>
+        <h4>🔥 Streaks</h4>
+        <p>Consecutive days of learning. If a student completes at least one chapter per day, their streak counter increases. The Parent Dashboard shows a 28-day streak calendar with green dots for active days. Streaks encourage daily habits.</p>
+      </div>
+      <div>
+        <h4>🏆 Badges</h4>
+        <p>24 unique collectible badges (8 per course). Each badge has a custom icon and name related to its chapter topic. Badges are displayed in the Badge Gallery — a visual collection that students can browse and show off to friends.</p>
+      </div>
+    </div>
+
+    <div class="info"><strong>ℹ️ Info:</strong> The gamification system is designed to be motivating without being addictive. There are no punishments for missing days, no "lives" system, and no pay-to-win mechanics. Progress only goes forward.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 7. BADGES -->
+<div class="section" id="badges">
+  <h2 class="section-title"><span class="emoji">🏆</span> Badge Gallery</h2>
+  <p class="section-desc">Complete chapters to earn collectible badges — 24 unique badges across all three courses. The Badge Gallery is a visual trophy room that makes kids proud of their progress.</p>
+
+  <div class="glass">
+    <h3>How Badges Work</h3>
+    <p>Every chapter in NextGen School has an associated badge. When a student clicks "Complete & Continue" on a chapter, its badge is permanently unlocked. Here's the complete badge system:</p>
+
+    <ul>
+      <li><strong>1 badge per chapter</strong> — 8 badges per course, 24 badges total across all 3 courses</li>
+      <li><strong>Gold border = earned</strong> — Completed badges glow with a golden border and full-color icon. They feel "alive" with a subtle shimmer animation on hover.</li>
+      <li><strong>Grey/dimmed = locked</strong> — Unearned badges appear greyed out with a lock overlay. Students can see what's coming but can't interact until they complete the chapter.</li>
+      <li><strong>Organized by course</strong> — The gallery groups badges into three rows: AI Adventures (8 badges), Space Explorers (8 badges), and Robotics Lab (8 badges)</li>
+      <li><strong>Custom names & icons</strong> — Each badge has a unique name tied to its chapter topic. For example, completing "What is AI?" earns the "AI Explorer" badge; completing "Rocket Science" earns the "Rocket Master" badge.</li>
+    </ul>
+
+    <img src="guide-assets/badges.jpg" alt="Badge Gallery" class="screenshot">
+    <p class="screenshot-caption">The Badge Gallery showing 24 badges across AI Adventures, Space Explorers, and Robotics Lab</p>
+
+    <p>The Badge Gallery is accessible from the landing page via the "🏆 My Badges" button. Students love showing their badge collection to parents and friends — it's a tangible representation of everything they've learned.</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> Badges are stored per-student in localStorage. If you have multiple children on the Family Plan, each child has their own badge collection.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 8. PRICING & PAYMENT -->
+<div class="section" id="pricing">
+  <h2 class="section-title"><span class="emoji">💳</span> Pricing & Payment</h2>
+  <p class="section-desc">NextGen School uses a freemium model — try before you buy. Chapter 1 of every course is completely free, and four pricing tiers let families choose what fits their needs.</p>
+
+  <div class="glass">
+    <h3>The Freemium Model</h3>
+    <p>We believe parents should see the quality before paying. That's why <strong>Chapter 1 of all three courses is always free</strong> — no credit card required, no trial period, no limits. Your child can complete three full chapters with all their interactive activities before you spend a dime.</p>
+
+    <p>After Chapter 1, subsequent chapters are locked behind a paywall (unless Demo Mode is enabled). The lock icon (🔒) appears in the sidebar next to paid chapters, and clicking a locked chapter shows a friendly upgrade prompt.</p>
+
+    <h4>Four Pricing Tiers</h4>
     <div class="grid-2">
       <div>
         <h4>🆓 Free Trial — $0</h4>
         <ul>
-          <li>Chapter 1 of all 3 courses</li>
+          <li>Chapter 1 of all 3 courses (3 chapters total)</li>
           <li>3 interactive activities</li>
-          <li>Basic badge collection</li>
+          <li>Basic badge collection (3 badges)</li>
+          <li>No payment info required</li>
         </ul>
       </div>
       <div>
         <h4>📘 Single Course — $19</h4>
         <ul>
-          <li>All 8 chapters in one course</li>
-          <li>50+ activities + certificate</li>
+          <li>All 8 chapters in one course of your choice</li>
+          <li>50+ activities + completion certificate</li>
+          <li>8 badges for that course</li>
+          <li>Best for trying one subject first</li>
         </ul>
       </div>
       <div>
         <h4>🚀 Full Access — $39 ⭐ Best Value</h4>
         <ul>
-          <li>All 3 courses (24 chapters)</li>
-          <li>150+ activities + all certificates</li>
+          <li>All 3 courses (24 chapters total)</li>
+          <li>150+ activities + all 3 certificates</li>
+          <li>All 24 badges</li>
+          <li>Save $18 vs buying individually</li>
         </ul>
       </div>
       <div>
         <h4>👨‍👩‍👧‍👦 Family Plan — $59</h4>
         <ul>
           <li>Everything in Full Access</li>
-          <li>Up to 3 child profiles + parent dashboard</li>
+          <li>Up to 3 child profiles</li>
+          <li>Full Parent Dashboard access</li>
+          <li>Ideal for families or tutoring groups</li>
         </ul>
       </div>
     </div>
+
     <img src="guide-assets/pricing.jpg" alt="Pricing Plans" class="screenshot">
-    <p class="screenshot-caption">Four pricing tiers with Stripe and Razorpay support</p>
-  </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- 3. COURSES -->
-<div class="section" id="courses">
-  <h2 class="section-title"><span class="emoji">📚</span> Courses & Learning</h2>
-  <p class="section-desc">Each course has 8 chapters with rich content, interactive activities, and a "Complete & Continue" flow.</p>
-
-  <div class="glass">
-    <h3>Course View — AI Adventures, Chapter 1</h3>
-    <p>The course view features a <strong>sidebar</strong> with all 8 chapters (numbered, with progress indicators), a <strong>main content area</strong> with lesson text, interactive activities, key ideas, and a <strong>Complete & Continue</strong> button at the bottom.</p>
-    <p>The header shows course name, progress bar, XP counter, and badge notification bell.</p>
-    <img src="guide-assets/course-view.jpg" alt="Course View - AI Adventures" class="screenshot">
-    <p class="screenshot-caption">Chapter 1: "What is AI?" with drag-and-drop activity</p>
-    <div class="tip"><strong>💡 Tip:</strong> Students can click any chapter in the sidebar to navigate. Progress is saved automatically via localStorage.</div>
+    <p class="screenshot-caption">Four pricing tiers with payment options</p>
   </div>
 
   <div class="glass">
-    <h3>Chapter Navigation — Chapter 2</h3>
-    <p>Clicking Chapter 2 in the sidebar loads new content immediately. Each chapter has unique activities — here, "Put the Steps in Order" (drag-to-reorder) and "Train the AI" (sorting cats vs dogs).</p>
-    <img src="guide-assets/chapter2.jpg" alt="Chapter 2 - How AI Learns" class="screenshot">
-    <p class="screenshot-caption">Chapter 2: "How AI Learns" with ordering and classification activities</p>
-  </div>
-</div>
+    <h3>Payment Methods</h3>
+    <p>NextGen School supports two payment processors to serve families worldwide:</p>
 
-<div class="divider"></div>
-
-<!-- 4. ACTIVITIES -->
-<div class="section" id="activities">
-  <h2 class="section-title"><span class="emoji">🎮</span> Interactive Activities</h2>
-  <p class="section-desc">Every chapter includes hands-on activities that teach concepts through doing.</p>
-
-  <div class="glass">
-    <h3>Activity Types</h3>
     <div class="grid-2">
       <div>
-        <h4>🎯 Drag & Drop Sorting</h4>
-        <p>Drag items into the correct category buckets (e.g., "Uses AI" vs "No AI")</p>
+        <h4>💳 Stripe (International)</h4>
+        <p>Accepts Visa, Mastercard, American Express, and other major credit/debit cards. Available in 195+ countries. Payments are processed in USD. Stripe handles all PCI compliance — we never see your full card number.</p>
       </div>
       <div>
-        <h4>📋 Ordering / Sequencing</h4>
-        <p>Arrange steps in the correct order (e.g., AI training pipeline)</p>
-      </div>
-      <div>
-        <h4>🐱 Classification</h4>
-        <p>Sort items into groups (e.g., training an AI to recognize cats vs dogs)</p>
-      </div>
-      <div>
-        <h4>✅ Check Answers</h4>
-        <p>Instant feedback with visual green/red indicators showing correct/incorrect answers</p>
+        <h4>🇮🇳 Razorpay (India)</h4>
+        <p>Designed specifically for Indian families. Accepts UPI, net banking, debit/credit cards, and popular Indian wallets. Payments are processed in INR. Razorpay is RBI-compliant and PCI DSS certified.</p>
       </div>
     </div>
-    <div class="tip"><strong>💡 Tip:</strong> Activities use HTML5 drag-and-drop with touch support. All items are draggable pills that snap into drop zones.</div>
+
+    <p>During checkout, families see both options and can choose their preferred method. The payment keys are configured in the Admin Panel → Settings tab.</p>
+
+    <div class="info"><strong>ℹ️ Info:</strong> All payments are one-time purchases, not subscriptions. There are no recurring charges. Once you buy a plan, your access never expires.</div>
   </div>
-</div>
-
-<div class="divider"></div>
-
-<!-- 5. BADGES -->
-<div class="section" id="badges">
-  <h2 class="section-title"><span class="emoji">🏆</span> Badge Gallery</h2>
-  <p class="section-desc">Complete chapters to earn collectible badges — 24 unique badges across all three courses.</p>
 
   <div class="glass">
-    <h3>Badge Collection Grid</h3>
-    <p>The Badge Gallery displays all 24 badges in a beautiful grid. Unearned badges appear grayed out, while earned badges are fully colored with a glow effect.</p>
-    <img src="guide-assets/badges.jpg" alt="Badge Gallery" class="screenshot">
-    <p class="screenshot-caption">24 badges across AI Adventures, Space Explorers, and Robotics Lab</p>
-    <div class="tip"><strong>💡 Tip:</strong> Access the Badge Gallery from the "🏆 My Badges" button on the landing page.</div>
+    <h3>Demo Mode & Payments</h3>
+    <p>When <strong>Demo Mode is enabled</strong> (via Admin Panel → Settings), all payment gates are completely bypassed. Users get instant full access to every chapter in every course without paying. This is designed for:</p>
+    <ul>
+      <li>Testing the platform during development</li>
+      <li>Demonstrating features to potential customers or investors</li>
+      <li>Letting educators preview the full curriculum before purchasing for their school</li>
+    </ul>
+
+    <div class="warning"><strong>⚠️ Warning:</strong> Always disable Demo Mode before launching to real users! When Demo Mode is on, <em>nobody</em> pays — all content is free. A red "DEMO MODE" badge in the header reminds you it's active.</div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- 6. PARENT -->
+<!-- 9. PARENT DASHBOARD -->
 <div class="section" id="parent">
   <h2 class="section-title"><span class="emoji">👨‍👩‍👧</span> Parent Dashboard</h2>
-  <p class="section-desc">Parents can monitor their children's learning progress by logging in with their registered email.</p>
+  <p class="section-desc">The Parent Dashboard gives parents a comprehensive view of their children's learning journey — from daily progress to long-term trends, with AI-powered conversation starters.</p>
 
   <div class="glass">
-    <h3>Parent Portal Login</h3>
-    <p>Access via the "👨‍👩‍👧 Parent Portal" button on the landing page or navigate to <code>#parent</code>. Enter the email used during signup to view your children's progress.</p>
+    <h3>Accessing the Parent Dashboard</h3>
+    <p>Navigate to the Parent Dashboard by clicking "👨‍👩‍👧 Parent Portal" on the landing page or going directly to <code>#parent</code>. Enter the email address you used during registration. The dashboard loads all children associated with that email.</p>
+
     <img src="guide-assets/parent-login.jpg" alt="Parent Dashboard Login" class="screenshot">
-    <p class="screenshot-caption">Parent portal login — enter your registered email</p>
-    <div class="tip"><strong>💡 Tip:</strong> The parent dashboard shows each child's course enrollment, chapters completed, and badge progress.</div>
+    <p class="screenshot-caption">Parent portal login — enter your registered email to view your children's progress</p>
+  </div>
+
+  <div class="glass">
+    <h3>Stats Grid — At-a-Glance Metrics</h3>
+    <p>The top of the Parent Dashboard shows a grid of key statistics for each child:</p>
+    <ul>
+      <li><strong>📖 Chapters Completed</strong> — How many chapters your child has finished out of 24 total (or fewer if they only have access to one course)</li>
+      <li><strong>🏆 Badges Earned</strong> — Number of badges collected vs total available. A great way to celebrate milestones ("You've earned 10 out of 24 badges!")</li>
+      <li><strong>⭐ Total XP</strong> — Cumulative experience points across all courses. Shows their current level (Explorer/Thinker/Builder/Creator)</li>
+      <li><strong>🔥 Current Streak</strong> — How many consecutive days they've been learning. Streaks reset to zero after a missed day</li>
+    </ul>
+
+    <p>These stats update in real-time — every chapter completion is immediately reflected on the Parent Dashboard.</p>
+  </div>
+
+  <div class="glass">
+    <h3>Per-Course Progress Bars</h3>
+    <p>Below the stats grid, each enrolled course has its own progress bar showing percentage completion. The bars are color-coded by course (cyan for AI, purple for Space, pink for Robotics) and display both the percentage and chapter count (e.g., "5/8 chapters — 62%").</p>
+
+    <p>Parents can quickly see which course their child is most engaged with and which ones need encouragement. If a child has abandoned a course after Chapter 2, this is where you'll notice.</p>
+  </div>
+
+  <div class="glass">
+    <h3>28-Day Streak Calendar</h3>
+    <p>The streak calendar is a visual 28-day grid (4 rows × 7 columns) showing your child's daily learning activity:</p>
+    <ul>
+      <li><strong>🟢 Green dot</strong> — Active day (at least one chapter completed)</li>
+      <li><strong>⚫ Empty/grey</strong> — No activity that day</li>
+      <li><strong>📅 Today</strong> — Highlighted with a border ring so you can see if they've studied today</li>
+    </ul>
+
+    <p>The calendar helps parents establish a learning routine. Aim for at least 3–4 green dots per week. The "Current Streak" counter above tracks consecutive active days — a powerful motivator for kids who don't want to "break the chain."</p>
+  </div>
+
+  <div class="glass">
+    <h3>🤖 AI Conversation Prompts</h3>
+    <p>One of NextGen School's most unique features: <strong>AI-generated conversation prompts</strong> that help parents talk to their child about what they're learning. After each chapter completion, the system generates prompts like:</p>
+
+    <ul>
+      <li>"Ask your child: What surprised them most about how AI learns from data?"</li>
+      <li>"Try this: Ask your child to explain neural networks using a pizza analogy"</li>
+      <li>"Discussion: Ask your child whether they think AI should make decisions about people's lives"</li>
+    </ul>
+
+    <p>These prompts bridge the gap between screen time and family conversation. Research shows that kids learn more deeply when they explain concepts to someone else — these prompts create that opportunity naturally.</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> Don't worry if you don't understand the topics yourself. The prompts are designed so that YOUR CHILD does the explaining — you just need to ask the question and listen!</div>
+  </div>
+
+  <div class="glass">
+    <h3>📜 Certificate Download</h3>
+    <p>When a child completes all 8 chapters of a course, a "Download Certificate" button appears on the Parent Dashboard. The certificate is a beautifully designed PDF featuring:</p>
+    <ul>
+      <li>The child's name in a prominent position</li>
+      <li>The course name and completion date</li>
+      <li>The NextGen School logo and "Mind Over Machines" tagline</li>
+      <li>A unique certificate ID for verification</li>
+    </ul>
+
+    <p>Certificates are great for printing and framing, sharing with family, or including in a child's learning portfolio.</p>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- 7. ADMIN -->
+<!-- 10. ADMIN PANEL -->
 <div class="section" id="admin">
   <h2 class="section-title"><span class="emoji">🛡️</span> Admin Panel</h2>
-  <p class="section-desc">The Admin Panel provides complete control over the platform with 6 tabs: Dashboard, Enrollments, Payments, Analytics, Students, and Settings.</p>
+  <p class="section-desc">The Admin Panel provides complete control over the platform with 7 management areas: Dashboard, Enrollments, Payments, Analytics, Students, Settings, and CSV Export.</p>
 
   <div class="credential">
     🔐 <strong>Admin Access:</strong> Navigate to <code>#admin</code> → Password: <code>admin123</code>
   </div>
 
+  <div class="warning"><strong>⚠️ Warning:</strong> Change the admin password before going live! The default <code>admin123</code> is for development only. Anyone who knows the URL and password has full platform access.</div>
+
   <div class="glass">
     <h3>Admin Login</h3>
-    <p>The admin panel is protected by a password gate. Enter the password and click "Access →" to unlock all admin features.</p>
+    <p>The admin panel is protected by a password gate. Navigate to <code>#admin</code> (or click "🛡️ Admin Panel" on the landing page), enter the password, and click "Access →" to unlock all admin features. The password is stored in localStorage settings and can be changed in the Settings tab.</p>
     <img src="guide-assets/admin-login.jpg" alt="Admin Login" class="screenshot">
     <p class="screenshot-caption">Admin access gate with password input</p>
   </div>
 
   <div class="glass">
     <h3>📊 Dashboard Tab</h3>
-    <p>The main dashboard shows key metrics at a glance: Families, Children, Revenue, Transactions, Chapters Done, and Failed Payments. Below are interactive charts: Revenue (Last 7 Days), Enrollments trend, and Course Completion pie chart.</p>
+    <p>The Dashboard is the admin's home screen — a high-level snapshot of platform health. It's designed so you can glance at it for 5 seconds and know how things are going.</p>
+
+    <h4>Stat Cards (Top Row)</h4>
+    <p>Six metric cards display key numbers with icons:</p>
+    <ul>
+      <li><strong>👨‍👩‍👧 Families</strong> — Total registered parent accounts. Each family can have 1–3 children. A growing family count means your marketing is working.</li>
+      <li><strong>🧒 Children</strong> — Total registered child profiles. This is always ≥ the family count. If children/family ratio is low, consider promoting the Family Plan.</li>
+      <li><strong>💰 Revenue</strong> — Total successful payment amount in USD. Only counts "success" status transactions. Failed and pending payments are excluded.</li>
+      <li><strong>💳 Transactions</strong> — Total number of payment attempts (including failed and pending). Compare this to Revenue to understand conversion rate.</li>
+      <li><strong>📖 Chapters Done</strong> — Total chapter completions across all students. Divide by Children count to get average chapters per student.</li>
+      <li><strong>❌ Failed Payments</strong> — Number of failed transaction attempts. If this is high, check your payment key configuration in Settings. A red highlight appears when failed payments exceed 0.</li>
+    </ul>
+
+    <h4>Charts Section</h4>
+    <p>Below the stat cards, three interactive charts provide trend visualization:</p>
+    <ul>
+      <li><strong>📈 Revenue (Last 7 Days)</strong> — A bar chart showing daily revenue. Helps identify peak purchase days and the effect of marketing campaigns. Spikes usually follow social media posts or email campaigns.</li>
+      <li><strong>📊 Enrollment Trend</strong> — A line chart showing new family registrations over time. Upward trend = healthy growth. Flat line = time to market. Downward = investigate issues.</li>
+      <li><strong>🥧 Course Completion</strong> — A pie chart showing completion distribution across the three courses. If one course has significantly lower completion, it may need content improvements or better onboarding.</li>
+    </ul>
+
     <img src="guide-assets/admin-dashboard.jpg" alt="Admin Dashboard" class="screenshot">
-    <p class="screenshot-caption">Dashboard with stats cards, revenue chart, enrollment trend, and course completion</p>
+    <p class="screenshot-caption">Dashboard with stat cards, revenue chart, enrollment trend, and course completion pie chart</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> Charts are generated using lightweight inline SVG/Canvas — no external charting library required. They update automatically when data changes.</div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- 8. ADMIN TABS -->
+<!-- 11. ADMIN TABS DEEP DIVE -->
 <div class="section" id="admin-tabs">
   <h2 class="section-title"><span class="emoji">📋</span> Admin Tabs Deep Dive</h2>
-  <p class="section-desc">Each admin tab provides specialized management capabilities.</p>
+  <p class="section-desc">Each admin tab provides specialized management capabilities. Here's a detailed walkthrough of every tab.</p>
 
   <div class="tabs-preview">
     <span>📊 Dashboard</span>
@@ -330,72 +875,293 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1p
 
   <div class="glass">
     <h3>👨‍👩‍👧 Enrollments Tab</h3>
-    <p>View all registered families with parent name, email, children (with ages), and join date. Includes a search bar to filter families.</p>
+    <p>The Enrollments tab is your family directory — every registered parent and their children in one searchable table.</p>
+
+    <h4>Search & Filter</h4>
+    <p>The search bar at the top filters families in real-time as you type. It searches across parent names and email addresses. This is essential when a parent contacts support — just type their name or email to pull up their record instantly.</p>
+
+    <h4>Family Table Columns</h4>
+    <ul>
+      <li><strong>Parent Name</strong> — The name entered during registration</li>
+      <li><strong>Email</strong> — The parent's email address (used for Parent Dashboard login)</li>
+      <li><strong>Children</strong> — Number of child profiles under this parent</li>
+      <li><strong>Join Date</strong> — When the family registered (timestamp)</li>
+      <li><strong>Expand Arrow (▶)</strong> — Click to expand and see detailed child information</li>
+    </ul>
+
+    <h4>Expanded Child View</h4>
+    <p>Clicking the expand arrow reveals each child's details: name, age, enrolled course(s), chapters completed, current XP, and level. This nested view lets you see the whole family's engagement at once without navigating to a different page.</p>
+
     <img src="guide-assets/admin-enrollments.jpg" alt="Admin Enrollments" class="screenshot">
-    <p class="screenshot-caption">Family enrollments table with search functionality</p>
+    <p class="screenshot-caption">Family enrollments table with search and expandable child details</p>
   </div>
 
   <div class="glass">
     <h3>💳 Payments Tab</h3>
-    <p>Track all transactions with payment ID, plan type, amount, payment method (Stripe/Razorpay), status (success/failed), and date. Filter by All, Success, Failed, or Demo payments. A warning banner shows failed payments that need attention.</p>
+    <p>The Payments tab tracks every financial transaction on the platform — successful purchases, failed attempts, and demo transactions.</p>
+
+    <h4>Transaction Table Columns</h4>
+    <ul>
+      <li><strong>Payment ID</strong> — Unique identifier from Stripe or Razorpay (e.g., <code>pi_3abc...</code> for Stripe, <code>pay_xyz...</code> for Razorpay)</li>
+      <li><strong>Family</strong> — Parent name who made the payment</li>
+      <li><strong>Plan</strong> — Which pricing tier was purchased (Single Course, Full Access, or Family Plan)</li>
+      <li><strong>Amount</strong> — Dollar amount charged ($19, $39, or $59)</li>
+      <li><strong>Method</strong> — Payment processor used (Stripe or Razorpay)</li>
+      <li><strong>Status</strong> — Transaction result, color-coded for quick scanning:
+        <ul>
+          <li>🟢 <strong>Success</strong> — Payment completed, access granted</li>
+          <li>🔴 <strong>Failed</strong> — Payment declined or errored. Access NOT granted. Common causes: insufficient funds, expired card, incorrect details</li>
+          <li>🟡 <strong>Pending</strong> — Payment initiated but not yet confirmed. Common with Razorpay UPI payments that require app approval</li>
+          <li>🔵 <strong>Demo</strong> — Transaction recorded during Demo Mode. No real money was charged</li>
+        </ul>
+      </li>
+      <li><strong>Date</strong> — When the transaction occurred</li>
+    </ul>
+
+    <h4>Filter Buttons</h4>
+    <p>Four filter buttons above the table let you focus on specific transaction types: All, Success, Failed, Demo. A warning banner appears automatically when there are failed payments that need attention.</p>
+
     <img src="guide-assets/admin-payments.jpg" alt="Admin Payments" class="screenshot">
-    <p class="screenshot-caption">Payments view with status filters and failed payment alerts</p>
+    <p class="screenshot-caption">Payments view with status filters, color-coded statuses, and failed payment alerts</p>
+
+    <div class="warning"><strong>⚠️ Warning:</strong> If you see many failed payments, check: (1) Are your Stripe/Razorpay keys correctly configured in Settings? (2) Is your Stripe account active and verified? (3) Are test-mode keys being used in production?</div>
   </div>
 
   <div class="glass">
     <h3>📈 Analytics Tab</h3>
-    <p>Per-course analytics showing enrollment count and chapter-by-chapter completion bar charts. Quickly identify drop-off points and popular courses.</p>
+    <p>The Analytics tab provides per-course analytics that help you understand which content is working and where students get stuck.</p>
+
+    <h4>What Each Chart Shows</h4>
+    <p>For each of the three courses, you'll see:</p>
+    <ul>
+      <li><strong>Enrollment Count</strong> — How many students are enrolled in this specific course. Helps identify the most popular course.</li>
+      <li><strong>Chapter Completion Bar Chart</strong> — A horizontal bar chart showing the number of students who completed each chapter (1 through 8). This is the most valuable chart for content creators because it reveals <strong>drop-off points</strong>.</li>
+    </ul>
+
+    <h4>How to Interpret Completion Rates</h4>
+    <p>A healthy completion chart shows a gradual decline from Chapter 1 to Chapter 8 (natural attrition). Watch for:</p>
+    <ul>
+      <li><strong>Steep drop after Chapter 1</strong> — The free trial isn't converting to paid. Consider improving Chapter 1's hook or adjusting pricing.</li>
+      <li><strong>Steep drop at a specific chapter</strong> — That chapter may be too difficult, too long, or have confusing activities. Review and simplify it.</li>
+      <li><strong>Flat line (all chapters equal)</strong> — Excellent! Students who start are finishing. Your content is engaging throughout.</li>
+      <li><strong>Chapter 8 spike</strong> — Students are racing to complete the course for the certificate. Great sign!</li>
+    </ul>
+
     <img src="guide-assets/admin-analytics.jpg" alt="Admin Analytics" class="screenshot">
-    <p class="screenshot-caption">Course-level analytics with per-chapter completion charts</p>
+    <p class="screenshot-caption">Per-course analytics with enrollment counts and chapter-by-chapter completion bar charts</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> Compare analytics across courses to identify your strongest content. If AI Adventures has 80% completion but Robotics Lab has 40%, study what makes AI Adventures more engaging and apply those patterns.</div>
   </div>
 
   <div class="glass">
     <h3>🧒 Students Tab</h3>
-    <p>Individual student profiles showing name, age, parent, enrolled course, chapters completed, and a visual progress bar.</p>
+    <p>The Students tab provides a per-student view of every child on the platform. Unlike the Enrollments tab (which groups by family), this tab focuses on individual learners.</p>
+
+    <h4>Student Card Details</h4>
+    <p>Each student appears as a card showing:</p>
+    <ul>
+      <li><strong>Name & Age</strong> — The child's name and current age</li>
+      <li><strong>Parent</strong> — Which parent account they belong to</li>
+      <li><strong>Enrolled Course</strong> — Which course(s) they're studying</li>
+      <li><strong>Chapters Completed</strong> — Raw number (e.g., "5 of 8")</li>
+      <li><strong>Visual Progress Bar</strong> — A color-coded bar showing completion percentage</li>
+      <li><strong>XP & Level</strong> — Current XP points and level tier</li>
+      <li><strong>Last Active</strong> — When the student last completed a chapter</li>
+    </ul>
+
+    <p>This view is useful for identifying inactive students (last active > 7 days ago) or high performers who might benefit from additional challenges. You can search by student name to quickly find a specific learner.</p>
+
     <img src="guide-assets/admin-students.jpg" alt="Admin Students" class="screenshot">
-    <p class="screenshot-caption">Student cards with progress bars and completion stats</p>
+    <p class="screenshot-caption">Student cards with progress bars, XP levels, and completion stats</p>
+  </div>
+
+  <div class="glass">
+    <h3>📥 CSV Export</h3>
+    <p>The admin panel includes CSV export functionality for offline analysis and reporting. Available exports include:</p>
+
+    <ul>
+      <li><strong>Enrollments CSV</strong> — Parent name, email, number of children, join date, payment plan</li>
+      <li><strong>Payments CSV</strong> — Payment ID, family, plan, amount, method, status, date</li>
+      <li><strong>Students CSV</strong> — Student name, age, parent, course, chapters completed, XP, level, last active date</li>
+    </ul>
+
+    <p>Exported CSV files can be opened in Excel, Google Sheets, or any data analysis tool. They're useful for:</p>
+    <ul>
+      <li>Creating reports for investors or school boards</li>
+      <li>Analyzing trends over time in a spreadsheet</li>
+      <li>Importing into CRM or marketing tools</li>
+      <li>Backup of platform data (since everything is in localStorage)</li>
+    </ul>
+
+    <div class="tip"><strong>💡 Tip:</strong> Export CSVs regularly as a backup! Since all data lives in localStorage, a CSV export is your only way to preserve data if the browser's storage gets cleared.</div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- 9. DEMO MODE -->
+<!-- 12. DEMO MODE -->
 <div class="section" id="demo">
   <h2 class="section-title"><span class="emoji">🎪</span> Demo Mode</h2>
-  <p class="section-desc">Demo Mode bypasses payment requirements, allowing instant access to all content for testing and demonstrations.</p>
+  <p class="section-desc">Demo Mode is a powerful testing feature that bypasses all payment requirements, giving instant full access to every chapter and course.</p>
 
   <div class="glass">
-    <h3>How Demo Mode Works</h3>
+    <h3>What Demo Mode Does</h3>
+    <p>When Demo Mode is enabled, the platform behaves as if every user has the Family Plan ($59). Specifically:</p>
     <ul>
-      <li><strong>Enable:</strong> Go to Admin Panel → Settings → Toggle "Demo Mode" checkbox</li>
-      <li><strong>Effect:</strong> When enabled, a red "DEMO MODE" badge appears in the header</li>
-      <li><strong>Bypass:</strong> All payment gates are skipped — users get instant full access</li>
-      <li><strong>Seed Data:</strong> Demo mode auto-generates sample families, students, and transactions</li>
-      <li><strong>Disable:</strong> Uncheck Demo Mode in Settings to re-enable payment gates</li>
+      <li><strong>All chapters unlocked</strong> — The 🔒 lock icons disappear from every chapter in every course. Students can access all 24 chapters freely.</li>
+      <li><strong>Payment gates bypassed</strong> — The pricing/checkout flow is skipped entirely. No Stripe or Razorpay modals appear.</li>
+      <li><strong>Red "DEMO MODE" badge</strong> — A bright red badge appears in the site header as a constant visual reminder that payment enforcement is off.</li>
+      <li><strong>Seed data generated</strong> — Demo Mode auto-creates sample families, students, and payment transactions so the admin dashboard has data to display.</li>
+      <li><strong>Demo payments logged</strong> — Any "purchases" made during Demo Mode are recorded with a "Demo" status tag, not "Success," so they can be filtered out later.</li>
     </ul>
-    <div class="warning"><strong>⚠️ Important:</strong> Always disable Demo Mode before going live with real users. Demo mode bypasses ALL payment validation.</div>
+  </div>
+
+  <div class="glass">
+    <h3>When to Use Demo Mode</h3>
+    <div class="grid-2">
+      <div>
+        <h4>✅ Good Use Cases</h4>
+        <ul>
+          <li>Platform development and testing</li>
+          <li>Demonstrating features to stakeholders</li>
+          <li>Educator/teacher previews</li>
+          <li>Conference or trade show demos</li>
+          <li>Investor presentations</li>
+          <li>Recording tutorial videos</li>
+        </ul>
+      </div>
+      <div>
+        <h4>❌ Never Use For</h4>
+        <ul>
+          <li>Production environment with real users</li>
+          <li>Live launches or public access</li>
+          <li>Any scenario where real payments should occur</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass">
+    <h3>How to Enable / Disable Demo Mode</h3>
+    <ol>
+      <li>Navigate to <code>#admin</code> and log in with the admin password</li>
+      <li>Click the <strong>⚙️ Settings</strong> tab</li>
+      <li>Find the <strong>"Demo Mode"</strong> toggle at the top of the settings panel</li>
+      <li><strong>Check the box</strong> to enable Demo Mode. The red "DEMO MODE" badge appears instantly.</li>
+      <li><strong>Uncheck the box</strong> to disable Demo Mode. Payment gates are immediately re-enforced.</li>
+      <li>Click <strong>"Save Settings"</strong> to persist the change</li>
+    </ol>
+
+    <div class="warning"><strong>⚠️ CRITICAL WARNING:</strong> Forgetting to disable Demo Mode before going live is the #1 admin mistake. When Demo Mode is on, NOBODY pays for anything — all content is free. Always check for the red "DEMO MODE" badge in the header before your launch. If you see it, go to Settings and turn it OFF.</div>
   </div>
 </div>
 
 <div class="divider"></div>
 
-<!-- 10. SETTINGS -->
+<!-- 13. SETTINGS -->
 <div class="section" id="settings">
   <h2 class="section-title"><span class="emoji">⚙️</span> Settings & Configuration</h2>
-  <p class="section-desc">Configure pricing, payment keys, and platform behavior from the Settings tab.</p>
+  <p class="section-desc">The Settings tab is the admin's control center — configure pricing, payment processors, Demo Mode, and manage platform data.</p>
 
   <div class="glass">
-    <h3>Settings Panel</h3>
-    <p>The Settings tab provides:</p>
+    <h3>Settings Panel Walkthrough</h3>
+    <p>The Settings tab is organized into four sections, each controlling a different aspect of the platform:</p>
+
+    <h4>1. Demo Mode Toggle</h4>
+    <p>The first and most prominent setting. A checkbox that enables/disables Demo Mode platform-wide. When checked, a red "DEMO MODE" badge appears in the header and all payment gates are bypassed. See the <a href="#demo" style="color:var(--cyan)">Demo Mode section</a> for full details.</p>
+
+    <h4>2. Pricing Configuration</h4>
+    <p>Three input fields let you customize the price for each paid tier:</p>
     <ul>
-      <li><strong>Demo Mode Toggle</strong> — Enable/disable payment bypass</li>
-      <li><strong>Pricing Configuration</strong> — Set prices for Single Course, Full Access, and Family Plan</li>
-      <li><strong>Payment Keys</strong> — Configure Stripe Public Key and Razorpay Key ID</li>
-      <li><strong>Danger Zone</strong> — Reset Seed Data button to regenerate demo data</li>
+      <li><strong>Single Course Price</strong> — Default: $19. The price for unlocking all 8 chapters in one course.</li>
+      <li><strong>Full Access Price</strong> — Default: $39. The price for unlocking all 3 courses (24 chapters total).</li>
+      <li><strong>Family Plan Price</strong> — Default: $59. Everything in Full Access plus support for up to 3 child profiles.</li>
     </ul>
+    <p>Changes take effect immediately after clicking "Save Settings." The pricing cards on the landing page and checkout flow update to reflect the new prices.</p>
+
+    <h4>3. Payment Key Configuration</h4>
+    <p>Two text fields for entering your payment processor credentials:</p>
+    <ul>
+      <li><strong>Stripe Public Key</strong> — Your Stripe publishable key (starts with <code>pk_live_</code> for production or <code>pk_test_</code> for testing). Get this from your Stripe Dashboard → Developers → API Keys.</li>
+      <li><strong>Razorpay Key ID</strong> — Your Razorpay key ID (starts with <code>rzp_live_</code> or <code>rzp_test_</code>). Get this from your Razorpay Dashboard → Settings → API Keys.</li>
+    </ul>
+
+    <div class="warning"><strong>⚠️ Warning:</strong> Use <strong>test keys</strong> (<code>pk_test_</code> / <code>rzp_test_</code>) during development and Demo Mode. Switch to <strong>live keys</strong> (<code>pk_live_</code> / <code>rzp_live_</code>) only when you're ready for real payments. Using live keys during testing will charge real money!</div>
+
+    <h4>4. Danger Zone</h4>
+    <p>A red-bordered section at the bottom with destructive actions:</p>
+    <ul>
+      <li><strong>Reset Seed Data</strong> — Deletes all demo-generated families, students, and transactions, then regenerates fresh sample data. Use this to get a "clean" demo environment. Does NOT affect real user data (if you have any).</li>
+      <li><strong>Clear All Data</strong> — ☢️ Nuclear option. Deletes EVERYTHING from localStorage — all families, students, payments, progress, badges, settings. The platform resets to a completely blank state. <strong>This is irreversible.</strong></li>
+    </ul>
+
     <img src="guide-assets/admin-settings.jpg" alt="Admin Settings" class="screenshot">
-    <p class="screenshot-caption">Platform settings with pricing, payment keys, and danger zone</p>
-    <div class="tip"><strong>💡 Tip:</strong> Click "Save Settings" after making changes. Use "Reset Seed Data" to regenerate demo families and transactions.</div>
+    <p class="screenshot-caption">Settings panel: Demo Mode toggle, pricing editor, payment keys, and danger zone</p>
+
+    <div class="tip"><strong>💡 Tip:</strong> Always click "Save Settings" after making changes. Settings are stored in localStorage and persist across browser sessions — but clearing browser data will reset them to defaults.</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 14. TECHNICAL NOTES -->
+<div class="section" id="technical">
+  <h2 class="section-title"><span class="emoji">🔧</span> Technical Notes</h2>
+  <p class="section-desc">Under-the-hood details for developers, admins, and curious power users.</p>
+
+  <div class="glass">
+    <h3>Data Storage — localStorage</h3>
+    <p>NextGen School is a <strong>client-side application</strong> — all data is stored in your browser's <code>localStorage</code>. There is no backend server, no database, and no cloud sync. This means:</p>
+
+    <ul>
+      <li><strong>Fast & private</strong> — Data never leaves your device. No network requests for reading/writing data. GDPR-friendly by design.</li>
+      <li><strong>Browser-specific</strong> — Data is tied to the specific browser on the specific device. If a student uses Chrome on their laptop, their progress won't appear in Safari on their iPad.</li>
+      <li><strong>Clearable</strong> — Clearing browser data (cookies, cache, site data) will erase all NextGen School data. This is the most common cause of "lost progress."</li>
+      <li><strong>Size limit</strong> — Most browsers allow 5–10 MB of localStorage per domain. NextGen School typically uses less than 500 KB, so this is rarely an issue.</li>
+    </ul>
+
+    <div class="info"><strong>ℹ️ Info:</strong> localStorage keys used by NextGen School are prefixed with <code>nextgen_</code>. You can inspect them in your browser's DevTools → Application → Local Storage.</div>
+  </div>
+
+  <div class="glass">
+    <h3>How to Reset Data</h3>
+    <p>There are three ways to reset platform data, from least to most destructive:</p>
+
+    <ol>
+      <li><strong>Reset Seed Data</strong> (Admin → Settings → Danger Zone) — Only clears demo-generated data. Real user data is preserved. Safe for refreshing demo environments.</li>
+      <li><strong>Clear All Data</strong> (Admin → Settings → Danger Zone) — Wipes everything. All users, progress, payments, and settings return to defaults. Irreversible.</li>
+      <li><strong>Clear Browser Data</strong> (Browser Settings → Clear site data) — Removes all localStorage for the domain. Equivalent to "Clear All Data" but done at the browser level. Also irreversible.</li>
+    </ol>
+
+    <div class="warning"><strong>⚠️ Warning:</strong> There is no "undo" for data deletion. If you need to preserve data, export CSVs from the admin panel BEFORE clearing anything.</div>
+  </div>
+
+  <div class="glass">
+    <h3>Browser Compatibility</h3>
+    <p>NextGen School is built with modern web standards and works on all current browsers:</p>
+    <ul>
+      <li>✅ <strong>Chrome</strong> 90+ (recommended)</li>
+      <li>✅ <strong>Firefox</strong> 88+</li>
+      <li>✅ <strong>Safari</strong> 14+ (macOS and iOS)</li>
+      <li>✅ <strong>Edge</strong> 90+</li>
+      <li>✅ <strong>Samsung Internet</strong> 14+</li>
+      <li>❌ <strong>Internet Explorer</strong> — Not supported</li>
+    </ul>
+
+    <p>Features used: CSS Grid, Flexbox, CSS Custom Properties, ES6+ JavaScript, HTML5 Drag and Drop API, Touch Events, localStorage, Canvas (for charts).</p>
+  </div>
+
+  <div class="glass">
+    <h3>Mobile Support</h3>
+    <p>NextGen School is fully responsive and works on phones and tablets. Key mobile considerations:</p>
+    <ul>
+      <li><strong>Sidebar</strong> — Collapses into a slide-out menu (tap ☰ to open)</li>
+      <li><strong>Drag-and-drop</strong> — Uses touch events. Touch, hold, and drag items. Works best in portrait mode on phones, landscape on tablets.</li>
+      <li><strong>Screenshots</strong> — All screenshots in this guide were taken on desktop but the actual UI adapts fluidly to smaller screens</li>
+      <li><strong>Minimum width</strong> — The platform works down to 320px width (iPhone SE size)</li>
+    </ul>
+
+    <div class="tip"><strong>💡 Tip:</strong> For the best experience on tablets, use landscape mode. The sidebar and content area display side-by-side just like on desktop.</div>
   </div>
 </div>
 
