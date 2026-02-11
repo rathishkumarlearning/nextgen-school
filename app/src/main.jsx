@@ -1,23 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import './index.css'
-import App from './App.jsx'
-import { GameProvider } from './context/GameContext'
-import { AuthProvider } from './context/AuthContext'
-import DB from './lib/db'
-
-// Seed demo data on first load
-DB.seed()
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import './index.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/nextgen-school/">
-      <AuthProvider>
-        <GameProvider>
-          <App />
-        </GameProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </StrictMode>,
-)
+    <App />
+  </StrictMode>
+);

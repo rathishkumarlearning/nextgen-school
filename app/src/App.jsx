@@ -1,56 +1,55 @@
-import { Routes, Route } from 'react-router-dom';
-import Starfield from './components/Common/Starfield';
-import AuthBar from './components/Common/AuthBar';
-import EngagementPopup from './components/Common/EngagementPopup';
-import LandingPage from './components/Landing/LandingPage';
-import CourseView from './components/Course/CourseView';
-import BadgeGallery from './components/Badges/BadgeGallery';
-import ParentDashboard from './components/Parent/ParentDashboard';
-import AdminPanel from './components/Admin/AdminPanel';
-import SignupModal from './components/Auth/SignupModal';
-import LoginModal from './components/Auth/LoginModal';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { AppProvider, useApp } from './context/AppContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+import Starfield from './components/Starfield.jsx';
+import Landing from './pages/Landing.jsx';
+import CourseView from './pages/CourseView.jsx';
+import BadgeGallery from './pages/BadgeGallery.jsx';
+import ParentDashboard from './pages/ParentDashboard.jsx';
+import Admin from './pages/Admin.jsx';
+import Onboarding from './pages/Onboarding.jsx';
+import AuthModal from './modals/AuthModal.jsx';
 
-function App() {
-  const [authModal, setAuthModal] = useState(null); // 'login' | 'signup' | null
+function AppRouter() {
+  const { state, setCurrentView } = useApp();
+
+  useEffect(() => {
+    function handleHash() {
+      const hash = window.location.hash.replace('#', '') || 'home';
+      const validViews = ['home', 'courses', 'badges', 'parent', 'admin', 'onboarding'];
+      if (validViews.includes(hash)) {
+        setCurrentView(hash);
+      } else {
+        setCurrentView('home');
+      }
+    }
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, [setCurrentView]);
+
+  const { currentView } = state;
 
   return (
-    <div className="relative min-h-screen bg-bg text-text overflow-x-hidden" style={{ fontFamily: "'Nunito', sans-serif" }}>
-      {/* Starfield background */}
+    <>
       <Starfield />
-
-      {/* Auth bar */}
-      <AuthBar onOpenLogin={() => setAuthModal('login')} onOpenSignup={() => setAuthModal('signup')} />
-
-      {/* Main content */}
-      <div className="relative z-10">
-        <Routes>
-          <Route path="/" element={<LandingPage onOpenSignup={() => setAuthModal('signup')} />} />
-          <Route path="/course/:courseId" element={<CourseView />} />
-          <Route path="/badges" element={<BadgeGallery />} />
-          <Route path="/parent" element={<ParentDashboard />} />
-          <Route path="/admin" element={<AdminPanel />} />
-        </Routes>
-      </div>
-
-      {/* Auth modals */}
-      {authModal === 'signup' && (
-        <SignupModal
-          onClose={() => setAuthModal(null)}
-          onSwitchToLogin={() => setAuthModal('login')}
-        />
-      )}
-      {authModal === 'login' && (
-        <LoginModal
-          onClose={() => setAuthModal(null)}
-          onSwitchToSignup={() => setAuthModal('signup')}
-        />
-      )}
-
-      {/* Engagement popup */}
-      <EngagementPopup />
-    </div>
+      {currentView === 'home' && <Landing />}
+      {currentView === 'courses' && <CourseView />}
+      {currentView === 'badges' && <BadgeGallery />}
+      {currentView === 'parent' && <ParentDashboard />}
+      {currentView === 'admin' && <Admin />}
+      {currentView === 'onboarding' && <Onboarding />}
+      <AuthModal />
+    </>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AppProvider>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </AppProvider>
+  );
+}
