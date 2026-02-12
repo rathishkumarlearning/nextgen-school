@@ -2,6 +2,68 @@ import supabase from '../utils/supabase.js';
 
 // Parent signup: creates auth user + profile + optional child
 async function signUp({ name, email, password, childName, childAge, childPin }) {
+  const svcKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+  // Use admin API to create user (bypasses email rate limits & auto-confirms)
+  if (svcKey) {
+    try {
+      const createRes = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+        method: 'POST',
+        headers: { 'apikey': svcKey, 'Authorization': `Bearer ${svcKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          email_confirm: true,
+          user_metadata: { name }
+        })
+      });
+      const createData = await createRes.json();
+      if (!createRes.ok) {
+        const msg = createData.msg || createData.message || createData.error || 'Signup failed';
+        return { data: null, error: msg };
+      }
+
+      const user = createData;
+
+      // Profile is auto-created by DB trigger (handle_new_user)
+      await new Promise(r => setTimeout(r, 800));
+
+      // Update profile name
+      const { data: profile } = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${user.id}`, {
+        method: 'PATCH',
+        headers: { 'apikey': svcKey, 'Authorization': `Bearer ${svcKey}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+        body: JSON.stringify({ name })
+      }).then(r => r.json()).then(d => ({ data: Array.isArray(d) ? d[0] : d })).catch(() => ({ data: null }));
+
+      // Create child if provided
+      let child = null;
+      if (childName && childPin && childPin.length === 4) {
+        const childRes = await fetch(`${supabaseUrl}/rest/v1/children`, {
+          method: 'POST',
+          headers: { 'apikey': svcKey, 'Authorization': `Bearer ${svcKey}`, 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
+          body: JSON.stringify({ name: childName, age: childAge || 10, pin: childPin, parent_id: user.id })
+        });
+        if (childRes.ok) {
+          const childArr = await childRes.json();
+          child = Array.isArray(childArr) ? childArr[0] : childArr;
+        }
+      }
+
+      // Now sign in the user (admin API doesn't create a client session)
+      const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInErr) {
+        // User was created but auto-login failed — still return success
+        return { data: { user, profile, child }, error: null };
+      }
+
+      return { data: { user, profile, child }, error: null };
+    } catch (err) {
+      return { data: null, error: err.message || 'Signup failed' };
+    }
+  }
+
+  // Fallback: standard signup (may hit email rate limits)
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -9,27 +71,10 @@ async function signUp({ name, email, password, childName, childAge, childPin }) 
   });
 
   if (authError) return { data: null, error: authError.message };
-
   const user = authData.user;
 
-  // Auto-confirm email (skip email verification for better UX)
-  // Uses service_role internally via Supabase admin API
-  try {
-    const svcKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
-    if (svcKey) {
-      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/admin/users/${user.id}`, {
-        method: 'PUT',
-        headers: { 'apikey': svcKey, 'Authorization': `Bearer ${svcKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email_confirm: true })
-      });
-    }
-  } catch {}
-
-  // Profile is auto-created by DB trigger (handle_new_user)
-  // Wait briefly for trigger to execute, then update name if needed
   await new Promise(r => setTimeout(r, 500));
   
-  // Update profile name (trigger sets it from metadata, but ensure it's correct)
   const { data: profile } = await supabase
     .from('profiles')
     .update({ name })
