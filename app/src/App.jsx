@@ -34,9 +34,9 @@ function AppRouter() {
   return (
     <>
       <Starfield />
-      <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', maxWidth: '100vw' }}>
-        <Sidebar />
-        <main className="main-content">
+      <div style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden', maxWidth: '100vw' }} className={currentView === 'admin' ? 'admin-active' : ''}>
+        {currentView !== 'admin' && <Sidebar />}
+        <main className="main-content" style={currentView === 'admin' ? { marginLeft: 0, width: '100%' } : undefined}>
           {currentView === 'home' && <Landing />}
           {currentView === 'courses' && <CourseView />}
           {currentView === 'badges' && <BadgeGallery />}
