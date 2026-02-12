@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import DashboardTab from '../admin/DashboardTab.jsx';
 import EnrollmentsTab from '../admin/EnrollmentsTab.jsx';
 import PaymentsTab from '../admin/PaymentsTab.jsx';
@@ -61,6 +61,12 @@ export default function Admin({ onBack }) {
   const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [pwError, setPwError] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const selectTab = useCallback((tabId) => {
+    setActiveTab(tabId);
+    setMenuOpen(false);
+  }, []);
 
   const handlePasswordCheck = () => {
     if (password === 'admin123') {
@@ -108,7 +114,22 @@ export default function Admin({ onBack }) {
         </div>
       ) : (
         <div id="admin-content" className="admin-layout">
-          <aside className="admin-sidebar">
+          {/* Mobile top bar */}
+          <div className="admin-mobile-bar">
+            <button className="admin-hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+              <span className={`hamburger-icon${menuOpen ? ' open' : ''}`}>
+                <span /><span /><span />
+              </span>
+            </button>
+            <div className="admin-mobile-title">
+              {TABS.find(t => t.id === activeTab)?.label || '📊 Dashboard'}
+            </div>
+            <button className="admin-back-btn" onClick={handleBack}>✕</button>
+          </div>
+
+          {/* Sidebar — always visible on desktop, overlay on mobile */}
+          {menuOpen && <div className="admin-overlay" onClick={() => setMenuOpen(false)} />}
+          <aside className={`admin-sidebar${menuOpen ? ' open' : ''}`}>
             <div className="admin-sidebar-header">
               <button className="admin-back-btn" onClick={handleBack}>←</button>
               <div className="admin-sidebar-title">🛡️ Admin</div>
@@ -117,15 +138,16 @@ export default function Admin({ onBack }) {
               <button
                 key={tab.id}
                 className={`admin-sidebar-item${activeTab === tab.id ? ' active' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => selectTab(tab.id)}
               >
                 {tab.label}
               </button>
             ))}
             <div className="admin-sidebar-footer">
-              <button className="admin-sidebar-item" onClick={adminExportCSV}>📥 Export CSV</button>
+              <button className="admin-sidebar-item" onClick={() => { adminExportCSV(); setMenuOpen(false); }}>📥 Export CSV</button>
             </div>
           </aside>
+
           <div id="admin-tab-content" className="admin-main">
             <ActiveComponent />
           </div>
