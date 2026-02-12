@@ -84,14 +84,12 @@ export default function Admin({ onBack }) {
 
   return (
     <div id="admin-panel" style={{ display: 'block' }}>
-      <div className="container">
-        <div className="admin-header">
-          <button className="btn btn-back" onClick={handleBack}>← Back</button>
-          <h2>🛡️ Admin Dashboard</h2>
-          <button className="btn btn-back" onClick={adminExportCSV}>📥 Export CSV</button>
-        </div>
-
-        {!authenticated ? (
+      {!authenticated ? (
+        <div className="container">
+          <div className="admin-header">
+            <button className="btn btn-back" onClick={handleBack}>← Back</button>
+            <h2>🛡️ Admin Dashboard</h2>
+          </div>
           <div className="admin-password" id="admin-password-gate">
             <span style={{ fontSize: '4rem' }}>🔐</span>
             <h3>Admin Access Required</h3>
@@ -107,26 +105,32 @@ export default function Admin({ onBack }) {
             {pwError && <p style={{ color: 'var(--red)', fontSize: '.85rem' }}>Invalid password</p>}
             <button className="btn btn-primary" onClick={handlePasswordCheck}>Access →</button>
           </div>
-        ) : (
-          <div id="admin-content" className="admin-layout">
-            <aside className="admin-sidebar">
-              <div className="admin-sidebar-title">⚡ Admin</div>
-              {TABS.map(tab => (
-                <button
-                  key={tab.id}
-                  className={`admin-sidebar-item${activeTab === tab.id ? ' active' : ''}`}
-                  onClick={() => setActiveTab(tab.id)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </aside>
-            <div id="admin-tab-content" className="admin-main">
-              <ActiveComponent />
+        </div>
+      ) : (
+        <div id="admin-content" className="admin-layout">
+          <aside className="admin-sidebar">
+            <div className="admin-sidebar-header">
+              <button className="admin-back-btn" onClick={handleBack}>←</button>
+              <div className="admin-sidebar-title">🛡️ Admin</div>
             </div>
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                className={`admin-sidebar-item${activeTab === tab.id ? ' active' : ''}`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+            <div className="admin-sidebar-footer">
+              <button className="admin-sidebar-item" onClick={adminExportCSV}>📥 Export CSV</button>
+            </div>
+          </aside>
+          <div id="admin-tab-content" className="admin-main">
+            <ActiveComponent />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
