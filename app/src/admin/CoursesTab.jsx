@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import DataGrid, { StatusBadge, ActionButton } from '../components/DataGrid';
 
 let adminService;
-try { adminService = await import('../services/admin.service.js'); } catch { adminService = null; }
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
 
 const COURSE_ICONS = { ai: '🤖', space: '🚀', robotics: '🔧' };
 const COURSE_COLORS = { ai: '#8b5cf6', space: '#06b6d4', robotics: '#ec4899' };

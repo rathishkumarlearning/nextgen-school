@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 let adminService;
-try { adminService = await import('../services/admin.service.js'); } catch { adminService = null; }
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
 
 export default function StudentsTab() {
   const [students, setStudents] = useState([]);

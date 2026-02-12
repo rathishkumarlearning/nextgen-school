@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DataGrid from '../components/DataGrid';
 
 let adminService;
-try { adminService = await import('../services/admin.service.js'); } catch { adminService = null; }
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
 
 const columns = [
   { key: 'name', label: 'Parent Name', sortable: true },

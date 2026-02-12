@@ -8,7 +8,7 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend, Filler);
 
 let adminService;
-try { adminService = await import('../services/admin.service.js'); } catch { adminService = null; }
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
 
 const STAT_CONFIG = [
   { key: 'totalFamilies', label: 'Families', icon: '👨‍👩‍👧‍👦', color: '#8b5cf6' },

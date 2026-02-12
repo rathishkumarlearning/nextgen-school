@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DataGrid, { StatusBadge, ActionButton } from '../components/DataGrid';
 
 let adminService;
-try { adminService = await import('../services/admin.service.js'); } catch { adminService = null; }
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
 
 export default function UsersTab() {
   const [data, setData] = useState([]);
