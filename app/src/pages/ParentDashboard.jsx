@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const COURSES = {
   ai: { title: '🤖 AI Adventures', chapters: [{ title: 'What is AI?' },{ title: 'How AI Learns' },{ title: 'Smart vs Wise' },{ title: 'AI in Your World' },{ title: 'Asking Better Questions' },{ title: 'When AI Gets It Wrong' },{ title: 'AI Ethics & Fairness' },{ title: 'Be the AI Boss' }] },
@@ -79,12 +80,18 @@ function generateCertificate(courseTitle) {
 }
 
 export default function ParentDashboard({ onBack }) {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const authCtx = useAuth();
+  const isSupabaseLoggedIn = authCtx?.isLoggedIn && !authCtx?.isDemoMode && authCtx?.currentUser?.role === 'parent';
+  const [loggedIn, setLoggedIn] = useState(isSupabaseLoggedIn);
   const [email, setEmail] = useState(() => localStorage.getItem('ngs_parent_email') || '');
-  const [state, setState] = useState(null);
+  const [state, setState] = useState(isSupabaseLoggedIn ? getState() : null);
   const [sending, setSending] = useState(false);
 
   const handleLogin = () => {
+    if (authCtx?.openAuthModal) {
+      authCtx.openAuthModal('login');
+      return;
+    }
     const storedEmail = localStorage.getItem('ngs_parent_email') || '';
     if (!email.trim()) return;
     if (email === storedEmail || storedEmail === '') {

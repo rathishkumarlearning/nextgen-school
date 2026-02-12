@@ -12,14 +12,30 @@ async function signUp({ name, email, password, childName, childAge, childPin }) 
 
   const user = authData.user;
 
-  // Upsert profile (trigger may handle this, but be safe)
-  const { data: profile, error: profileError } = await supabase
+  // Auto-confirm email (skip email verification for better UX)
+  // Uses service_role internally via Supabase admin API
+  try {
+    const svcKey = import.meta.env.VITE_SUPABASE_SERVICE_KEY;
+    if (svcKey) {
+      await fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/admin/users/${user.id}`, {
+        method: 'PUT',
+        headers: { 'apikey': svcKey, 'Authorization': `Bearer ${svcKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email_confirm: true })
+      });
+    }
+  } catch {}
+
+  // Profile is auto-created by DB trigger (handle_new_user)
+  // Wait briefly for trigger to execute, then update name if needed
+  await new Promise(r => setTimeout(r, 500));
+  
+  // Update profile name (trigger sets it from metadata, but ensure it's correct)
+  const { data: profile } = await supabase
     .from('profiles')
-    .upsert({ id: user.id, name, email, role: 'parent', active: true, created_at: new Date().toISOString() }, { onConflict: 'id' })
+    .update({ name })
+    .eq('id', user.id)
     .select()
     .single();
-
-  if (profileError) return { data: { user }, error: profileError.message };
 
   let child = null;
   if (childName && childPin && childPin.length === 4) {

@@ -39,6 +39,7 @@ const PRICING = [
 
 export default function Landing() {
   const { navigate, openCourse, handlePayment, getMetrics } = useApp();
+  const { isLoggedIn, openAuthModal } = useAuth();
   const landingRef = useRef(null);
   const metrics = getMetrics ? getMetrics() : { students: 0, chapters: 0, badges: 0 };
 
@@ -90,8 +91,10 @@ export default function Landing() {
           <p>The futuristic school where kids master AI, explore space, and build robots — all through drag-and-drop adventures. No coding required!</p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="btn btn-primary" onClick={() => {
+              if (!isLoggedIn) { openAuthModal('signup'); return; }
               document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' });
             }}>🚀 Start Learning</button>
+            {!isLoggedIn && <button className="btn btn-back" onClick={() => openAuthModal('login')} style={{ marginLeft: '8px' }}>🔑 Log In</button>}
           </div>
         </div>
       </section>
@@ -176,6 +179,7 @@ export default function Landing() {
                 <button
                   className={plan.btnClass}
                   onClick={() => {
+                    if (!isLoggedIn) { openAuthModal('signup'); return; }
                     if (plan.action === 'showCourses') {
                       document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' });
                     } else if (handlePayment) {

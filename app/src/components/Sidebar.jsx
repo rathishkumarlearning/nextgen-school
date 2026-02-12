@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 
 const NAV_ITEMS = [
   { id: 'home', icon: '🏠', label: 'Home', hash: 'home' },
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const { state, navigate, openCourse } = useApp();
+  const { isLoggedIn, isDemoMode, currentUser, openAuthModal, logout } = useAuth();
   const [coursesOpen, setCoursesOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -90,17 +92,33 @@ export default function Sidebar() {
         {/* Bottom section */}
         <div className="sidebar-bottom">
           <div className="sidebar-divider" />
-          <button className="sidebar-nav-item" onClick={() => {}}>
+          <button className="sidebar-nav-item" onClick={() => navigate('settings')}>
             <span className="sidebar-nav-icon">⚙️</span>
             <span className="sidebar-nav-label">Settings</span>
           </button>
-          <div className="sidebar-user">
-            <div className="sidebar-avatar">👤</div>
-            <div className="sidebar-user-info">
-              <div className="sidebar-user-name">Explorer</div>
-              <div className="sidebar-demo-badge">DEMO MODE</div>
+          {isLoggedIn && !isDemoMode ? (
+            <div className="sidebar-user">
+              <div className="sidebar-avatar">👤</div>
+              <div className="sidebar-user-info">
+                <div className="sidebar-user-name">{currentUser?.name || 'User'}</div>
+                <button onClick={logout} style={{ background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: '.75rem', padding: 0 }}>Sign Out</button>
+              </div>
             </div>
-          </div>
+          ) : isDemoMode ? (
+            <div className="sidebar-user">
+              <div className="sidebar-avatar">👤</div>
+              <div className="sidebar-user-info">
+                <div className="sidebar-user-name">Explorer</div>
+                <div className="sidebar-demo-badge">DEMO MODE</div>
+                <button onClick={() => openAuthModal('signup')} style={{ background: 'none', border: 'none', color: 'var(--cyan)', cursor: 'pointer', fontSize: '.75rem', padding: 0, marginTop: '4px' }}>Create Account</button>
+              </div>
+            </div>
+          ) : (
+            <div className="sidebar-user" style={{ gap: '8px' }}>
+              <button className="btn btn-primary" onClick={() => openAuthModal('signup')} style={{ fontSize: '.8rem', padding: '8px 16px', flex: 1 }}>Sign Up</button>
+              <button className="btn btn-back" onClick={() => openAuthModal('login')} style={{ fontSize: '.8rem', padding: '8px 16px', flex: 1 }}>Log In</button>
+            </div>
+          )}
         </div>
       </aside>
     </>
