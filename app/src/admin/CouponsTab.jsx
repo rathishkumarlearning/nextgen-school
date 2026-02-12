@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import DataGrid, { StatusBadge, ActionButton } from '../components/DataGrid';
 
-let couponService;
-try { couponService = await import('../services/coupon.service.js'); } catch { couponService = null; }
+let couponService = null;
+import('../services/coupon.service.js')
+  .then(mod => { couponService = mod.default || mod; })
+  .catch(() => { couponService = null; });
 
 function generateCode(prefix = '') {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
