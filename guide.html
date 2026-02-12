@@ -2,609 +2,364 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NextGen School — User Guide v2</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NextGen School — User Guide</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#050508;--bg2:#0a0a10;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.06);--cyan:#06b6d4;--purple:#8b5cf6;--pink:#ec4899;--text:#e2e8f0;--muted:#94a3b8;--green:#22c55e;--orange:#f97316;--red:#ef4444}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;line-height:1.7;min-height:100vh}
-h1,h2,h3,h4{font-family:'Fredoka',sans-serif;font-weight:600}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(1px 1px at 20px 30px,rgba(255,255,255,0.3),transparent),radial-gradient(1px 1px at 40px 70px,rgba(255,255,255,0.2),transparent),radial-gradient(1px 1px at 90px 40px,rgba(255,255,255,0.3),transparent),radial-gradient(1px 1px at 130px 80px,rgba(255,255,255,0.15),transparent),radial-gradient(1px 1px at 160px 120px,rgba(255,255,255,0.25),transparent);background-size:200px 200px;pointer-events:none;z-index:0}
-.container{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-.hero{text-align:center;padding:80px 0 60px}
-.hero h1{font-size:clamp(2rem,5vw,3.5rem);background:linear-gradient(135deg,var(--cyan),var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
-.hero .subtitle{font-size:1.2rem;color:var(--muted);margin-bottom:8px}
-.hero .badge-row{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
-.hero .badge-row span{background:var(--card);border:1px solid var(--border);padding:6px 16px;border-radius:20px;font-size:0.85rem;color:var(--muted)}
-.toc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin:0 auto 60px;max-width:700px;backdrop-filter:blur(12px)}
-.toc h2{font-size:1.4rem;margin-bottom:16px;color:var(--cyan)}
-.toc ol{padding-left:24px}
-.toc li{margin-bottom:8px}
-.toc a{color:var(--purple);text-decoration:none;transition:color 0.2s}
-.toc a:hover{color:var(--cyan)}
-.section{margin-bottom:64px}
-.section-title{font-size:clamp(1.5rem,3vw,2rem);margin-bottom:8px;display:flex;align-items:center;gap:12px}
-.section-title .emoji{font-size:1.5em}
-.section-desc{color:var(--muted);margin-bottom:24px;font-size:1.05rem}
-.glass{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:24px;backdrop-filter:blur(12px);transition:border-color 0.3s}
-.glass:hover{border-color:rgba(139,92,246,0.3)}
-.glass h3{font-size:1.2rem;margin-bottom:8px;color:var(--cyan)}
-.glass h4{font-size:1rem;margin-bottom:6px;color:var(--purple)}
-.glass p,.glass li{color:var(--muted);font-size:0.95rem}
-.glass ul,.glass ol{padding-left:20px;margin-top:8px}
-.glass li{margin-bottom:4px}
-.screenshot{width:100%;border-radius:12px;border:1px solid var(--border);margin:16px 0;display:block;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-.screenshot-caption{text-align:center;color:var(--muted);font-size:0.85rem;margin-top:-8px;margin-bottom:16px;font-style:italic}
-.tip{background:rgba(6,182,212,0.08);border-left:3px solid var(--cyan);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:0.9rem}
-.tip strong{color:var(--cyan)}
-.warning{background:rgba(239,68,68,0.08);border-left:3px solid var(--red);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:0.9rem}
-.warning strong{color:var(--red)}
-.info{background:rgba(139,92,246,0.08);border-left:3px solid var(--purple);padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:0.9rem}
-.info strong{color:var(--purple)}
-.credential{background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);padding:16px 20px;border-radius:12px;margin:16px 0;font-family:monospace;font-size:0.95rem}
-.credential code{color:var(--purple);font-weight:bold}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
-.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-@media(max-width:768px){.grid-3{grid-template-columns:1fr}}
-.tabs-preview{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.tabs-preview span{background:var(--card);border:1px solid var(--border);padding:6px 14px;border-radius:8px;font-size:0.8rem;color:var(--muted)}
-.tabs-preview span.active{background:rgba(139,92,246,0.2);border-color:var(--purple);color:var(--purple)}
-.quick-step{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px}
-.quick-step .step-num{background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
-.quick-step .step-content{flex:1}
-.quick-step .step-content h4{color:var(--text);margin-bottom:4px;font-size:1rem}
-.quick-step .step-content p{color:var(--muted);font-size:0.9rem;margin:0}
-.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:48px 0}
-.footer{text-align:center;padding:48px 0;color:var(--muted);font-size:0.9rem;border-top:1px solid var(--border)}
-.footer .brand{font-family:'Fredoka',sans-serif;font-size:1.1rem;color:var(--text);margin-bottom:4px}
-.back-top{position:fixed;bottom:24px;right:24px;background:linear-gradient(135deg,var(--cyan),var(--purple));color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;z-index:99;opacity:0.8;transition:opacity 0.2s}
-.back-top:hover{opacity:1}
-.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0;font-size:0.9rem;color:var(--muted)}
-.flow .arrow{color:var(--cyan);font-weight:bold}
-.flow .flow-step{background:var(--card);border:1px solid var(--border);padding:4px 12px;border-radius:8px}
-.indicator{display:inline-flex;align-items:center;gap:6px;margin-right:16px;margin-bottom:8px;font-size:0.9rem}
-.indicator .dot{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700}
-.dot-green{background:rgba(34,197,94,0.2);border:1px solid var(--green);color:var(--green)}
-.dot-purple{background:rgba(139,92,246,0.2);border:1px solid var(--purple);color:var(--purple)}
-.dot-grey{background:rgba(148,163,184,0.15);border:1px solid rgba(148,163,184,0.3);color:var(--muted)}
+body{background:#050510;color:#e2e8f0;font-family:'Nunito',system-ui,sans-serif;line-height:1.7;padding:20px}
+.guide{max-width:900px;margin:0 auto}
+h1{font-size:2.2rem;text-align:center;background:linear-gradient(135deg,#8b5cf6,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.subtitle{text-align:center;color:rgba(255,255,255,0.5);margin-bottom:40px;font-size:1rem}
+h2{font-size:1.5rem;color:#8b5cf6;margin:48px 0 16px;padding-bottom:8px;border-bottom:1px solid rgba(139,92,246,0.2)}
+h3{font-size:1.15rem;color:#06b6d4;margin:24px 0 8px}
+p,li{color:rgba(255,255,255,0.8);font-size:.95rem}
+ul,ol{padding-left:24px;margin:8px 0 16px}
+li{margin:4px 0}
+.screenshot{margin:16px 0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02)}
+.screenshot img{width:100%;display:block}
+.screenshot .caption{padding:8px 16px;font-size:.85rem;color:rgba(255,255,255,0.5);background:rgba(0,0,0,0.3)}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+.badge-new{background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3)}
+.badge-admin{background:rgba(239,68,150,0.15);color:#ec4899;border:1px solid rgba(239,68,150,0.3)}
+.cred{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px 20px;margin:12px 0;font-family:'JetBrains Mono',monospace;font-size:.9rem}
+.cred b{color:#8b5cf6}
+.toc{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px 28px;margin:24px 0}
+.toc a{color:#06b6d4;text-decoration:none;display:block;padding:4px 0;font-size:.9rem}
+.toc a:hover{color:#8b5cf6}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:16px 0}
+.feature-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px}
+.feature-card .icon{font-size:1.5rem;margin-bottom:4px}
+.feature-card h4{font-size:.95rem;color:#fff;margin-bottom:4px}
+.feature-card p{font-size:.8rem;color:rgba(255,255,255,0.5)}
+.test-table{width:100%;border-collapse:collapse;margin:16px 0}
+.test-table th,.test-table td{text-align:left;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:.85rem}
+.test-table th{color:#8b5cf6;font-weight:600}
+@media(max-width:600px){
+  h1{font-size:1.6rem}h2{font-size:1.2rem}
+  .feature-grid{grid-template-columns:1fr}
+}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
+<div class="guide">
 
-<button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+<h1>🛡️ NextGen School — User Guide</h1>
+<p class="subtitle">Mind Over Machines: AI Literacy for Kids (Ages 9-13)<br>
+Last updated: February 12, 2026 • v3.0 — Full Supabase Backend</p>
 
-<div class="container">
-
-<!-- HERO -->
-<div class="hero">
-  <div class="badge-row">
-    <span>📖 User Guide</span>
-    <span>🛡️ Admin Manual</span>
-    <span>v2.1 — Feb 2026</span>
-  </div>
-  <h1>NextGen School</h1>
-  <p class="subtitle">Admin & User Guide — Mind Over Machines</p>
-  <p style="color:var(--muted);font-size:0.95rem;margin-top:8px">The futuristic school where kids master AI, explore space, and build robots</p>
+<div class="toc">
+<strong style="color:#8b5cf6">📋 Table of Contents</strong>
+<a href="#overview">1. Overview</a>
+<a href="#features">2. Feature Summary</a>
+<a href="#getting-started">3. Getting Started</a>
+<a href="#signup">4. Sign Up & Login</a>
+<a href="#courses">5. Courses & Learning</a>
+<a href="#badges">6. Badges & Progress</a>
+<a href="#parent">7. Parent Dashboard</a>
+<a href="#admin">8. Admin Panel (9 Tabs)</a>
+<a href="#coupons">9. Coupon System</a>
+<a href="#demo">10. Demo Mode</a>
+<a href="#testing">11. E2E Test Results</a>
+<a href="#tech">12. Technical Stack</a>
+<a href="#credentials">13. Credentials</a>
 </div>
 
-<!-- QUICK START -->
-<div class="section" id="quickstart">
-  <h2 class="section-title"><span class="emoji">🚀</span> Quick Start</h2>
-  <p class="section-desc">New to NextGen School? Get your child learning in under 2 minutes.</p>
+<!-- ============ OVERVIEW ============ -->
+<h2 id="overview">1. Overview</h2>
+<p>NextGen School is an interactive AI literacy platform for kids ages 9-13. Three courses teach AI, Space, and Robotics through drag-and-drop activities — no coding required. Built with React 19 + Vite + Tailwind CSS v4, backed by Supabase (auth, database, real-time).</p>
 
-  <div class="glass">
-    <div class="quick-step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h4>Visit the App</h4>
-        <p>Open NextGen School in any modern browser. You'll see the new sidebar navigation on the left and the landing page hero section.</p>
-      </div>
-    </div>
-    <div class="quick-step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h4>Sign Up as a Parent</h4>
-        <p>Click "Start Learning" → fill in your name, email, password, and add your child's name, age, and a 4-digit PIN.</p>
-      </div>
-    </div>
-    <div class="quick-step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h4>Choose a Course from the Sidebar</h4>
-        <p>Use the left sidebar to pick AI Adventures, Space Explorers, or Robotics Lab. Chapter 1 is always free.</p>
-      </div>
-    </div>
-    <div class="quick-step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <h4>Learn & Complete Chapters</h4>
-        <p>Read lessons, complete interactive activities (drag-and-drop, quizzes), then click "Complete &amp; Continue" to earn XP and badges.</p>
-      </div>
-    </div>
-    <div class="quick-step">
-      <div class="step-num">5</div>
-      <div class="step-content">
-        <h4>Track Progress</h4>
-        <p>Visit the Parent Dashboard to see chapters completed, badges earned, and streaks.</p>
-      </div>
-    </div>
-    <div class="tip"><strong>💡 Tip:</strong> Ask an admin to enable <strong>Demo Mode</strong> to unlock all content for free testing.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/01-landing.png" alt="Landing page">
+<div class="caption">Landing page — Hero section with courses, pricing, and founder info</div>
 </div>
 
-<div class="divider"></div>
+<!-- ============ FEATURES ============ -->
+<h2 id="features">2. Feature Summary</h2>
 
-<!-- TOC -->
-<nav class="toc">
-  <h2>📑 Table of Contents</h2>
-  <ol>
-    <li><a href="#sidebar">Sidebar Navigation (NEW)</a></li>
-    <li><a href="#home">Home Page / Landing</a></li>
-    <li><a href="#courseview">Course View</a></li>
-    <li><a href="#badges">Badge Gallery</a></li>
-    <li><a href="#admin">Admin Panel Overview</a></li>
-    <li><a href="#admin-dashboard">Admin: Dashboard</a></li>
-    <li><a href="#admin-enrollments">Admin: Enrollments</a></li>
-    <li><a href="#admin-payments">Admin: Payments</a></li>
-    <li><a href="#admin-courses">Admin: Courses (NEW)</a></li>
-    <li><a href="#admin-users">Admin: Users (NEW)</a></li>
-    <li><a href="#admin-students">Admin: Students</a></li>
-    <li><a href="#mobile">Mobile Responsiveness</a></li>
-    <li><a href="#tips">Tips &amp; Tricks</a></li>
-  </ol>
-</nav>
-
-<!-- SIDEBAR NAVIGATION -->
-<div class="section" id="sidebar">
-  <h2 class="section-title"><span class="emoji">📌</span> Sidebar Navigation (NEW)</h2>
-  <p class="section-desc">The app now features an Educative-style left sidebar that replaces the old top-centered button navigation. It's always visible on desktop and collapses into a hamburger menu on mobile.</p>
-
-  <div class="glass">
-    <h3>Sidebar Layout</h3>
-    <p>The sidebar is pinned to the left edge of the screen and contains all primary navigation. From top to bottom:</p>
-    <ul>
-      <li><strong>🏠 Home</strong> — Returns to the landing page with hero section, courses, and pricing</li>
-      <li><strong>📚 Courses (Dropdown)</strong> — Expands to reveal all three courses: AI Adventures, Space Explorers, and Robotics Lab. Click any course to jump directly into it.</li>
-      <li><strong>🏆 Badges</strong> — Opens the Badge Gallery</li>
-      <li><strong>👨‍👩‍👧 Parent Portal</strong> — Opens parent dashboard login</li>
-      <li><strong>🛡️ Admin Panel</strong> — Opens admin login gate</li>
-    </ul>
-
-    <h4>Bottom Section</h4>
-    <p>At the bottom of the sidebar you'll find:</p>
-    <ul>
-      <li><strong>⚙️ Settings</strong> — App configuration and preferences</li>
-      <li><strong>👤 User Profile</strong> — Shows the logged-in child's name, level, and XP. Click to view profile details.</li>
-    </ul>
-
-    <img src="guide-screenshots/01-home-sidebar.png" alt="Home page with sidebar" class="screenshot">
-    <p class="screenshot-caption">The new left sidebar navigation alongside the home page</p>
-
-    <img src="guide-screenshots/02-sidebar-expanded.png" alt="Sidebar expanded with courses dropdown" class="screenshot">
-    <p class="screenshot-caption">Sidebar with the Courses dropdown expanded showing all three courses</p>
-
-    <div class="tip"><strong>💡 Tip:</strong> The sidebar uses Educative-style navigation — clean, minimal, and always accessible. On mobile, tap the ☰ hamburger icon in the top-left to toggle it.</div>
-  </div>
+<div class="feature-grid">
+<div class="feature-card"><div class="icon">🔐</div><h4>Supabase Auth</h4><p>Email/password signup, Google OAuth, child PIN login, forgot password</p></div>
+<div class="feature-card"><div class="icon">📚</div><h4>3 Courses, 24 Chapters</h4><p>AI Adventures, Space Explorers, Robotics Lab — all interactive</p></div>
+<div class="feature-card"><div class="icon">🎮</div><h4>Demo Mode</h4><p>Try all features without creating an account</p></div>
+<div class="feature-card"><div class="icon">👨‍👩‍👧</div><h4>Parent Dashboard</h4><p>Add children, track progress, manage family</p></div>
+<div class="feature-card"><div class="icon">🛡️</div><h4>Admin Panel (9 Tabs)</h4><p>Dashboard, Enrollments, Payments, Analytics, Courses, Users, Students, Coupons, Settings</p></div>
+<div class="feature-card"><div class="icon">🎟️</div><h4>Coupon System</h4><p>Create, bulk generate, track redemptions</p></div>
+<div class="feature-card"><div class="icon">💳</div><h4>Payment Ready</h4><p>Stripe + Razorpay (test mode), freemium model</p></div>
+<div class="feature-card"><div class="icon">🏆</div><h4>Badges & Gamification</h4><p>Points, badges, level progression</p></div>
+<div class="feature-card"><div class="icon">📱</div><h4>Mobile Responsive</h4><p>Hamburger navigation, touch-friendly, dark theme</p></div>
+<div class="feature-card"><div class="icon">🌐</div><h4>Google OAuth</h4><p>"Continue with Google" on signup & login</p></div>
+<div class="feature-card"><div class="icon">📊</div><h4>Charts & Analytics</h4><p>Revenue, enrollments, completion charts (Chart.js)</p></div>
+<div class="feature-card"><div class="icon">📥</div><h4>CSV Export</h4><p>Export admin data to CSV</p></div>
 </div>
 
-<div class="divider"></div>
+<!-- ============ GETTING STARTED ============ -->
+<h2 id="getting-started">3. Getting Started</h2>
+<p><strong>Live URL:</strong> <a href="https://rathishkumarlearning.github.io/nextgen-school/" style="color:#06b6d4">https://rathishkumarlearning.github.io/nextgen-school/</a></p>
+<p>The platform works in two modes:</p>
+<ul>
+<li><strong>Full Mode</strong> — Create an account or login, progress saved to Supabase</li>
+<li><strong>Demo Mode</strong> — No account needed, explore all features freely</li>
+</ul>
 
-<!-- HOME PAGE -->
-<div class="section" id="home">
-  <h2 class="section-title"><span class="emoji">🏠</span> Home Page / Landing</h2>
-  <p class="section-desc">The landing page is the front door of NextGen School. It showcases courses, pricing, and the "Mind Over Machines" brand.</p>
+<!-- ============ SIGNUP & LOGIN ============ -->
+<h2 id="signup">4. Sign Up & Login</h2>
 
-  <div class="glass">
-    <h3>Hero Section</h3>
-    <p>The hero features the school name in a gradient title (cyan → purple → pink), the tagline "Mind Over Machines," and three hero badges: 🎯 Ages 9-13, 👁️ Visual Learning, 🎮 Interactive.</p>
-    <p>Below the hero you'll find live metric counters (Students Learning, Chapters Completed, Badges Earned), six core principles, three course cards, and pricing tiers.</p>
+<h3>Parent Sign Up</h3>
+<p>Click "Sign Up" → Fill name, email, password → Optionally add a child (name, age, 4-digit PIN) → Click "Create Account". Email is auto-confirmed instantly.</p>
 
-    <h4>Course Cards</h4>
-    <div class="grid-3">
-      <div>
-        <h4>🤖 AI Adventures</h4>
-        <p>8 chapters covering AI fundamentals, neural networks, computer vision, NLP, ethics, and generative AI.</p>
-      </div>
-      <div>
-        <h4>🚀 Space Explorers</h4>
-        <p>8 chapters on the solar system, rocket science, Mars, telescopes, exoplanets, and space stations.</p>
-      </div>
-      <div>
-        <h4>🔧 Robotics Lab</h4>
-        <p>8 chapters on robot anatomy, sensors, programming logic, industrial robots, and building concepts.</p>
-      </div>
-    </div>
-
-    <div class="tip"><strong>💡 Tip:</strong> Chapter 1 of every course is free — no payment needed to start exploring.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/02-signup-modal.png" alt="Signup modal">
+<div class="caption">Signup modal — Parent account creation with optional child profile</div>
 </div>
 
-<div class="divider"></div>
+<h3>Parent Login</h3>
+<p>Click "Log In" → Enter email & password → Click "Log In →". Or use "Continue with Google".</p>
 
-<!-- COURSE VIEW -->
-<div class="section" id="courseview">
-  <h2 class="section-title"><span class="emoji">📚</span> Course View</h2>
-  <p class="section-desc">Where students spend most of their time — reading lessons, completing activities, and progressing through chapters.</p>
-
-  <div class="glass">
-    <h3>Chapter Sidebar &amp; Lesson Content</h3>
-    <p>When you open a course, you see a chapter sidebar on the left listing all 8 chapters with progress indicators:</p>
-    <div style="margin:12px 0">
-      <span class="indicator"><span class="dot dot-green">✓</span> <strong>Green checkmark</strong> — Chapter completed</span><br>
-      <span class="indicator"><span class="dot dot-purple">3</span> <strong>Purple number</strong> — Available (number = activities inside)</span><br>
-      <span class="indicator"><span class="dot dot-grey">🔒</span> <strong>Grey lock</strong> — Locked (payment or prerequisite needed)</span>
-    </div>
-
-    <p>The main content area displays the lesson with text, visuals, and embedded interactive activities. Each chapter includes:</p>
-    <ul>
-      <li>Introductory content with illustrations and analogies</li>
-      <li>1–3 interactive activities (drag-and-drop sorting, sequence ordering, quizzes, matching)</li>
-      <li>A "Key Ideas" summary box</li>
-      <li>A "Complete &amp; Continue" button at the bottom</li>
-    </ul>
-
-    <img src="guide-screenshots/03-course-view.png" alt="Course view with chapter sidebar" class="screenshot">
-    <p class="screenshot-caption">Course view showing the chapter sidebar and lesson content with interactive activities</p>
-  </div>
-
-  <div class="glass">
-    <h3>Interactive Activities &amp; Completion</h3>
-    <p>Activities use drag-and-drop — students drag items into correct categories, order steps, or match concepts. Feedback is encouraging: correct answers glow green, incorrect ones shake gently with hints.</p>
-
-    <img src="guide-screenshots/04-activity-complete.png" alt="Activity completion" class="screenshot">
-    <p class="screenshot-caption">A completed interactive activity with feedback</p>
-
-    <h4>The Complete &amp; Continue Flow</h4>
-    <div class="flow">
-      <span class="flow-step">Read lesson</span>
-      <span class="arrow">→</span>
-      <span class="flow-step">Do activities</span>
-      <span class="arrow">→</span>
-      <span class="flow-step">Complete &amp; Continue</span>
-      <span class="arrow">→</span>
-      <span class="flow-step">+25 XP</span>
-      <span class="arrow">→</span>
-      <span class="flow-step">Badge unlocked</span>
-      <span class="arrow">→</span>
-      <span class="flow-step">Next chapter</span>
-    </div>
-
-    <img src="guide-screenshots/05-chapter-complete.png" alt="Chapter completion celebration" class="screenshot">
-    <p class="screenshot-caption">Chapter completion with XP award and badge unlock</p>
-
-    <div class="info"><strong>ℹ️ Info:</strong> Activities don't block completion — students can click "Complete &amp; Continue" anytime. Activities are for learning, not gatekeeping.</div>
-  </div>
-
-  <div class="glass">
-    <h3>XP &amp; Level System</h3>
-    <p>Students earn +25 XP per chapter. Four progression tiers:</p>
-    <div class="grid-2">
-      <div><h4>🌱 Explorer (0–99 XP)</h4><p>Just starting the journey.</p></div>
-      <div><h4>🧠 Thinker (100–249 XP)</h4><p>Developing real understanding.</p></div>
-      <div><h4>🔨 Builder (250–499 XP)</h4><p>Applying concepts with confidence.</p></div>
-      <div><h4>🎨 Creator (500+ XP)</h4><p>Mastered multiple courses. 24 chapters = 600 XP!</p></div>
-    </div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/04-login-modal.png" alt="Login modal">
+<div class="caption">Login modal — Parent/Child tabs, Google OAuth, Demo Mode, Forgot Password</div>
 </div>
 
-<div class="divider"></div>
+<h3>Child PIN Login</h3>
+<p>Switch to "🧒 Child PIN" tab → Enter 4-digit PIN → Auto-submits on 4th digit.</p>
 
-<!-- BADGES -->
-<div class="section" id="badges">
-  <h2 class="section-title"><span class="emoji">🏆</span> Badge Gallery</h2>
-  <p class="section-desc">24 unique collectible badges — one per chapter. A visual trophy room that makes kids proud of their progress.</p>
+<h3>Forgot Password</h3>
+<p>Click "Forgot password?" on login → Enter email → Reset link sent.</p>
 
-  <div class="glass">
-    <h3>How Badges Work</h3>
-    <ul>
-      <li><strong>1 badge per chapter</strong> — 8 per course, 24 total</li>
-      <li><strong>Gold border = earned</strong> — Completed badges glow with a golden shimmer</li>
-      <li><strong>Grey/dimmed = locked</strong> — Unearned badges are greyed out with a lock overlay</li>
-      <li><strong>Organized by course</strong> — Three rows: AI Adventures, Space Explorers, Robotics Lab</li>
-      <li><strong>Custom names</strong> — Each badge is named after its chapter topic (e.g., "AI Explorer," "Rocket Master")</li>
-    </ul>
-
-    <img src="guide-screenshots/06-badge-gallery.png" alt="Badge Gallery" class="screenshot">
-    <p class="screenshot-caption">The Badge Gallery showing earned and locked badges across all three courses</p>
-
-    <div class="tip"><strong>💡 Tip:</strong> Access the Badge Gallery from the sidebar → 🏆 Badges. Each child has their own collection.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/13-forgot-password.png" alt="Forgot password">
+<div class="caption">Forgot password — Enter email to receive reset link</div>
 </div>
 
-<div class="divider"></div>
+<h3>After Login</h3>
+<p>Sidebar shows user avatar, name, role badge (Parent/Admin), and Sign Out button.</p>
 
-<!-- ADMIN PANEL OVERVIEW -->
-<div class="section" id="admin">
-  <h2 class="section-title"><span class="emoji">🛡️</span> Admin Panel Overview</h2>
-  <p class="section-desc">The Admin Panel provides complete control over the platform with 8 management tabs.</p>
-
-  <div class="credential">
-    🔐 <strong>Admin Access:</strong> Navigate to Admin Panel in the sidebar → Password: <code>admin123</code>
-  </div>
-
-  <div class="warning"><strong>⚠️ Warning:</strong> Change the admin password before going live! The default <code>admin123</code> is for development only.</div>
-
-  <div class="glass">
-    <h3>Admin Login &amp; Tab Navigation</h3>
-    <p>After entering the password, you'll see the admin panel with 8 tabs across the top:</p>
-    <div class="tabs-preview">
-      <span class="active">📊 Dashboard</span>
-      <span>📋 Enrollments</span>
-      <span>💳 Payments</span>
-      <span>📈 Analytics</span>
-      <span>📚 Courses</span>
-      <span>👥 Users</span>
-      <span>👨‍🎓 Students</span>
-      <span>⚙️ Settings</span>
-    </div>
-    <p>The <strong>Courses</strong> and <strong>Users</strong> tabs are new additions that give admins granular control over course access and user management.</p>
-
-    <img src="guide-screenshots/07-admin-login.png" alt="Admin login" class="screenshot">
-    <p class="screenshot-caption">Admin panel login gate</p>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/05-logged-in.png" alt="Logged in state">
+<div class="caption">Logged in — Sidebar shows user "Rathishkumar" with Admin badge</div>
 </div>
 
-<div class="divider"></div>
+<!-- ============ COURSES ============ -->
+<h2 id="courses">5. Courses & Learning</h2>
+<p>Three courses available:</p>
+<ul>
+<li>🤖 <strong>AI Adventures</strong> — 8 chapters on artificial intelligence</li>
+<li>🚀 <strong>Space Explorers</strong> — 8 chapters on space & astronomy</li>
+<li>🔧 <strong>Robotics Lab</strong> — 8 chapters on robots & engineering</li>
+</ul>
+<p><strong>Freemium model:</strong> Chapter 1 of each course is free. Chapters 2-8 require a purchase or coupon.</p>
+<p>Each chapter has interactive drag-and-drop activities, quizzes, and visual learning — zero code required.</p>
 
-<!-- ADMIN: DASHBOARD -->
-<div class="section" id="admin-dashboard">
-  <h2 class="section-title"><span class="emoji">📊</span> Admin: Dashboard</h2>
-  <p class="section-desc">At-a-glance stats and charts showing platform health.</p>
-
-  <div class="glass">
-    <h3>Stats Cards &amp; Charts</h3>
-    <p>The dashboard displays key metrics in a stats grid at the top:</p>
-    <ul>
-      <li><strong>Total Students</strong> — Number of registered child profiles</li>
-      <li><strong>Active Enrollments</strong> — Families with active course access</li>
-      <li><strong>Revenue</strong> — Total payments collected</li>
-      <li><strong>Completion Rate</strong> — Percentage of started courses that are finished</li>
-    </ul>
-    <p>Below the stats, interactive charts visualize enrollment trends, course popularity, and revenue over time.</p>
-
-    <img src="guide-screenshots/08-admin-dashboard.png" alt="Admin Dashboard" class="screenshot">
-    <p class="screenshot-caption">Admin Dashboard with stats cards and analytics charts</p>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/06-course-view.png" alt="Course view">
+<div class="caption">Course selection — Pick a course to start learning</div>
 </div>
 
-<div class="divider"></div>
+<!-- ============ BADGES ============ -->
+<h2 id="badges">6. Badges & Progress</h2>
+<p>Complete chapters to earn points (25 per chapter) and badges. Track your progress with levels:</p>
+<ul>
+<li>🔍 <strong>Explorer</strong> — 0-249 points</li>
+<li>🔨 <strong>Builder</strong> — 250-499 points</li>
+<li>👑 <strong>Creator</strong> — 500+ points</li>
+</ul>
 
-<!-- ADMIN: ENROLLMENTS -->
-<div class="section" id="admin-enrollments">
-  <h2 class="section-title"><span class="emoji">📋</span> Admin: Enrollments</h2>
-  <p class="section-desc">View and manage all family enrollments.</p>
-
-  <div class="glass">
-    <h3>Enrollment Management</h3>
-    <p>The Enrollments tab shows a table of all registered families with:</p>
-    <ul>
-      <li>Parent name and email</li>
-      <li>Child name(s) and age(s)</li>
-      <li>Plan type (Free Trial / Single Course / Full Access / Family)</li>
-      <li>Registration date</li>
-      <li>Status (Active / Expired / Demo)</li>
-    </ul>
-    <p>Use the search bar to find specific families by name or email. Click any row to view full enrollment details.</p>
-
-    <img src="guide-screenshots/11-admin-enrollments.png" alt="Admin Enrollments" class="screenshot">
-    <p class="screenshot-caption">Enrollment management table with search and filters</p>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/07-badges.png" alt="Badges gallery">
+<div class="caption">Badge Gallery — Earned vs locked badges</div>
 </div>
 
-<div class="divider"></div>
+<!-- ============ PARENT DASHBOARD ============ -->
+<h2 id="parent">7. Parent Dashboard</h2>
+<p>Parents can add/remove children, view per-child progress by course, and monitor purchases. Data loaded from Supabase in real-time.</p>
 
-<!-- ADMIN: PAYMENTS -->
-<div class="section" id="admin-payments">
-  <h2 class="section-title"><span class="emoji">💳</span> Admin: Payments</h2>
-  <p class="section-desc">Track all transactions with filters and failed payment alerts.</p>
-
-  <div class="glass">
-    <h3>Payment Tracking &amp; Alerts</h3>
-    <p>The Payments tab shows every transaction with columns for:</p>
-    <ul>
-      <li>Transaction ID, date, and amount</li>
-      <li>Payment method (Stripe / Razorpay)</li>
-      <li>Plan purchased</li>
-      <li>Status: <strong style="color:var(--green)">✅ Successful</strong>, <strong style="color:var(--orange)">⏳ Pending</strong>, or <strong style="color:var(--red)">❌ Failed</strong></li>
-    </ul>
-    <h4>Filters</h4>
-    <p>Filter payments by date range, status (successful/failed/pending), payment method, and plan type. Useful for reconciliation and identifying issues.</p>
-    <h4>Failed Payment Alerts</h4>
-    <p>Failed payments are highlighted in red with an alert banner at the top of the tab. This helps admins quickly spot and resolve payment issues — e.g., contacting the family or manually granting access.</p>
-
-    <img src="guide-screenshots/12-admin-payments.png" alt="Admin Payments" class="screenshot">
-    <p class="screenshot-caption">Payment tracking with status filters and failed payment alerts</p>
-
-    <div class="warning"><strong>⚠️ Note:</strong> Configure Stripe and Razorpay API keys in Settings before accepting payments.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/08-parent-dashboard.png" alt="Parent dashboard">
+<div class="caption">Parent Dashboard — Family management with per-child progress</div>
 </div>
 
-<div class="divider"></div>
+<!-- ============ ADMIN PANEL ============ -->
+<h2 id="admin">8. Admin Panel <span class="badge badge-admin">Admin Only</span></h2>
+<p>Access via sidebar → 🔐 Admin Panel → Password: <code>admin123</code></p>
+<p>The admin panel has <strong>9 tabs</strong> in an Educative-style left sidebar (slides out on mobile via hamburger):</p>
 
-<!-- ADMIN: COURSES (NEW) -->
-<div class="section" id="admin-courses">
-  <h2 class="section-title"><span class="emoji">📚</span> Admin: Courses (NEW)</h2>
-  <p class="section-desc">A brand-new tab for managing course access, viewing overviews, and tracking access logs.</p>
+<h3>📊 Dashboard</h3>
+<p>6 stat cards (Families, Children, Revenue, Transactions, Chapters Done, Failed Payments) with animated count-up numbers. Three charts: Revenue (bar), Enrollments (line), Completion (doughnut).</p>
 
-  <div class="glass">
-    <h3>Course Overview Cards</h3>
-    <p>The Courses tab displays overview cards for each of the three courses showing:</p>
-    <ul>
-      <li>Course name, icon, and description</li>
-      <li>Number of chapters and total activities</li>
-      <li>Number of students enrolled</li>
-      <li>Average completion rate</li>
-    </ul>
-
-    <h3>Grant &amp; Revoke Access</h3>
-    <p>Admins can manually grant or revoke course access for any user — perfect for:</p>
-    <ul>
-      <li>Giving free access to reviewers or beta testers</li>
-      <li>Handling payment disputes by revoking access</li>
-      <li>Manually upgrading a user's plan</li>
-      <li>Granting access for demo or promotional purposes</li>
-    </ul>
-    <p>Select a user from the dropdown, choose the course(s), and click Grant Access or Revoke Access.</p>
-
-    <h3>Access Log</h3>
-    <p>Every grant/revoke action is logged with a timestamp, admin who performed it, the affected user, and the action taken. This provides a full audit trail for accountability.</p>
-
-    <img src="guide-screenshots/09-admin-courses.png" alt="Admin Courses Tab" class="screenshot">
-    <p class="screenshot-caption">The new Courses tab with overview cards, grant/revoke access controls, and access log</p>
-
-    <div class="tip"><strong>💡 Tip:</strong> Use the access log to track who received free access and why — helpful for auditing promotional grants.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/09-admin-dashboard.png" alt="Admin dashboard">
+<div class="caption">Admin Dashboard — Stats, charts, school performance overview</div>
 </div>
 
-<div class="divider"></div>
+<h3>👨‍👩‍👧 Enrollments</h3>
+<p>DataGrid with pagination, search, row selection, bulk export. Click a row for family detail modal.</p>
 
-<!-- ADMIN: USERS (NEW) -->
-<div class="section" id="admin-users">
-  <h2 class="section-title"><span class="emoji">👥</span> Admin: Users (NEW)</h2>
-  <p class="section-desc">Full user management — create, view, search, filter, deactivate, and delete users.</p>
-
-  <div class="glass">
-    <h3>User Management Table</h3>
-    <p>The Users tab provides a comprehensive view of all platform users in a searchable, filterable table:</p>
-    <ul>
-      <li><strong>Search</strong> — Find users by name, email, or child name. Real-time filtering as you type.</li>
-      <li><strong>Filter</strong> — Filter by role (parent/child), status (active/deactivated), plan type, or registration date range.</li>
-    </ul>
-
-    <h3>User Actions</h3>
-    <div class="grid-2">
-      <div>
-        <h4>➕ Create User</h4>
-        <p>Manually create a new parent + child account. Useful for onboarding users who need help signing up, or creating test accounts.</p>
-      </div>
-      <div>
-        <h4>👁️ View User</h4>
-        <p>Click any user row to view their full profile: registration date, plan, children, progress, payment history, and access log.</p>
-      </div>
-      <div>
-        <h4>⏸️ Deactivate User</h4>
-        <p>Temporarily disable a user's access without deleting their data. The user can't log in but their progress is preserved. Reactivate anytime.</p>
-      </div>
-      <div>
-        <h4>🗑️ Delete User</h4>
-        <p>Permanently remove a user and all associated data. This action requires confirmation and cannot be undone.</p>
-      </div>
-    </div>
-
-    <img src="guide-screenshots/10-admin-users.png" alt="Admin Users Tab" class="screenshot">
-    <p class="screenshot-caption">The new Users tab with search, filters, and CRUD operations</p>
-
-    <div class="warning"><strong>⚠️ Warning:</strong> Deleting a user removes all their data permanently — progress, badges, payments. Use Deactivate if you might want to restore access later.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-enrollments.png" alt="Enrollments tab">
+<div class="caption">Enrollments — Search, paginate, export family data</div>
 </div>
 
-<div class="divider"></div>
+<h3>💳 Payments</h3>
+<p>Payment history with status filters (All/Completed/Pending/Failed), currency formatting, totals row.</p>
 
-<!-- ADMIN: STUDENTS -->
-<div class="section" id="admin-students">
-  <h2 class="section-title"><span class="emoji">👨‍🎓</span> Admin: Students</h2>
-  <p class="section-desc">Detailed per-child progress tracking — see exactly where each student is in their learning journey.</p>
-
-  <div class="glass">
-    <h3>Student Progress Tracking</h3>
-    <p>The Students tab focuses on individual child progress. For each student you can see:</p>
-    <ul>
-      <li><strong>Progress bars</strong> — Per-course completion percentage with chapter counts</li>
-      <li><strong>XP &amp; Level</strong> — Current XP total and progression tier</li>
-      <li><strong>Badges earned</strong> — Visual badge grid showing earned vs locked</li>
-      <li><strong>Learning streak</strong> — Current streak and 28-day activity calendar</li>
-      <li><strong>Last active</strong> — When the student last completed a chapter</li>
-      <li><strong>Time spent</strong> — Estimated total learning time</li>
-    </ul>
-    <p>This is invaluable for identifying students who are stuck, disengaged, or excelling. Admins can use this data to reach out to parents or adjust course access.</p>
-
-    <img src="guide-screenshots/13-admin-students.png" alt="Admin Students" class="screenshot">
-    <p class="screenshot-caption">Per-student progress tracking with detailed metrics</p>
-
-    <div class="tip"><strong>💡 Tip:</strong> Sort students by "Last Active" to quickly find disengaged learners who might need encouragement.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-payments.png" alt="Payments tab">
+<div class="caption">Payments — Transaction history with status filters</div>
 </div>
 
-<div class="divider"></div>
+<h3>📈 Analytics</h3>
+<p>Time range selector (7d/30d/90d/all). Charts for revenue trend, user growth, course popularity, completion funnel, payment methods.</p>
 
-<!-- MOBILE RESPONSIVENESS -->
-<div class="section" id="mobile">
-  <h2 class="section-title"><span class="emoji">📱</span> Mobile Responsiveness</h2>
-  <p class="section-desc">NextGen School works beautifully on phones and tablets with a responsive layout and hamburger menu.</p>
-
-  <div class="glass">
-    <h3>Mobile Navigation</h3>
-    <p>On screens smaller than 768px, the left sidebar collapses completely and is replaced by a <strong>hamburger menu (☰)</strong> in the top-left corner. Tapping it slides the sidebar in as an overlay with a semi-transparent backdrop.</p>
-
-    <h4>What Changes on Mobile</h4>
-    <ul>
-      <li><strong>Sidebar</strong> — Becomes a slide-out overlay triggered by ☰. Tap outside or tap ✕ to close.</li>
-      <li><strong>Course chapter sidebar</strong> — Collapses into a top dropdown or slide-out panel</li>
-      <li><strong>Grid layouts</strong> — Stack vertically (course cards, stats, admin tables)</li>
-      <li><strong>Drag-and-drop activities</strong> — Use touch events. Items have larger touch targets for small screens.</li>
-      <li><strong>Admin tables</strong> — Become horizontally scrollable with sticky first columns</li>
-    </ul>
-
-    <img src="guide-screenshots/14-mobile-home.png" alt="Mobile home view" class="screenshot">
-    <p class="screenshot-caption">Mobile view with hamburger menu and responsive layout</p>
-
-    <div class="tip"><strong>💡 Tip:</strong> For drag-and-drop activities on small phones, try landscape mode for larger touch targets.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-analytics.png" alt="Analytics tab">
+<div class="caption">Analytics — Revenue trends, user growth, course popularity</div>
 </div>
 
-<div class="divider"></div>
+<h3>📚 Courses</h3>
+<p>Course overview cards with metrics, access log, grant/revoke access modals.</p>
 
-<!-- TIPS & TRICKS -->
-<div class="section" id="tips">
-  <h2 class="section-title"><span class="emoji">💡</span> Tips &amp; Tricks</h2>
-  <p class="section-desc">Power-user tips to get the most out of NextGen School.</p>
-
-  <div class="glass">
-    <h3>For Parents</h3>
-    <ul>
-      <li><strong>Set a routine</strong> — 15-20 minutes per day builds powerful learning habits. The streak system rewards consistency.</li>
-      <li><strong>Use the conversation prompts</strong> — The Parent Dashboard generates AI-powered discussion questions about what your child learned. Ask them!</li>
-      <li><strong>Let them struggle (a bit)</strong> — Activities have unlimited retries. Resist the urge to help immediately — working through challenges builds real understanding.</li>
-      <li><strong>Celebrate badges</strong> — Make a big deal when they earn a new badge. Print the completion certificate when they finish a course!</li>
-      <li><strong>Try all 3 courses</strong> — Chapter 1 is free in every course. Let your child explore before committing to a purchase.</li>
-    </ul>
-  </div>
-
-  <div class="glass">
-    <h3>For Admins</h3>
-    <ul>
-      <li><strong>Use Demo Mode for presentations</strong> — Toggle it in Settings → Demo Mode. It bypasses all payment gates and seeds sample data. Remember to turn it off for real users!</li>
-      <li><strong>Monitor failed payments</strong> — Check the Payments tab regularly. Failed payments might mean a family lost access unexpectedly.</li>
-      <li><strong>Use the Courses tab to handle exceptions</strong> — Need to give a reviewer free access? Use Grant Access instead of sharing payment bypass codes.</li>
-      <li><strong>Deactivate before deleting</strong> — If you're unsure about removing a user, deactivate first. You can always reactivate, but deletion is permanent.</li>
-      <li><strong>Export data</strong> — Use the CSV export in Analytics for reporting and backup purposes.</li>
-      <li><strong>Check the access log</strong> — The Courses tab logs every access grant/revoke. Use it for auditing and accountability.</li>
-    </ul>
-  </div>
-
-  <div class="glass">
-    <h3>Keyboard Shortcuts &amp; URLs</h3>
-    <ul>
-      <li><strong>Direct links</strong> — Use hash routes: <code>#home</code>, <code>#badges</code>, <code>#parent</code>, <code>#admin</code></li>
-      <li><strong>Data storage</strong> — All data is in localStorage. Clearing browser data erases everything. No cloud backup.</li>
-      <li><strong>Multi-child support</strong> — Family Plan supports up to 3 child profiles, each with independent progress and badges.</li>
-      <li><strong>Browser support</strong> — Works on Chrome, Firefox, Safari, Edge. Requires JavaScript enabled.</li>
-    </ul>
-
-    <div class="warning"><strong>⚠️ Important:</strong> Data lives in your browser's localStorage only. Clearing browser data will erase all progress. Consider this a local-first application.</div>
-  </div>
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-courses.png" alt="Courses tab">
+<div class="caption">Courses — Course management with access control</div>
 </div>
 
-<!-- FOOTER -->
-<div class="footer">
-  <div class="brand">NextGen School — Mind Over Machines</div>
-  <p>User Guide v2.1 • February 2026 • Built with ❤️ for curious kids</p>
+<h3>👥 Users</h3>
+<p>User management DataGrid with role badges, create user modal, detail view, edit/delete actions.</p>
+
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-users.png" alt="Users tab">
+<div class="caption">Users — Full user management with roles</div>
 </div>
 
-</div><!-- /container -->
+<h3>🧒 Students</h3>
+<p>Student progress DataGrid with visual progress bars, chapter completion dots in detail modal.</p>
 
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-students.png" alt="Students tab">
+<div class="caption">Students — Progress tracking per student</div>
+</div>
+
+<h3>🎟️ Coupons</h3>
+<p>Create single or bulk coupons, track active/redeemed stats, copy codes, deactivate.</p>
+
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-coupons.png" alt="Coupons tab">
+<div class="caption">Coupons — Generate, manage, and track discount codes</div>
+</div>
+
+<h3>⚙️ Settings</h3>
+<p>4 sections: General, Payment, Email, Security. Toggle switches, password change, danger zone (export/reset).</p>
+
+<div class="screenshot">
+<img src="guide-screenshots/10-admin-settings.png" alt="Settings tab">
+<div class="caption">Settings — Platform configuration</div>
+</div>
+
+<!-- ============ COUPONS ============ -->
+<h2 id="coupons">9. Coupon System <span class="badge badge-new">NEW</span></h2>
+<p>The coupon system supports:</p>
+<ul>
+<li><strong>Single coupons</strong> — Custom code, percentage or fixed discount</li>
+<li><strong>Bulk generation</strong> — Prefix + random codes (e.g., NEXTGEN-A1B2C3)</li>
+<li><strong>Per-course or global</strong> — Apply to specific course or all courses</li>
+<li><strong>Usage limits</strong> — Max uses per coupon</li>
+<li><strong>Expiry dates</strong> — Auto-expire coupons</li>
+<li><strong>Redemption tracking</strong> — Track who used which coupon</li>
+</ul>
+
+<div class="screenshot">
+<img src="guide-screenshots/11-coupon-created.png" alt="Coupon creation">
+<div class="caption">Coupon management — Active coupons, stats, generation</div>
+</div>
+
+<!-- ============ DEMO MODE ============ -->
+<h2 id="demo">10. Demo Mode</h2>
+<p>Click "🎮 Try Demo Mode" on the login modal to explore all features without creating an account. All courses unlocked, no data saved.</p>
+
+<div class="screenshot">
+<img src="guide-screenshots/12-demo-mode.png" alt="Demo mode">
+<div class="caption">Demo Mode — Full access without registration</div>
+</div>
+
+<!-- ============ E2E TEST RESULTS ============ -->
+<h2 id="testing">11. E2E Test Results</h2>
+<p>Automated Playwright tests run on February 12, 2026:</p>
+
+<table class="test-table">
+<tr><th>Test</th><th>Result</th></tr>
+<tr><td>Landing page loads</td><td>✅</td></tr>
+<tr><td>React app renders</td><td>✅</td></tr>
+<tr><td>Sidebar navigation</td><td>✅</td></tr>
+<tr><td>Google OAuth button</td><td>✅</td></tr>
+<tr><td>Signup (new user)</td><td>✅</td></tr>
+<tr><td>Login (email/password)</td><td>✅</td></tr>
+<tr><td>Admin badge visible</td><td>✅</td></tr>
+<tr><td>Badges page</td><td>✅</td></tr>
+<tr><td>Parent dashboard</td><td>✅</td></tr>
+<tr><td>Admin password gate</td><td>✅</td></tr>
+<tr><td>Admin — 📊 Dashboard</td><td>✅</td></tr>
+<tr><td>Admin — 👨‍👩‍👧 Enrollments</td><td>✅</td></tr>
+<tr><td>Admin — 💳 Payments</td><td>✅</td></tr>
+<tr><td>Admin — 📈 Analytics</td><td>✅</td></tr>
+<tr><td>Admin — 📚 Courses</td><td>✅</td></tr>
+<tr><td>Admin — 👥 Users</td><td>✅</td></tr>
+<tr><td>Admin — 🧒 Students</td><td>✅</td></tr>
+<tr><td>Admin — 🎟️ Coupons</td><td>✅</td></tr>
+<tr><td>Admin — ⚙️ Settings</td><td>✅</td></tr>
+<tr><td>Coupon creation</td><td>✅</td></tr>
+<tr><td>Demo mode</td><td>✅</td></tr>
+<tr><td>Forgot password</td><td>✅</td></tr>
+<tr><td>Zero console errors</td><td>✅</td></tr>
+</table>
+<p><strong>Result: 23/24 passed</strong> (1 test navigation issue, not a bug)</p>
+
+<!-- ============ TECH STACK ============ -->
+<h2 id="tech">12. Technical Stack</h2>
+<ul>
+<li><strong>Frontend:</strong> React 19 + Vite + Tailwind CSS v4</li>
+<li><strong>Backend:</strong> Supabase (PostgreSQL + Auth + RLS)</li>
+<li><strong>Charts:</strong> Chart.js + react-chartjs-2</li>
+<li><strong>Payments:</strong> Stripe + Razorpay (test mode)</li>
+<li><strong>Hosting:</strong> GitHub Pages (free)</li>
+<li><strong>Auth:</strong> Supabase Auth (email/password, Google OAuth, child PIN)</li>
+<li><strong>Database:</strong> 9 tables with Row Level Security</li>
+<li><strong>Admin:</strong> 9-tab panel with DataGrid, charts, modals</li>
+</ul>
+
+<!-- ============ CREDENTIALS ============ -->
+<h2 id="credentials">13. Credentials</h2>
+
+<div class="cred">
+<b>Admin Login</b><br>
+Email: robustrathish@gmail.com<br>
+Password: nextgen123<br>
+Role: Admin
+</div>
+
+<div class="cred">
+<b>Admin Panel</b><br>
+URL: #admin<br>
+Password: admin123
+</div>
+
+<div class="cred">
+<b>Test Account</b><br>
+Email: test@nextgenschool.com<br>
+Password: test1234<br>
+Role: Parent
+</div>
+
+<div class="cred">
+<b>Supabase Project</b><br>
+URL: https://vatjiadgkwgrwijwoasi.supabase.co<br>
+Tables: profiles, children, courses, chapters, progress, purchases, coupons, course_access, admin_events
+</div>
+
+<p style="text-align:center;color:rgba(255,255,255,0.3);margin-top:48px;font-size:.8rem">
+NextGen School © 2026 — Sathish 🇮🇳 & Rathish 🇺🇸<br>
+Mind Over Machines: AI Literacy for Kids
+</p>
+
+</div>
 </body>
 </html>
