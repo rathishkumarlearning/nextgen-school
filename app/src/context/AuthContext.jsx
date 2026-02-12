@@ -140,6 +140,12 @@ export function AuthProvider({ children }) {
     return result;
   }, [childLoginFn]);
 
+  const doGoogleLogin = useCallback(async () => {
+    const result = await authService.signInWithGoogle();
+    if (result.error) throw new Error(result.error);
+    return result;
+  }, []);
+
   const value = {
     session: activeSession,
     profile,
@@ -164,6 +170,7 @@ export function AuthProvider({ children }) {
     doSignup,
     doLogin,
     doChildLogin,
+    doGoogleLogin,
     loading,
     childSession,
   };

@@ -154,4 +154,16 @@ async function isAdmin(userId) {
   return data?.role === 'admin';
 }
 
-export { signUp, signIn, childLogin, signOut, getSession, getProfile, onAuthStateChange, isAdmin };
+// Google OAuth
+async function signInWithGoogle() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: window.location.origin + window.location.pathname
+    }
+  });
+  if (error) return { data: null, error: error.message };
+  return { data, error: null };
+}
+
+export { signUp, signIn, signInWithGoogle, childLogin, signOut, getSession, getProfile, onAuthStateChange, isAdmin };
