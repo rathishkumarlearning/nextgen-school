@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import { COURSES } from '../utils/constants';
@@ -41,7 +41,20 @@ export default function Landing() {
   const { navigate, openCourse, handlePayment, getMetrics } = useApp();
   const { isLoggedIn, openAuthModal } = useAuth();
   const landingRef = useRef(null);
-  const metrics = getMetrics ? getMetrics() : { students: 0, chapters: 0, badges: 0 };
+  const [metrics, setMetrics] = useState({ students: 0, chapters: 0, badges: 0 });
+
+  // Load real metrics from Supabase
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const m = await getMetrics();
+        if (!cancelled) setMetrics(m);
+      } catch {}
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [getMetrics]);
 
   // GSAP scroll animations
   useEffect(() => {
@@ -54,14 +67,11 @@ export default function Landing() {
     elements.forEach(el => {
       gsap.fromTo(el,
         { opacity: 0, y: 40 },
-        {
-          opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 85%', once: true }
-        }
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true } }
       );
     });
 
-    // Animate metric numbers
     const animateNum = (id, target) => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -70,10 +80,10 @@ export default function Landing() {
         onUpdate() { el.textContent = Math.round(this.targets()[0].val); }
       });
     };
-    animateNum('metric-students', metrics.students || 247);
-    animateNum('metric-chapters', metrics.chapters || 24);
-    animateNum('metric-badges', metrics.badges || 50);
-  }, []);
+    animateNum('metric-students', metrics.students || 0);
+    animateNum('metric-chapters', metrics.chapters || 0);
+    animateNum('metric-badges', metrics.badges || 0);
+  }, [metrics]);
 
   const courseEntries = Object.entries(COURSES || {});
 
@@ -94,7 +104,11 @@ export default function Landing() {
               if (!isLoggedIn) { openAuthModal('signup'); return; }
               document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' });
             }}>🚀 Start Learning</button>
-            {!isLoggedIn && <button className="btn btn-back" onClick={() => openAuthModal('login')} style={{ marginLeft: '8px' }}>🔑 Log In</button>}
+            {isLoggedIn ? (
+              <button className="btn btn-back" onClick={() => navigate('parent')} style={{ marginLeft: '8px' }}>👤 My Account</button>
+            ) : (
+              <button className="btn btn-back" onClick={() => openAuthModal('login')} style={{ marginLeft: '8px' }}>🔑 Log In</button>
+            )}
           </div>
         </div>
       </section>
@@ -104,15 +118,15 @@ export default function Landing() {
         <div className="container">
           <div className="metrics-grid">
             <div className="metric-card">
-              <div className="metric-num" id="metric-students">0</div>
+              <div className="metric-num" id="metric-students">{metrics.students}</div>
               <div className="metric-label">Students Learning</div>
             </div>
             <div className="metric-card">
-              <div className="metric-num" id="metric-chapters">0</div>
+              <div className="metric-num" id="metric-chapters">{metrics.chapters}</div>
               <div className="metric-label">Chapters Completed</div>
             </div>
             <div className="metric-card">
-              <div className="metric-num" id="metric-badges">0</div>
+              <div className="metric-num" id="metric-badges">{metrics.badges}</div>
               <div className="metric-label">Badges Earned</div>
             </div>
           </div>
@@ -142,12 +156,7 @@ export default function Landing() {
           <p className="subtitle">3 courses • 24 chapters • Hundreds of interactive activities</p>
           <div className="courses-grid">
             {courseEntries.map(([id, course]) => (
-              <div
-                className="course-card glass"
-                data-course={id}
-                key={id}
-                onClick={() => openCourse(id)}
-              >
+              <div className="course-card glass" data-course={id} key={id} onClick={() => openCourse(id)}>
                 <span className="emoji">{course.chapters?.[0]?.emoji || (id === 'ai' ? '🤖' : id === 'space' ? '🚀' : '🔧')}</span>
                 <h3>{course.title}</h3>
                 <p>
@@ -176,17 +185,14 @@ export default function Landing() {
                 <ul>
                   {plan.features.map((f, j) => <li key={j}>{f}</li>)}
                 </ul>
-                <button
-                  className={plan.btnClass}
-                  onClick={() => {
-                    if (!isLoggedIn) { openAuthModal('signup'); return; }
-                    if (plan.action === 'showCourses') {
-                      document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' });
-                    } else if (handlePayment) {
-                      handlePayment(plan.action);
-                    }
-                  }}
-                >
+                <button className={plan.btnClass} onClick={() => {
+                  if (!isLoggedIn) { openAuthModal('signup'); return; }
+                  if (plan.action === 'showCourses') {
+                    document.getElementById('courses')?.scrollIntoView({ behavior: 'smooth' });
+                  } else if (handlePayment) {
+                    handlePayment(plan.action);
+                  }
+                }}>
                   {plan.btnText}
                 </button>
               </div>

@@ -1,64 +1,93 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import DB from '../utils/db.js';
 
 const AppContext = createContext(null);
 
 export function AppProvider({ children }) {
-  const [state, setState] = useState(() => ({
-    name: localStorage.getItem('ngs_name') || '',
-    points: parseInt(localStorage.getItem('ngs_points')) || 0,
-    completed: JSON.parse(localStorage.getItem('ngs_completed') || '{}'),
-    parentEmail: localStorage.getItem('ngs_parent_email') || '',
-    notifications: JSON.parse(localStorage.getItem('ngs_notifications') || '[]'),
-    purchases: JSON.parse(localStorage.getItem('ngs_purchases') || '{}'),
-    activeDays: JSON.parse(localStorage.getItem('ngs_active_days') || '[]'),
-    sessionStart: Date.now(),
-    timeSpent: parseInt(localStorage.getItem('ngs_time_spent')) || 0,
+  const { session, isLoggedIn, isChild, childSession, loading: authLoading } = useAuth();
+
+  const [state, setState] = useState({
+    points: 0,
+    completed: {},
+    purchases: {},
+    notifications: [],
     currentCourse: null,
     currentChapter: 0,
-    currentView: 'home', // home, courses, badges, parent, admin, onboarding
-  }));
+    currentView: 'home',
+    dataLoading: true,
+  });
 
-  const save = useCallback(() => {
-    localStorage.setItem('ngs_name', state.name);
-    localStorage.setItem('ngs_points', state.points);
-    localStorage.setItem('ngs_completed', JSON.stringify(state.completed));
-    localStorage.setItem('ngs_parent_email', state.parentEmail);
-    localStorage.setItem('ngs_notifications', JSON.stringify(state.notifications));
-    localStorage.setItem('ngs_purchases', JSON.stringify(state.purchases));
-    localStorage.setItem('ngs_active_days', JSON.stringify(state.activeDays));
-    localStorage.setItem('ngs_time_spent', state.timeSpent);
-  }, [state]);
+  const [showNotifPanel, setShowNotifPanel] = useState(false);
 
-  // Auto-save on state change
+  // Load data from Supabase when session changes
   useEffect(() => {
-    save();
-  }, [state.name, state.points, state.completed, state.parentEmail, state.notifications, state.purchases, state.activeDays, state.timeSpent]);
+    if (authLoading) return;
+    if (!session) {
+      setState(prev => ({ ...prev, completed: {}, purchases: {}, points: 0, dataLoading: false }));
+      return;
+    }
 
-  // Time tracking on unload
-  useEffect(() => {
-    const handleUnload = () => {
-      const elapsed = Date.now() - state.sessionStart;
-      localStorage.setItem('ngs_time_spent', state.timeSpent + elapsed);
-    };
-    window.addEventListener('beforeunload', handleUnload);
-    return () => window.removeEventListener('beforeunload', handleUnload);
-  }, [state.sessionStart, state.timeSpent]);
+    let cancelled = false;
 
-  const setName = useCallback((name) => {
-    setState(prev => ({ ...prev, name }));
-  }, []);
+    async function loadData() {
+      try {
+        const completed = {};
+        let points = 0;
 
-  const setParentEmail = useCallback((email) => {
-    setState(prev => ({ ...prev, parentEmail: email }));
-  }, []);
+        // Load progress
+        if (isChild && childSession) {
+          const progress = await DB.getProgressByChild(childSession.id);
+          progress.forEach(p => {
+            completed[`${p.course_id}_${p.chapter_index}`] = true;
+          });
+          points = Object.keys(completed).length * 25;
+        } else if (session?.id) {
+          // For parent, load progress of all their children
+          const kids = await DB.getChildrenByParent(session.id);
+          for (const kid of kids) {
+            const progress = await DB.getProgressByChild(kid.id);
+            progress.forEach(p => {
+              completed[`${p.course_id}_${p.chapter_index}`] = true;
+            });
+          }
+          points = Object.keys(completed).length * 25;
+        }
 
-  const addPoints = useCallback((n) => {
-    setState(prev => ({ ...prev, points: prev.points + n }));
-  }, []);
+        // Load purchases
+        const purchases = {};
+        if (session?.id) {
+          try {
+            const purchaseData = await DB.getPurchases();
+            const myPurchases = purchaseData.filter(p =>
+              p.user_id === session.id && (p.status === 'completed' || p.status === 'success')
+            );
+            myPurchases.forEach(p => {
+              if (p.plan === 'fullAccess' || p.plan === 'familyPlan') {
+                purchases.fullAccess = true;
+              } else if (p.plan === 'singleCourse' && p.course_id) {
+                purchases[p.course_id] = true;
+              }
+            });
+          } catch {}
+        }
 
-  const completeChapter = useCallback((courseId, chapterIdx) => {
+        if (!cancelled) {
+          setState(prev => ({ ...prev, completed, purchases, points, dataLoading: false }));
+        }
+      } catch (err) {
+        console.error('Error loading app data:', err);
+        if (!cancelled) setState(prev => ({ ...prev, dataLoading: false }));
+      }
+    }
+
+    loadData();
+    return () => { cancelled = true; };
+  }, [session?.id, authLoading, isChild, childSession?.id]);
+
+  const completeChapter = useCallback(async (courseId, chapterIdx) => {
+    const key = `${courseId}_${chapterIdx}`;
     setState(prev => {
-      const key = `${courseId}_${chapterIdx}`;
       if (prev.completed[key]) return prev;
       return {
         ...prev,
@@ -66,7 +95,17 @@ export function AppProvider({ children }) {
         points: prev.points + 25
       };
     });
-  }, []);
+
+    // Write to Supabase
+    const childId = childSession?.id;
+    if (childId) {
+      try {
+        await DB.addProgress({ childId, courseId: courseId, chapterIndex: chapterIdx });
+      } catch (err) {
+        console.error('Error saving progress:', err);
+      }
+    }
+  }, [childSession?.id]);
 
   const setCurrentCourse = useCallback((courseId) => {
     setState(prev => ({ ...prev, currentCourse: courseId, currentChapter: 0 }));
@@ -84,16 +123,6 @@ export function AppProvider({ children }) {
     setState(prev => ({ ...prev, notifications }));
   }, []);
 
-  const setPurchases = useCallback((purchases) => {
-    setState(prev => ({ ...prev, purchases }));
-  }, []);
-
-  const setActiveDays = useCallback((activeDays) => {
-    setState(prev => ({ ...prev, activeDays }));
-  }, []);
-
-  const [showNotifPanel, setShowNotifPanel] = useState(false);
-
   const navigate = useCallback((view, hash) => {
     setState(prev => ({ ...prev, currentView: view }));
     window.location.hash = hash || view;
@@ -104,10 +133,26 @@ export function AppProvider({ children }) {
     window.location.hash = 'courses';
   }, []);
 
-  const handlePayment = useCallback((plan) => {
+  const handlePayment = useCallback(async (plan) => {
+    // Create purchase record in Supabase
+    if (session?.id) {
+      const amounts = { singleCourse: 19, fullAccess: 39, familyPlan: 59 };
+      try {
+        await DB.addPurchase({
+          userId: session.id,
+          plan,
+          amount: amounts[plan] || 0,
+          currency: 'USD',
+          status: 'pending',
+          method: 'email',
+          courseId: plan === 'singleCourse' ? state.currentCourse : null,
+        });
+      } catch {}
+    }
+
     const msg = `Hi! I'd like to purchase the ${plan === 'singleCourse' ? 'Single Course ($19)' : plan === 'fullAccess' ? 'Full Access Bundle ($39)' : 'Family Plan ($59)'} for NextGen School.`;
     window.open(`mailto:hello@nextgenschool.aiupskills.com?subject=NextGen School Purchase&body=${encodeURIComponent(msg)}`);
-  }, []);
+  }, [session?.id, state.currentCourse]);
 
   const handlePurchase = useCallback((plan) => {
     setState(prev => {
@@ -121,14 +166,22 @@ export function AppProvider({ children }) {
     });
   }, []);
 
-  const getMetrics = useCallback(() => {
-    const completedCount = Object.keys(state.completed).length;
-    return {
-      students: 247,
-      chapters: completedCount || 24,
-      badges: completedCount || 50
-    };
-  }, [state.completed]);
+  const getMetrics = useCallback(async () => {
+    try {
+      const stats = await DB.getStats();
+      return {
+        students: stats.totalChildren || 0,
+        chapters: stats.chaptersCompleted || 0,
+        badges: stats.chaptersCompleted || 0,
+      };
+    } catch {
+      return { students: 0, chapters: 0, badges: 0 };
+    }
+  }, []);
+
+  const addPoints = useCallback((n) => {
+    setState(prev => ({ ...prev, points: prev.points + n }));
+  }, []);
 
   const toggleNotifPanel = useCallback(() => {
     setShowNotifPanel(prev => !prev);
@@ -137,17 +190,12 @@ export function AppProvider({ children }) {
   const value = {
     state,
     setState,
-    save,
-    setName,
-    setParentEmail,
     addPoints,
     completeChapter,
     setCurrentCourse,
     setCurrentChapter,
     setCurrentView,
     setNotifications,
-    setPurchases,
-    setActiveDays,
     navigate,
     openCourse,
     handlePayment,

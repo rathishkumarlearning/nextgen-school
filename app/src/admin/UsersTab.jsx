@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import DataGrid, { StatusBadge, ActionButton } from '../components/DataGrid';
+import DataGrid, { StatusBadge, ActionButton, Modal } from '../components/DataGrid.jsx';
 
-let adminService;
-import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
+let adminService = null;
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => {});
 
 export default function UsersTab() {
   const [data, setData] = useState([]);
@@ -10,144 +10,155 @@ export default function UsersTab() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [selectedIds, setSelectedIds] = useState(new Set());
   const [loading, setLoading] = useState(true);
-  const [detailUser, setDetailUser] = useState(null);
-  const [showCreate, setShowCreate] = useState(false);
-  const [createForm, setCreateForm] = useState({ name: '', email: '', password: '', role: 'parent' });
+  const [detailRow, setDetailRow] = useState(null);
+  const [createModal, setCreateModal] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      if (!adminService) throw new Error('not ready');
-      const { data: d, count } = await adminService.getEnrollments({ page, pageSize, search });
-      setData((d || []).map(u => ({ ...u, status: u.deactivated_at ? 'deactivated' : 'active', role: u.role || 'parent' })));
-      setTotal(count || 0);
-    } catch { setData([]); setTotal(0); }
-    setLoading(false);
+      if (!adminService) adminService = await import('../services/admin.service.js');
+      const res = await adminService.getEnrollments({ page, pageSize, search });
+      setData((res.data || []).map(u => ({
+        id: u.id,
+        name: u.name || '—',
+        email: u.email || '—',
+        role: 'parent',
+        childrenCount: u.children?.length || 0,
+        children: u.children || [],
+        purchases: 0,
+        status: 'active',
+        joined: u.created_at?.slice(0, 10) || '—',
+        raw: u,
+      })));
+      setTotal(res.count || 0);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   }, [page, pageSize, search]);
 
   useEffect(() => { load(); }, [load]);
 
-  const filtered = statusFilter ? data.filter(u => u.status === statusFilter) : data;
+  const handleSearch = (val) => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    const t = setTimeout(() => { setSearch(val); setPage(1); }, 400);
+    setSearchTimeout(t);
+  };
 
   const columns = [
-    { key: 'name', label: 'Name', sortable: true },
-    { key: 'email', label: 'Email', sortable: true },
-    { key: 'role', label: 'Role', render: v => <span className={`dg-role-badge ${v}`}>{v}</span> },
-    { key: 'children', label: 'Children', render: (_, r) => (r.children || []).length },
-    { key: 'status', label: 'Status', render: v => <StatusBadge status={v} /> },
+    { key: 'name', label: 'Name', sortable: true, render: (v, row) => (
+      <div className="dg-cell-primary">
+        <span className="dg-avatar" style={{ background: row.role === 'admin' ? '#8b5cf6' : '#3b82f6' }}>
+          {(v || '?')[0].toUpperCase()}
+        </span>
+        <div>
+          <span style={{ color: '#fff', fontWeight: 500 }}>{v}</span>
+        </div>
+      </div>
+    )},
+    { key: 'email', label: 'Email', sortable: true, render: v => <span className="dg-mono-text">{v}</span> },
+    { key: 'role', label: 'Role', width: '100px', render: v => <StatusBadge status={v} /> },
+    { key: 'childrenCount', label: 'Children', width: '90px', render: v => <span className="dg-number">{v}</span> },
+    { key: 'status', label: 'Status', width: '100px', render: v => <StatusBadge status={v} /> },
+    { key: 'joined', label: 'Joined', width: '110px', sortable: true, render: v => <span className="dg-mono-text">{v}</span> },
   ];
 
   return (
     <div>
-      <h2 className="admin-section-title" style={{ fontFamily: 'Fredoka, sans-serif' }}>Users</h2>
+      <div className="admin-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <h2 className="admin-page-title">Users</h2>
+          <p className="admin-page-subtitle">Manage all registered users</p>
+        </div>
+        <button className="admin-btn primary" onClick={() => setCreateModal(true)}>+ Create User</button>
+      </div>
 
       <DataGrid
         columns={columns}
-        data={filtered}
+        data={data}
         total={total}
         page={page}
         pageSize={pageSize}
         onPageChange={setPage}
         onPageSizeChange={s => { setPageSize(s); setPage(1); }}
-        searchValue={search}
-        onSearch={v => { setSearch(v); setPage(1); }}
-        searchPlaceholder="Search users..."
+        onSearch={handleSearch}
+        searchPlaceholder="Search users…"
         loading={loading}
+        onRowClick={setDetailRow}
         emptyMessage="No users found"
-        selectable
-        selectedIds={selectedIds}
-        onSelectionChange={setSelectedIds}
-        onRowClick={row => setDetailUser(row)}
-        filters={[{
-          key: 'status',
-          label: 'Status',
-          options: [
-            { value: '', label: 'All' },
-            { value: 'active', label: 'Active' },
-            { value: 'deactivated', label: 'Deactivated' },
-          ],
-          value: statusFilter,
-          onChange: setStatusFilter,
-        }]}
-        bulkActions={[
-          { label: 'Deactivate', icon: '🚫', onClick: ids => alert(`Deactivate ${ids.size} users`), variant: 'warning' },
-          { label: 'Delete', icon: '🗑️', onClick: ids => alert(`Delete ${ids.size} users`), variant: 'danger' },
-        ]}
-        headerExtra={
-          <button className="admin-btn primary" onClick={() => setShowCreate(true)}>+ Create User</button>
-        }
-        actions={row => (
-          <>
-            <ActionButton icon="👁️" title="View" onClick={() => setDetailUser(row)} />
+        emptyIcon="👥"
+        actions={(row) => (
+          <div style={{ display: 'flex', gap: 4 }}>
+            <ActionButton icon="👁" title="View" onClick={() => setDetailRow(row)} />
             <ActionButton icon="✏️" title="Edit" onClick={() => {}} />
-            <ActionButton icon="🗑️" title="Delete" onClick={() => {}} variant="danger" />
-          </>
+            <ActionButton icon="🗑" title="Delete" variant="danger" onClick={() => {}} />
+          </div>
         )}
       />
 
-      {/* User Detail Modal */}
-      {detailUser && (
-        <div className="admin-modal-overlay" onClick={() => setDetailUser(null)}>
-          <div className="admin-modal glass-card" onClick={e => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <h3 style={{ fontFamily: 'Fredoka, sans-serif', margin: 0 }}>{detailUser.name}</h3>
-              <button className="admin-modal-close" onClick={() => setDetailUser(null)}>✕</button>
-            </div>
-            <div className="admin-modal-body">
-              <p><strong>Email:</strong> {detailUser.email}</p>
-              <p><strong>Role:</strong> {detailUser.role}</p>
-              <p><strong>Status:</strong> <StatusBadge status={detailUser.status} /></p>
-              <p><strong>Joined:</strong> {detailUser.created_at ? new Date(detailUser.created_at).toLocaleDateString() : '—'}</p>
-              <h4>Children</h4>
-              {(detailUser.children || []).length === 0 ? <p style={{ opacity: 0.5 }}>No children</p> :
-                (detailUser.children || []).map(c => (
-                  <div key={c.id} className="admin-child-card glass-card" style={{ padding: 12, marginBottom: 8 }}>
-                    <strong>{c.name}</strong> — Age {c.age}
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Create User Modal */}
-      {showCreate && (
-        <div className="admin-modal-overlay" onClick={() => setShowCreate(false)}>
-          <div className="admin-modal glass-card" onClick={e => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <h3 style={{ fontFamily: 'Fredoka, sans-serif', margin: 0 }}>Create User</h3>
-              <button className="admin-modal-close" onClick={() => setShowCreate(false)}>✕</button>
-            </div>
-            <div className="admin-modal-body">
-              {['name', 'email', 'password'].map(f => (
-                <div key={f} className="admin-grant-field">
-                  <label style={{ textTransform: 'capitalize' }}>{f}</label>
-                  <input
-                    type={f === 'password' ? 'password' : 'text'}
-                    value={createForm[f]}
-                    onChange={e => setCreateForm(p => ({ ...p, [f]: e.target.value }))}
-                    className="admin-input"
-                  />
-                </div>
-              ))}
-              <div className="admin-grant-field">
-                <label>Role</label>
-                <select value={createForm.role} onChange={e => setCreateForm(p => ({ ...p, role: e.target.value }))} className="admin-input">
-                  <option value="parent">Parent</option>
-                  <option value="admin">Admin</option>
-                </select>
+      {/* Detail Modal */}
+      <Modal open={!!detailRow} onClose={() => setDetailRow(null)} title="User Details" width="560px">
+        {detailRow && (
+          <div className="admin-detail-content">
+            <div className="admin-detail-header-card glass-card" style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 20, marginBottom: 16 }}>
+              <div className="dg-avatar-lg" style={{ background: '#8b5cf6' }}>{(detailRow.name || '?')[0].toUpperCase()}</div>
+              <div>
+                <h3 style={{ color: '#fff', margin: 0, fontSize: 18 }}>{detailRow.name}</h3>
+                <p className="dg-mono-text" style={{ margin: '4px 0 0', opacity: 0.6 }}>{detailRow.email}</p>
               </div>
-              <button className="admin-btn primary" style={{ marginTop: 16 }} onClick={() => { alert('Create user: ' + JSON.stringify(createForm)); setShowCreate(false); }}>
-                Create
-              </button>
             </div>
+            <div className="admin-detail-row">
+              <span className="admin-detail-label">Role</span>
+              <StatusBadge status={detailRow.role} />
+            </div>
+            <div className="admin-detail-row">
+              <span className="admin-detail-label">Status</span>
+              <StatusBadge status={detailRow.status} />
+            </div>
+            <div className="admin-detail-row">
+              <span className="admin-detail-label">Joined</span>
+              <span className="admin-detail-value dg-mono-text">{detailRow.joined}</span>
+            </div>
+            {detailRow.children?.length > 0 && (
+              <>
+                <h4 style={{ color: '#fff', marginTop: 20, marginBottom: 8, fontSize: 14 }}>Children ({detailRow.children.length})</h4>
+                {detailRow.children.map(c => (
+                  <div key={c.id} className="admin-child-pill">
+                    <span>👧 {c.name}</span>
+                    {c.age && <span className="admin-child-age">Age {c.age}</span>}
+                  </div>
+                ))}
+              </>
+            )}
           </div>
+        )}
+      </Modal>
+
+      {/* Create Modal */}
+      <Modal open={createModal} onClose={() => setCreateModal(false)} title="Create User">
+        <div className="admin-form-group">
+          <label className="admin-form-label">Name</label>
+          <input className="admin-input" placeholder="Full name" />
         </div>
-      )}
+        <div className="admin-form-group">
+          <label className="admin-form-label">Email</label>
+          <input className="admin-input" type="email" placeholder="email@example.com" />
+        </div>
+        <div className="admin-form-group">
+          <label className="admin-form-label">Role</label>
+          <select className="admin-input">
+            <option value="parent">Parent</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+          <button className="admin-btn primary">Create</button>
+          <button className="admin-btn" onClick={() => setCreateModal(false)}>Cancel</button>
+        </div>
+      </Modal>
     </div>
   );
 }

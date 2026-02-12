@@ -16,7 +16,7 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const { state, navigate, openCourse } = useApp();
-  const { isLoggedIn, isDemoMode, currentUser, openAuthModal, logout } = useAuth();
+  const { isLoggedIn, isDemoMode, currentUser, isChild, childSession, openAuthModal, logout } = useAuth();
   const [coursesOpen, setCoursesOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -36,14 +36,22 @@ export default function Sidebar() {
     setMobileOpen(false);
   };
 
+  // Determine role badge
+  const getRoleBadge = () => {
+    if (isChild) return { label: 'Child', color: 'var(--cyan)' };
+    if (currentUser?.role === 'admin') return { label: 'Admin', color: 'var(--pink)' };
+    if (currentUser?.role === 'parent') return { label: 'Parent', color: 'var(--purple)' };
+    return null;
+  };
+
+  const roleBadge = getRoleBadge();
+
   return (
     <>
-      {/* Mobile hamburger */}
       <button className="sidebar-hamburger" onClick={() => setMobileOpen(true)} aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
 
-      {/* Overlay for mobile */}
       {mobileOpen && <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />}
 
       <aside className={`sidebar${mobileOpen ? ' open' : ''}`}>
@@ -92,16 +100,31 @@ export default function Sidebar() {
         {/* Bottom section */}
         <div className="sidebar-bottom">
           <div className="sidebar-divider" />
-          <button className="sidebar-nav-item" onClick={() => navigate('settings')}>
-            <span className="sidebar-nav-icon">⚙️</span>
-            <span className="sidebar-nav-label">Settings</span>
-          </button>
+
           {isLoggedIn && !isDemoMode ? (
             <div className="sidebar-user">
-              <div className="sidebar-avatar">👤</div>
+              <div className="sidebar-avatar" style={{ background: 'linear-gradient(135deg, var(--purple), var(--cyan))', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', width: 36, height: 36, fontSize: '1rem' }}>
+                {(currentUser?.name || 'U')[0].toUpperCase()}
+              </div>
               <div className="sidebar-user-info">
-                <div className="sidebar-user-name">{currentUser?.name || 'User'}</div>
-                <button onClick={logout} style={{ background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: '.75rem', padding: 0 }}>Sign Out</button>
+                <div className="sidebar-user-name">
+                  {currentUser?.name || 'User'}
+                  {roleBadge && (
+                    <span style={{ fontSize: '.65rem', background: roleBadge.color, color: '#fff', padding: '2px 6px', borderRadius: 8, marginLeft: 6, verticalAlign: 'middle' }}>
+                      {roleBadge.label}
+                    </span>
+                  )}
+                </div>
+                {isChild && childSession && (
+                  <button onClick={logout} style={{ background: 'none', border: 'none', color: 'var(--cyan)', cursor: 'pointer', fontSize: '.75rem', padding: 0 }}>
+                    Switch to Parent
+                  </button>
+                )}
+                {!isChild && (
+                  <button onClick={logout} style={{ background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: '.75rem', padding: 0 }}>
+                    Sign Out
+                  </button>
+                )}
               </div>
             </div>
           ) : isDemoMode ? (
@@ -110,7 +133,9 @@ export default function Sidebar() {
               <div className="sidebar-user-info">
                 <div className="sidebar-user-name">Explorer</div>
                 <div className="sidebar-demo-badge">DEMO MODE</div>
-                <button onClick={() => openAuthModal('signup')} style={{ background: 'none', border: 'none', color: 'var(--cyan)', cursor: 'pointer', fontSize: '.75rem', padding: 0, marginTop: '4px' }}>Create Account</button>
+                <button onClick={() => openAuthModal('signup')} style={{ background: 'none', border: 'none', color: 'var(--cyan)', cursor: 'pointer', fontSize: '.75rem', padding: 0, marginTop: '4px' }}>
+                  Create Account
+                </button>
               </div>
             </div>
           ) : (

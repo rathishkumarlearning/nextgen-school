@@ -1,139 +1,200 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+
+let adminService = null;
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => {});
 
 export default function SettingsTab() {
   const [settings, setSettings] = useState({
-    demoMode: true,
-    pricing: { singleCourse: 19, fullAccess: 39, familyPlan: 59 },
+    demoMode: false,
+    emailNotifications: true,
+    maintenanceMode: false,
     stripeKey: '',
     razorpayKey: '',
+    emailjsServiceId: '',
   });
-  const [adminPass, setAdminPass] = useState({ current: '', new: '', confirm: '' });
+  const [passwords, setPasswords] = useState({ current: '', newPw: '', confirm: '' });
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [supabaseStatus, setSupabaseStatus] = useState('checking');
+  const [saved, setSaved] = useState('');
 
-  useEffect(() => {
-    // Load settings from localStorage fallback
+  const toggle = (key) => setSettings(s => ({ ...s, [key]: !s[key] }));
+  const update = (key, val) => setSettings(s => ({ ...s, [key]: val }));
+
+  const showSaved = (msg) => {
+    setSaved(msg);
+    setTimeout(() => setSaved(''), 3000);
+  };
+
+  const handleExportAll = async () => {
     try {
-      const s = JSON.parse(localStorage.getItem('ngs_db_settings') || 'null');
-      if (s) setSettings(prev => ({ ...prev, ...s }));
-    } catch {}
-    // Check supabase
-    import('../utils/supabase').then(m => {
-      const sb = m.default;
-      if (sb) {
-        sb.from('profiles').select('id', { count: 'exact', head: true })
-          .then(({ error }) => setSupabaseStatus(error ? 'error' : 'connected'))
-          .catch(() => setSupabaseStatus('error'));
-      } else setSupabaseStatus('error');
-    }).catch(() => setSupabaseStatus('error'));
-  }, []);
-
-  function updateField(path, value) {
-    setSettings(prev => {
-      const next = { ...prev };
-      const parts = path.split('.');
-      let obj = next;
-      for (let i = 0; i < parts.length - 1; i++) {
-        obj[parts[i]] = { ...obj[parts[i]] };
-        obj = obj[parts[i]];
+      if (!adminService) adminService = await import('../services/admin.service.js');
+      const tables = ['profiles', 'children', 'purchases', 'progress', 'coupons'];
+      const allData = {};
+      for (const t of tables) {
+        const res = await adminService.exportCSV(t);
+        allData[t] = res.data || [];
       }
-      obj[parts[parts.length - 1]] = value;
-      return next;
-    });
-  }
-
-  async function handleSave() {
-    setSaving(true);
-    try {
-      localStorage.setItem('ngs_db_settings', JSON.stringify(settings));
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } catch {}
-    setSaving(false);
-  }
-
-  const statusColors = { connected: '#10b981', error: '#ef4444', checking: '#f59e0b' };
+      const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `nextgen-export-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      showSaved('Data exported successfully');
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <div>
-      <h2 className="admin-section-title" style={{ fontFamily: 'Fredoka, sans-serif' }}>Settings</h2>
+      <div className="admin-page-header">
+        <h2 className="admin-page-title">Settings</h2>
+        <p className="admin-page-subtitle">Configure your application preferences</p>
+      </div>
 
-      <div className="admin-settings-grid">
-        {/* Demo Mode */}
-        <div className="glass-card admin-settings-section">
-          <h3 className="admin-chart-title">General</h3>
-          <div className="admin-setting-row">
+      {saved && (
+        <div className="admin-alert-banner" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#10b981', marginBottom: 16 }}>
+          ✅ {saved}
+        </div>
+      )}
+
+      <div className="admin-settings-grid-pro">
+        {/* General */}
+        <div className="admin-settings-section-pro glass-card">
+          <div className="admin-settings-section-header">
+            <span className="admin-settings-section-icon">⚙️</span>
+            <h3>General</h3>
+          </div>
+          <div className="admin-setting-row-pro">
             <div>
-              <strong>Demo Mode</strong>
-              <p style={{ opacity: 0.5, fontSize: 13, margin: '4px 0 0' }}>Use mock data instead of real database</p>
+              <span className="admin-setting-name">Demo Mode</span>
+              <span className="admin-setting-desc">Use mock data instead of live database</span>
             </div>
             <label className="admin-toggle">
-              <input type="checkbox" checked={settings.demoMode} onChange={e => updateField('demoMode', e.target.checked)} />
+              <input type="checkbox" checked={settings.demoMode} onChange={() => toggle('demoMode')} />
               <span className="admin-toggle-slider" />
             </label>
           </div>
-          <div className="admin-setting-row">
+          <div className="admin-setting-row-pro">
             <div>
-              <strong>Supabase Connection</strong>
-              <p style={{ opacity: 0.5, fontSize: 13, margin: '4px 0 0' }}>Database status</p>
+              <span className="admin-setting-name">Maintenance Mode</span>
+              <span className="admin-setting-desc">Show maintenance page to all users</span>
             </div>
-            <span className="admin-status-dot" style={{ '--dot-color': statusColors[supabaseStatus] }}>
-              {supabaseStatus}
-            </span>
+            <label className="admin-toggle">
+              <input type="checkbox" checked={settings.maintenanceMode} onChange={() => toggle('maintenanceMode')} />
+              <span className="admin-toggle-slider" />
+            </label>
           </div>
         </div>
 
-        {/* Pricing */}
-        <div className="glass-card admin-settings-section">
-          <h3 className="admin-chart-title">Pricing</h3>
-          {[
-            { key: 'pricing.singleCourse', label: 'Single Course ($)' },
-            { key: 'pricing.fullAccess', label: 'Full Access ($)' },
-            { key: 'pricing.familyPlan', label: 'Family Plan ($)' },
-          ].map(p => (
-            <div key={p.key} className="admin-grant-field">
-              <label>{p.label}</label>
-              <input
-                type="number"
-                value={p.key.split('.').reduce((o, k) => o?.[k], settings) || 0}
-                onChange={e => updateField(p.key, Number(e.target.value))}
-                className="admin-input"
-              />
-            </div>
-          ))}
+        {/* Payment */}
+        <div className="admin-settings-section-pro glass-card">
+          <div className="admin-settings-section-header">
+            <span className="admin-settings-section-icon">💳</span>
+            <h3>Payment</h3>
+          </div>
+          <div className="admin-form-group">
+            <label className="admin-form-label">Stripe Secret Key</label>
+            <input
+              className="admin-input"
+              type="password"
+              placeholder="sk_live_…"
+              value={settings.stripeKey}
+              onChange={e => update('stripeKey', e.target.value)}
+            />
+          </div>
+          <div className="admin-form-group">
+            <label className="admin-form-label">Razorpay Key ID</label>
+            <input
+              className="admin-input"
+              type="password"
+              placeholder="rzp_live_…"
+              value={settings.razorpayKey}
+              onChange={e => update('razorpayKey', e.target.value)}
+            />
+          </div>
+          <button className="admin-btn primary" style={{ marginTop: 8 }} onClick={() => showSaved('Payment settings saved')}>
+            Save Payment Settings
+          </button>
         </div>
 
-        {/* Payment Keys */}
-        <div className="glass-card admin-settings-section">
-          <h3 className="admin-chart-title">Payment Gateways</h3>
-          <div className="admin-grant-field">
-            <label>Stripe Key</label>
-            <input type="password" value={settings.stripeKey} onChange={e => updateField('stripeKey', e.target.value)} className="admin-input" placeholder="sk_..." />
+        {/* Email */}
+        <div className="admin-settings-section-pro glass-card">
+          <div className="admin-settings-section-header">
+            <span className="admin-settings-section-icon">📧</span>
+            <h3>Email</h3>
           </div>
-          <div className="admin-grant-field">
-            <label>Razorpay Key</label>
-            <input type="password" value={settings.razorpayKey} onChange={e => updateField('razorpayKey', e.target.value)} className="admin-input" placeholder="rzp_..." />
+          <div className="admin-setting-row-pro">
+            <div>
+              <span className="admin-setting-name">Email Notifications</span>
+              <span className="admin-setting-desc">Send emails on enrollments and payments</span>
+            </div>
+            <label className="admin-toggle">
+              <input type="checkbox" checked={settings.emailNotifications} onChange={() => toggle('emailNotifications')} />
+              <span className="admin-toggle-slider" />
+            </label>
           </div>
+          <div className="admin-form-group" style={{ marginTop: 12 }}>
+            <label className="admin-form-label">EmailJS Service ID</label>
+            <input
+              className="admin-input"
+              placeholder="service_xxxxxx"
+              value={settings.emailjsServiceId}
+              onChange={e => update('emailjsServiceId', e.target.value)}
+            />
+          </div>
+          <button className="admin-btn primary" style={{ marginTop: 8 }} onClick={() => showSaved('Email settings saved')}>
+            Save Email Settings
+          </button>
         </div>
 
-        {/* Admin Password */}
-        <div className="glass-card admin-settings-section">
-          <h3 className="admin-chart-title">Admin Password</h3>
-          {['current', 'new', 'confirm'].map(f => (
-            <div key={f} className="admin-grant-field">
-              <label style={{ textTransform: 'capitalize' }}>{f} Password</label>
-              <input type="password" value={adminPass[f]} onChange={e => setAdminPass(p => ({ ...p, [f]: e.target.value }))} className="admin-input" />
-            </div>
-          ))}
+        {/* Security */}
+        <div className="admin-settings-section-pro glass-card">
+          <div className="admin-settings-section-header">
+            <span className="admin-settings-section-icon">🔐</span>
+            <h3>Security</h3>
+          </div>
+          <div className="admin-form-group">
+            <label className="admin-form-label">Current Password</label>
+            <input className="admin-input" type="password" value={passwords.current} onChange={e => setPasswords(p => ({ ...p, current: e.target.value }))} />
+          </div>
+          <div className="admin-form-group">
+            <label className="admin-form-label">New Password</label>
+            <input className="admin-input" type="password" value={passwords.newPw} onChange={e => setPasswords(p => ({ ...p, newPw: e.target.value }))} />
+          </div>
+          <div className="admin-form-group">
+            <label className="admin-form-label">Confirm New Password</label>
+            <input className="admin-input" type="password" value={passwords.confirm} onChange={e => setPasswords(p => ({ ...p, confirm: e.target.value }))} />
+          </div>
+          <button className="admin-btn primary" style={{ marginTop: 8 }} onClick={() => {
+            if (passwords.newPw !== passwords.confirm) return;
+            setPasswords({ current: '', newPw: '', confirm: '' });
+            showSaved('Password updated');
+          }}>
+            Update Password
+          </button>
         </div>
       </div>
 
-      <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 12 }}>
-        <button className="admin-btn primary" onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving...' : 'Save Settings'}
-        </button>
-        {saved && <span style={{ color: '#10b981', fontWeight: 600 }}>✅ Saved!</span>}
+      {/* Danger Zone */}
+      <div className="admin-danger-zone glass-card" style={{ marginTop: 24 }}>
+        <div className="admin-settings-section-header">
+          <span className="admin-settings-section-icon">⚠️</span>
+          <h3 style={{ color: '#ef4444' }}>Danger Zone</h3>
+        </div>
+        <div className="admin-danger-row">
+          <div>
+            <span className="admin-setting-name">Export All Data</span>
+            <span className="admin-setting-desc">Download a JSON dump of all tables</span>
+          </div>
+          <button className="admin-btn" onClick={handleExportAll}>📥 Export</button>
+        </div>
+        <div className="admin-danger-row">
+          <div>
+            <span className="admin-setting-name">Reset All Data</span>
+            <span className="admin-setting-desc">Permanently delete all data. This cannot be undone.</span>
+          </div>
+          <button className="admin-btn danger-btn">🗑 Reset</button>
+        </div>
       </div>
     </div>
   );

@@ -1,167 +1,215 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import DataGrid, { StatusBadge, ActionButton } from '../components/DataGrid';
+import React, { useState, useEffect } from 'react';
+import DataGrid, { StatusBadge, ActionButton, Modal, AnimatedNumber } from '../components/DataGrid.jsx';
 
-let adminService;
-import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
-
-const COURSE_ICONS = { ai: '🤖', space: '🚀', robotics: '🔧' };
-const COURSE_COLORS = { ai: '#8b5cf6', space: '#06b6d4', robotics: '#ec4899' };
+let adminService = null;
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => {});
 
 export default function CoursesTab() {
   const [courses, setCourses] = useState([]);
-  const [accessLog, setAccessLog] = useState([]);
-  const [accessTotal, setAccessTotal] = useState(0);
-  const [accessPage, setAccessPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState(null);
+  const [accessLog, setAccessLog] = useState([]);
+  const [accessLoading, setAccessLoading] = useState(false);
+  const [grantModal, setGrantModal] = useState(null);
+  const [grantForm, setGrantForm] = useState({ userId: '', reason: '' });
+  const [error, setError] = useState(null);
 
-  // Grant access state
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedCourse, setSelectedCourse] = useState('');
-  const [reason, setReason] = useState('');
-  const [granting, setGranting] = useState(false);
-  const searchTimeout = useRef(null);
+  useEffect(() => { loadCourses(); }, []);
 
-  useEffect(() => { loadData(); }, [accessPage]);
-
-  async function loadData() {
+  async function loadCourses() {
     setLoading(true);
     try {
-      if (!adminService) throw new Error('not ready');
-      const [c, al] = await Promise.all([
-        adminService.getCourseOverview(),
-        adminService.getCourseAccessLog({ page: accessPage }),
-      ]);
-      if (c.data) setCourses(c.data);
-      if (al.data) setAccessLog(al.data);
-      setAccessTotal(al.count || 0);
-    } catch {}
-    setLoading(false);
+      if (!adminService) adminService = await import('../services/admin.service.js');
+      const res = await adminService.getCourseOverview();
+      setCourses(res.data || []);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  const handleUserSearch = useCallback((q) => {
-    setSearchQuery(q);
-    setSelectedUser(null);
-    if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    if (q.length < 2) { setSearchResults([]); return; }
-    searchTimeout.current = setTimeout(async () => {
-      try {
-        const { data } = await adminService.getEnrollments({ search: q, pageSize: 5 });
-        setSearchResults(data || []);
-      } catch { setSearchResults([]); }
-    }, 300);
-  }, []);
+  async function loadAccessLog() {
+    setAccessLoading(true);
+    try {
+      const res = await adminService.getCourseAccessLog({ pageSize: 50 });
+      setAccessLog(res.data || []);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setAccessLoading(false);
+    }
+  }
 
   async function handleGrant() {
-    if (!selectedUser || !selectedCourse) return;
-    setGranting(true);
+    if (!grantForm.userId || !grantModal) return;
     try {
-      await adminService.grantCourseAccess(selectedUser.id, selectedCourse, reason);
-      setSelectedUser(null); setSearchQuery(''); setReason(''); setSelectedCourse('');
-      loadData();
-    } catch {}
-    setGranting(false);
+      await adminService.grantCourseAccess(grantForm.userId, grantModal.id, grantForm.reason);
+      setGrantModal(null);
+      setGrantForm({ userId: '', reason: '' });
+      loadCourses();
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  async function handleRevoke(id) {
-    if (!confirm('Revoke this access?')) return;
-    try { await adminService.revokeCourseAccess(id); loadData(); } catch {}
+  async function handleRevoke(accessId) {
+    try {
+      await adminService.revokeCourseAccess(accessId);
+      loadAccessLog();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const toggleExpand = (id) => {
+    if (expandedId === id) {
+      setExpandedId(null);
+    } else {
+      setExpandedId(id);
+      loadAccessLog();
+    }
+  };
+
+  if (loading) {
+    return (
+      <div>
+        <div className="admin-page-header">
+          <h2 className="admin-page-title">Courses</h2>
+          <p className="admin-page-subtitle">Manage courses and access</p>
+        </div>
+        <div className="admin-course-cards-pro">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="admin-course-card-pro glass-card">
+              <div className="dg-skeleton" style={{ width: '60%', height: 24, marginBottom: 16 }} />
+              <div className="dg-skeleton" style={{ width: '100%', height: 60 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div>
-      <h2 className="admin-section-title" style={{ fontFamily: 'Fredoka, sans-serif' }}>Course Management</h2>
-
-      {/* Course Cards */}
-      <div className="admin-course-cards">
-        {courses.map(c => {
-          const slug = (c.title || '').toLowerCase();
-          const icon = Object.entries(COURSE_ICONS).find(([k]) => slug.includes(k))?.[1] || '📘';
-          const color = Object.entries(COURSE_COLORS).find(([k]) => slug.includes(k))?.[1] || '#8b5cf6';
-          return (
-            <div key={c.id} className="glass-card admin-course-card">
-              <div className="admin-course-card-header">
-                <span style={{ fontSize: 28 }}>{icon}</span>
-                <h3 style={{ color, fontFamily: 'Fredoka, sans-serif', margin: 0 }}>{c.title}</h3>
-              </div>
-              <div className="admin-course-stats">
-                <div><span className="admin-course-stat-num">{c.students}</span><span className="admin-course-stat-label">Students</span></div>
-                <div><span className="admin-course-stat-num">{c.completionPct}%</span><span className="admin-course-stat-label">Completion</span></div>
-                <div><span className="admin-course-stat-num">${c.revenue}</span><span className="admin-course-stat-label">Revenue</span></div>
-                <div><span className="admin-course-stat-num">{c.chaptersDone}</span><span className="admin-course-stat-label">Chapters</span></div>
-              </div>
-              <div className="admin-course-progress-bar">
-                <div className="admin-course-progress-fill" style={{ width: `${c.completionPct}%`, background: color }} />
-              </div>
-            </div>
-          );
-        })}
+      <div className="admin-page-header">
+        <h2 className="admin-page-title">Courses</h2>
+        <p className="admin-page-subtitle">Manage courses, enrollments, and access grants</p>
       </div>
 
-      {/* Grant Access */}
-      <div className="glass-card" style={{ padding: 24, marginTop: 24 }}>
-        <h3 className="admin-chart-title">Grant Course Access</h3>
-        <div className="admin-grant-form">
-          <div className="admin-grant-field" style={{ position: 'relative' }}>
-            <label>User</label>
-            <input
-              type="text"
-              value={selectedUser ? selectedUser.name : searchQuery}
-              onChange={e => handleUserSearch(e.target.value)}
-              placeholder="Search user by name or email..."
-              className="admin-input"
-            />
-            {searchResults.length > 0 && !selectedUser && (
-              <div className="admin-autocomplete">
-                {searchResults.map(u => (
-                  <div key={u.id} className="admin-autocomplete-item" onClick={() => { setSelectedUser(u); setSearchResults([]); }}>
-                    <strong>{u.name}</strong> <span style={{ opacity: 0.6 }}>{u.email}</span>
+      <div className="admin-course-cards-pro">
+        {courses.map(course => (
+          <div key={course.id} className={`admin-course-card-pro glass-card ${expandedId === course.id ? 'expanded' : ''}`}>
+            <div className="admin-course-card-top" onClick={() => toggleExpand(course.id)}>
+              <div className="admin-course-card-title-row">
+                <span className="admin-course-emoji">{course.emoji || '📖'}</span>
+                <h3 className="admin-course-name">{course.title}</h3>
+                <span className="admin-course-expand">{expandedId === course.id ? '▲' : '▼'}</span>
+              </div>
+              <div className="admin-course-metrics">
+                <div className="admin-course-metric">
+                  <span className="admin-course-metric-value dg-mono-text">{course.students}</span>
+                  <span className="admin-course-metric-label">Students</span>
+                </div>
+                <div className="admin-course-metric">
+                  <span className="admin-course-metric-value dg-mono-text">{course.completionPct}%</span>
+                  <span className="admin-course-metric-label">Completed</span>
+                </div>
+                <div className="admin-course-metric">
+                  <span className="admin-course-metric-value dg-mono-text" style={{ color: '#10b981' }}>${course.revenue}</span>
+                  <span className="admin-course-metric-label">Revenue</span>
+                </div>
+                <div className="admin-course-metric">
+                  <span className="admin-course-metric-value dg-mono-text">{course.chaptersDone}</span>
+                  <span className="admin-course-metric-label">Chapters</span>
+                </div>
+              </div>
+              <div className="admin-course-progress-bar">
+                <div className="admin-course-progress-fill" style={{ width: `${course.completionPct}%` }} />
+              </div>
+            </div>
+
+            {expandedId === course.id && (
+              <div className="admin-course-expanded">
+                <div className="admin-course-actions-row">
+                  <button className="admin-btn primary" onClick={() => setGrantModal(course)}>
+                    ✨ Grant Access
+                  </button>
+                </div>
+
+                {/* Access Log for this course */}
+                <h4 style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, margin: '16px 0 8px', fontWeight: 600 }}>Access Log</h4>
+                {accessLoading ? (
+                  <div style={{ padding: 16, textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>Loading…</div>
+                ) : (
+                  <div className="admin-access-log">
+                    {accessLog.filter(a => a.course_id === course.id).length === 0 ? (
+                      <div style={{ padding: 16, textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 13 }}>No access grants for this course</div>
+                    ) : (
+                      <table className="admin-mini-table">
+                        <thead>
+                          <tr>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Granted</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {accessLog.filter(a => a.course_id === course.id).map(a => (
+                            <tr key={a.id}>
+                              <td>{a.profiles?.name || a.profiles?.email || '—'}</td>
+                              <td><StatusBadge status={a.active !== false ? 'granted' : 'revoked'} /></td>
+                              <td className="dg-mono-text">{a.granted_at?.slice(0, 10) || '—'}</td>
+                              <td>
+                                {a.active !== false && (
+                                  <button className="admin-btn-sm danger" onClick={() => handleRevoke(a.id)}>Revoke</button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
-                ))}
+                )}
               </div>
             )}
           </div>
-          <div className="admin-grant-field">
-            <label>Course</label>
-            <select value={selectedCourse} onChange={e => setSelectedCourse(e.target.value)} className="admin-input">
-              <option value="">Select course...</option>
-              {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
-            </select>
+        ))}
+
+        {courses.length === 0 && (
+          <div className="admin-empty-state glass-card">
+            <span style={{ fontSize: 48 }}>📚</span>
+            <p>No courses found</p>
           </div>
-          <div className="admin-grant-field">
-            <label>Reason</label>
-            <input type="text" value={reason} onChange={e => setReason(e.target.value)} placeholder="Optional reason..." className="admin-input" />
-          </div>
-          <button className="admin-btn primary" onClick={handleGrant} disabled={!selectedUser || !selectedCourse || granting}>
-            {granting ? 'Granting...' : 'Grant Access'}
-          </button>
-        </div>
+        )}
       </div>
 
-      {/* Access Log */}
-      <div style={{ marginTop: 24 }}>
-        <h3 className="admin-chart-title" style={{ marginBottom: 12 }}>Access Log</h3>
-        <DataGrid
-          columns={[
-            { key: 'user', label: 'User', render: (_, r) => r.profiles?.name || '—' },
-            { key: 'course_id', label: 'Course' },
-            { key: 'reason', label: 'Reason', render: v => v || '—' },
-            { key: 'granted_at', label: 'Granted', render: v => v ? new Date(v).toLocaleDateString() : '—' },
-            { key: 'active', label: 'Status', render: v => <StatusBadge status={v === false ? 'Revoked' : 'Active'} /> },
-          ]}
-          data={accessLog}
-          total={accessTotal}
-          page={accessPage}
-          pageSize={20}
-          onPageChange={setAccessPage}
-          loading={loading}
-          emptyMessage="No access grants yet"
-          actions={row => row.active !== false && (
-            <ActionButton icon="🚫" title="Revoke" onClick={() => handleRevoke(row.id)} variant="danger" />
-          )}
-        />
-      </div>
+      <Modal open={!!grantModal} onClose={() => setGrantModal(null)} title={`Grant Access — ${grantModal?.title || ''}`}>
+        <div className="admin-form-group">
+          <label className="admin-form-label">User ID</label>
+          <input
+            className="admin-input"
+            placeholder="Enter user ID…"
+            value={grantForm.userId}
+            onChange={e => setGrantForm(f => ({ ...f, userId: e.target.value }))}
+          />
+        </div>
+        <div className="admin-form-group">
+          <label className="admin-form-label">Reason (optional)</label>
+          <input
+            className="admin-input"
+            placeholder="e.g., Scholarship, Support ticket…"
+            value={grantForm.reason}
+            onChange={e => setGrantForm(f => ({ ...f, reason: e.target.value }))}
+          />
+        </div>
+        <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
+          <button className="admin-btn primary" onClick={handleGrant}>Grant Access</button>
+          <button className="admin-btn" onClick={() => setGrantModal(null)}>Cancel</button>
+        </div>
+      </Modal>
     </div>
   );
 }

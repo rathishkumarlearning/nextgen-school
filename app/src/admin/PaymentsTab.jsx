@@ -1,69 +1,101 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import DataGrid, { StatusBadge, ActionButton } from '../components/DataGrid';
+import DataGrid, { StatusBadge, ActionButton } from '../components/DataGrid.jsx';
 
-let adminService;
-import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => { adminService = null; });
-
-const STATUS_OPTIONS = [
-  { value: '', label: 'All' },
-  { value: 'completed', label: 'Success' },
-  { value: 'failed', label: 'Failed' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'refunded', label: 'Refunded' },
-];
-
-const columns = [
-  { key: 'id', label: 'ID', width: '80px', render: v => <span style={{ fontFamily: 'monospace', fontSize: 12, opacity: 0.6 }}>{String(v).slice(0, 8)}</span> },
-  { key: 'parent', label: 'Parent', render: (_, row) => row.profiles?.name || '—' },
-  { key: 'plan', label: 'Plan', render: (_, row) => row.plan || row.course_id || '—' },
-  { key: 'amount', label: 'Amount', sortable: true, render: v => `$${Number(v || 0).toFixed(2)}` },
-  {
-    key: 'method', label: 'Method',
-    render: (_, row) => {
-      const m = row.payment_method || 'stripe';
-      return <span className={`dg-method-badge ${m}`}>{m}</span>;
-    },
-  },
-  { key: 'status', label: 'Status', render: v => <StatusBadge status={v || 'pending'} /> },
-  { key: 'coupon_code', label: 'Coupon', render: v => v || '—' },
-  { key: 'created_at', label: 'Date', sortable: true, render: v => v ? new Date(v).toLocaleDateString() : '—' },
-];
+let adminService = null;
+import('../services/admin.service.js').then(m => { adminService = m; }).catch(() => {});
 
 export default function PaymentsTab() {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
-  const [status, setStatus] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(true);
-  const [failedCount, setFailedCount] = useState(0);
+  const [totals, setTotals] = useState({ completed: 0, pending: 0, failed: 0 });
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      if (!adminService) throw new Error('not ready');
-      const { data: d, count } = await adminService.getPayments({ page, pageSize, status });
-      setData(d || []);
-      setTotal(count || 0);
-      // Get failed count
-      if (!status) {
-        const fc = (d || []).filter(p => p.status === 'failed').length;
-        setFailedCount(fc);
-      }
-    } catch { setData([]); setTotal(0); }
-    setLoading(false);
-  }, [page, pageSize, status]);
+      if (!adminService) adminService = await import('../services/admin.service.js');
+      const res = await adminService.getPayments({ page, pageSize, status: statusFilter });
+      const rows = (res.data || []).map(p => ({
+        id: p.id,
+        txId: p.id?.slice(0, 8) || '—',
+        user: p.profiles?.name || p.profiles?.email || '—',
+        course: p.course_id || 'N/A',
+        amount: Number(p.amount) || 0,
+        method: p.method || 'stripe',
+        status: p.status || 'pending',
+        coupon: p.coupon_code || '—',
+        date: p.created_at?.slice(0, 10) || '—',
+      }));
+      setData(rows);
+      setTotal(res.count || 0);
+
+      // Calculate totals for visible data
+      const comp = rows.filter(r => r.status === 'completed').reduce((s, r) => s + r.amount, 0);
+      const pend = rows.filter(r => r.status === 'pending').reduce((s, r) => s + r.amount, 0);
+      const fail = rows.filter(r => r.status === 'failed').reduce((s, r) => s + r.amount, 0);
+      setTotals({ completed: comp, pending: pend, failed: fail });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize, statusFilter]);
 
   useEffect(() => { load(); }, [load]);
 
+  const columns = [
+    { key: 'txId', label: 'ID', width: '100px', render: v => <span className="dg-mono-text" style={{ color: '#8b5cf6' }}>#{v}</span> },
+    { key: 'user', label: 'User', sortable: true },
+    { key: 'course', label: 'Course', width: '140px' },
+    { key: 'amount', label: 'Amount', width: '120px', sortable: true, render: (v) => (
+      <span className="dg-mono-text" style={{ color: '#10b981', fontWeight: 600 }}>${v.toFixed(2)}</span>
+    )},
+    { key: 'method', label: 'Method', width: '100px', render: v => (
+      <span className="dg-method-pill">{v === 'stripe' ? '💳' : '🏦'} {v}</span>
+    )},
+    { key: 'status', label: 'Status', width: '120px', render: v => <StatusBadge status={v} /> },
+    { key: 'coupon', label: 'Coupon', width: '120px', render: v => v !== '—' ? <span className="admin-coupon-code">{v}</span> : '—' },
+    { key: 'date', label: 'Date', width: '110px', sortable: true, render: v => <span className="dg-mono-text">{v}</span> },
+  ];
+
+  const statusFilters = {
+    key: 'status',
+    value: statusFilter,
+    onChange: (v) => { setStatusFilter(v); setPage(1); },
+    options: [
+      { value: '', label: 'All' },
+      { value: 'completed', label: 'Completed' },
+      { value: 'pending', label: 'Pending' },
+      { value: 'failed', label: 'Failed' },
+    ],
+  };
+
   return (
     <div>
-      <h2 className="admin-section-title" style={{ fontFamily: 'Fredoka, sans-serif' }}>Payments</h2>
-      {failedCount > 0 && (
-        <div className="admin-alert-banner danger">
-          ⚠️ {failedCount} failed payment{failedCount > 1 ? 's' : ''} require attention
+      <div className="admin-page-header">
+        <h2 className="admin-page-title">Payments</h2>
+        <p className="admin-page-subtitle">Track all payment transactions</p>
+      </div>
+
+      {/* Summary cards */}
+      <div className="admin-mini-stats">
+        <div className="admin-mini-stat glass-card" style={{ '--stat-color': '#10b981' }}>
+          <span className="admin-mini-stat-label">Completed</span>
+          <span className="admin-mini-stat-value dg-mono-text" style={{ color: '#10b981' }}>${totals.completed.toFixed(2)}</span>
         </div>
-      )}
+        <div className="admin-mini-stat glass-card" style={{ '--stat-color': '#f59e0b' }}>
+          <span className="admin-mini-stat-label">Pending</span>
+          <span className="admin-mini-stat-value dg-mono-text" style={{ color: '#f59e0b' }}>${totals.pending.toFixed(2)}</span>
+        </div>
+        <div className="admin-mini-stat glass-card" style={{ '--stat-color': '#ef4444' }}>
+          <span className="admin-mini-stat-label">Failed</span>
+          <span className="admin-mini-stat-value dg-mono-text" style={{ color: '#ef4444' }}>${totals.failed.toFixed(2)}</span>
+        </div>
+      </div>
+
       <DataGrid
         columns={columns}
         data={data}
@@ -74,19 +106,12 @@ export default function PaymentsTab() {
         onPageSizeChange={s => { setPageSize(s); setPage(1); }}
         loading={loading}
         emptyMessage="No payments found"
-        filters={[{
-          key: 'status',
-          label: 'Status',
-          options: STATUS_OPTIONS,
-          value: status,
-          onChange: v => { setStatus(v); setPage(1); },
-        }]}
-        actions={row => (
-          <>
-            <ActionButton icon="👁️" title="View details" onClick={() => alert(JSON.stringify(row, null, 2))} />
-            {row.status === 'completed' && <ActionButton icon="↩️" title="Refund" onClick={() => {}} variant="danger" />}
-          </>
-        )}
+        emptyIcon="💳"
+        filters={[statusFilters]}
+        totalsRow={{
+          txId: <strong style={{ color: 'rgba(255,255,255,0.6)' }}>TOTAL</strong>,
+          amount: <strong className="dg-mono-text" style={{ color: '#10b981' }}>${data.reduce((s, r) => s + r.amount, 0).toFixed(2)}</strong>,
+        }}
       />
     </div>
   );

@@ -1,6 +1,8 @@
 import supabase from '../utils/supabase';
 
-export async function getStats() {
+// ---- Dashboard Stats ----
+
+export async function getAdminStats() {
   try {
     const [families, children, purchases, progress] = await Promise.all([
       supabase.from('profiles').select('id', { count: 'exact', head: true }).eq('role', 'parent'),
@@ -11,7 +13,7 @@ export async function getStats() {
 
     const purchaseData = purchases.data || [];
     const totalRevenue = purchaseData
-      .filter(p => p.status === 'completed')
+      .filter(p => p.status === 'completed' || p.status === 'success')
       .reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
     const failedPayments = purchaseData.filter(p => p.status === 'failed').length;
 
@@ -31,13 +33,18 @@ export async function getStats() {
   }
 }
 
-export async function getRevenueByDay(days = 7) {
+// Keep old name as alias
+export { getAdminStats as getStats };
+
+// ---- Charts ----
+
+export async function getRevenueChart(days = 7) {
   try {
     const since = new Date(Date.now() - days * 86400000).toISOString();
     const { data, error } = await supabase
       .from('purchases')
       .select('amount, created_at')
-      .eq('status', 'completed')
+      .in('status', ['completed', 'success'])
       .gte('created_at', since);
     if (error) return { data: null, error };
 
@@ -52,13 +59,16 @@ export async function getRevenueByDay(days = 7) {
   }
 }
 
-export async function getEnrollmentsByDay(days = 7) {
+// Alias
+export { getRevenueChart as getRevenueByDay };
+
+export async function getEnrollmentChart(days = 7) {
   try {
     const since = new Date(Date.now() - days * 86400000).toISOString();
     const { data, error } = await supabase
       .from('purchases')
       .select('created_at')
-      .eq('status', 'completed')
+      .in('status', ['completed', 'success'])
       .gte('created_at', since);
     if (error) return { data: null, error };
 
@@ -72,6 +82,10 @@ export async function getEnrollmentsByDay(days = 7) {
     return { data: null, error };
   }
 }
+
+export { getEnrollmentChart as getEnrollmentsByDay };
+
+// ---- Course Completion ----
 
 export async function getCourseCompletion() {
   try {
@@ -106,16 +120,20 @@ export async function getCourseCompletion() {
   }
 }
 
-export async function getEnrollments({ page = 1, pageSize = 20, search = '' } = {}) {
+// ---- Paginated Lists ----
+
+export async function getEnrollments({ page = 1, pageSize = 20, search = '', status = '' } = {}) {
   try {
     let query = supabase
       .from('profiles')
-      .select('id, name, email, created_at, children(id, name, age)', { count: 'exact' })
+      .select('id, name, email, created_at, active, children(id, name, age)', { count: 'exact' })
       .eq('role', 'parent')
       .order('created_at', { ascending: false })
       .range((page - 1) * pageSize, page * pageSize - 1);
 
     if (search) query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
+    if (status === 'active') query = query.eq('active', true);
+    else if (status === 'inactive') query = query.eq('active', false);
 
     const { data, error, count } = await query;
     return { data, error, count };
@@ -124,15 +142,19 @@ export async function getEnrollments({ page = 1, pageSize = 20, search = '' } = 
   }
 }
 
-export async function getPayments({ page = 1, pageSize = 20, status = '' } = {}) {
+export async function getPayments({ page = 1, pageSize = 20, search = '', status = '' } = {}) {
   try {
     let query = supabase
       .from('purchases')
-      .select('*, profiles(name, email)', { count: 'exact' })
+      .select('*, profiles!purchases_user_id_fkey(name, email)', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range((page - 1) * pageSize, page * pageSize - 1);
 
     if (status) query = query.eq('status', status);
+    if (search) {
+      // Search by joining profile name/email — use profile filter
+      query = query.or(`profiles.name.ilike.%${search}%,profiles.email.ilike.%${search}%`);
+    }
 
     const { data, error, count } = await query;
     return { data, error, count };
@@ -141,7 +163,44 @@ export async function getPayments({ page = 1, pageSize = 20, status = '' } = {})
   }
 }
 
-export async function getCourseOverview() {
+export async function getStudents({ page = 1, pageSize = 20, search = '' } = {}) {
+  try {
+    let query = supabase
+      .from('children')
+      .select('*, profiles!children_parent_id_fkey(name, email), progress(course_id, chapter_index, completed_at)', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (search) query = query.ilike('name', `%${search}%`);
+
+    const { data, error, count } = await query;
+    return { data, error, count };
+  } catch (error) {
+    return { data: null, error, count: 0 };
+  }
+}
+
+export async function getUsers({ page = 1, pageSize = 20, search = '', role = '' } = {}) {
+  try {
+    let query = supabase
+      .from('profiles')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
+
+    if (search) query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
+    if (role) query = query.eq('role', role);
+
+    const { data, error, count } = await query;
+    return { data, error, count };
+  } catch (error) {
+    return { data: null, error, count: 0 };
+  }
+}
+
+// ---- Courses (with enrollment counts) ----
+
+export async function getCourses() {
   try {
     const [courses, purchases, progress] = await Promise.all([
       supabase.from('courses').select('*'),
@@ -150,7 +209,7 @@ export async function getCourseOverview() {
     ]);
 
     const result = (courses.data || []).map(c => {
-      const coursePurchases = (purchases.data || []).filter(p => p.course_id === c.id && p.status === 'completed');
+      const coursePurchases = (purchases.data || []).filter(p => p.course_id === c.id && (p.status === 'completed' || p.status === 'success'));
       const courseProgress = (progress.data || []).filter(p => p.course_id === c.id);
       const studentSet = new Set(courseProgress.map(p => p.child_id));
       const totalChapters = studentSet.size * (c.chapter_count || 8);
@@ -169,33 +228,34 @@ export async function getCourseOverview() {
   }
 }
 
-export async function getStudentProgress() {
-  try {
-    const { data, error } = await supabase
-      .from('children')
-      .select('*, profiles(name, email), progress(course_id, chapter_index, completed_at)')
-      .order('created_at', { ascending: false });
-    return { data, error };
-  } catch (error) {
-    return { data: null, error };
-  }
-}
+// Alias
+export { getCourses as getCourseOverview };
 
-export async function grantCourseAccess(userId, courseId, reason = '') {
+// ---- Access Management ----
+
+export async function grantAccess(userId, courseId, reason = '') {
   try {
+    const { data: currentUser } = await supabase.auth.getUser();
     const { data, error } = await supabase.from('course_access').insert({
       user_id: userId,
       course_id: courseId,
-      granted_by: (await supabase.auth.getUser()).data.user?.id,
+      granted_by: currentUser?.user?.id || null,
       reason,
+      active: true,
     }).select().single();
+    if (!error) {
+      await supabase.from('admin_events').insert({ event_type: 'course_access_granted', data: { userId, courseId, reason } });
+    }
     return { data, error };
   } catch (error) {
     return { data: null, error };
   }
 }
 
-export async function revokeCourseAccess(accessId) {
+// Alias
+export { grantAccess as grantCourseAccess };
+
+export async function revokeAccess(accessId) {
   try {
     const { data, error } = await supabase
       .from('course_access')
@@ -209,18 +269,91 @@ export async function revokeCourseAccess(accessId) {
   }
 }
 
-export async function getCourseAccessLog({ page = 1, pageSize = 20 } = {}) {
+export { revokeAccess as revokeCourseAccess };
+
+export async function getAccessLog(courseId) {
   try {
-    const { data, error, count } = await supabase
+    let query = supabase
       .from('course_access')
-      .select('*, profiles!course_access_user_id_fkey(name, email)', { count: 'exact' })
-      .order('granted_at', { ascending: false })
-      .range((page - 1) * pageSize, page * pageSize - 1);
-    return { data, error, count };
+      .select('*, profiles!course_access_user_id_fkey(name, email)')
+      .order('granted_at', { ascending: false });
+
+    if (courseId) query = query.eq('course_id', courseId);
+
+    const { data, error } = await query;
+    return { data, error };
   } catch (error) {
-    return { data: null, error, count: 0 };
+    return { data: null, error };
   }
 }
+
+export { getAccessLog as getCourseAccessLog };
+
+// ---- CSV Export ----
+
+export async function exportCSV(table) {
+  try {
+    const allowed = ['profiles', 'children', 'purchases', 'progress', 'course_access', 'coupons'];
+    if (!allowed.includes(table)) return { data: null, error: new Error('Invalid table') };
+    const { data, error } = await supabase.from(table).select('*');
+    if (error) return { data: null, error };
+
+    // Convert to CSV string
+    if (!data || data.length === 0) return { data: '', error: null };
+    const headers = Object.keys(data[0]);
+    const rows = data.map(row => headers.map(h => {
+      const val = row[h];
+      const str = val === null ? '' : typeof val === 'object' ? JSON.stringify(val) : String(val);
+      return str.includes(',') || str.includes('"') ? `"${str.replace(/"/g, '""')}"` : str;
+    }).join(','));
+    return { data: [headers.join(','), ...rows].join('\n'), error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+// ---- User CRUD (admin) ----
+
+export async function createUser(userData) {
+  try {
+    const { data, error } = await supabase.from('profiles').insert({
+      name: userData.name,
+      email: userData.email,
+      role: userData.role || 'parent',
+      active: true,
+    }).select().single();
+    if (!error) {
+      await supabase.from('admin_events').insert({ event_type: 'user_created', data: { userId: data.id, email: userData.email } });
+    }
+    return { data, error };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+export async function updateUser(id, updates) {
+  try {
+    const { data, error } = await supabase.from('profiles').update(updates).eq('id', id).select().single();
+    return { data, error };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+export async function deleteUser(id) {
+  try {
+    await supabase.from('children').delete().eq('parent_id', id);
+    const { error } = await supabase.from('profiles').delete().eq('id', id);
+    if (!error) {
+      await supabase.from('admin_events').insert({ event_type: 'user_deleted', data: { userId: id } });
+    }
+    return { data: !error, error };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+// ---- Analytics ----
 
 export async function getAnalytics() {
   try {
@@ -233,7 +366,6 @@ export async function getAnalytics() {
     const courseMap = Object.fromEntries((courses.data || []).map(c => [c.id, c]));
     const progressData = progress.data || [];
 
-    // Popular courses by unique students
     const studentsByCourse = {};
     progressData.forEach(p => {
       if (!studentsByCourse[p.course_id]) studentsByCourse[p.course_id] = new Set();
@@ -243,7 +375,6 @@ export async function getAnalytics() {
       .map(([id, s]) => ({ courseId: id, title: courseMap[id]?.title, students: s.size }))
       .sort((a, b) => b.students - a.students);
 
-    // Completion funnel per course
     const funnel = (courses.data || []).map(c => {
       const cp = progressData.filter(p => p.course_id === c.id);
       const students = new Set(cp.map(p => p.child_id)).size;
@@ -255,25 +386,13 @@ export async function getAnalytics() {
       return { courseId: c.id, title: c.title, started: students, completed };
     });
 
-    return {
-      data: { popularCourses, completionFunnel: funnel },
-      error: null,
-    };
+    return { data: { popularCourses, completionFunnel: funnel }, error: null };
   } catch (error) {
     return { data: null, error };
   }
 }
 
-export async function exportCSV(table) {
-  try {
-    const allowed = ['profiles', 'children', 'purchases', 'progress', 'course_access', 'coupons'];
-    if (!allowed.includes(table)) return { data: null, error: new Error('Invalid table') };
-    const { data, error } = await supabase.from(table).select('*');
-    return { data, error };
-  } catch (error) {
-    return { data: null, error };
-  }
-}
+// ---- Event Logging ----
 
 export async function logEvent(type, data = {}) {
   try {
@@ -283,6 +402,20 @@ export async function logEvent(type, data = {}) {
       .select()
       .single();
     return { data: result, error };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+// ---- Student Progress (legacy alias) ----
+
+export async function getStudentProgress() {
+  try {
+    const { data, error } = await supabase
+      .from('children')
+      .select('*, profiles!children_parent_id_fkey(name, email), progress(course_id, chapter_index, completed_at)')
+      .order('created_at', { ascending: false });
+    return { data, error };
   } catch (error) {
     return { data: null, error };
   }

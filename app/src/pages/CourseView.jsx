@@ -30,7 +30,7 @@ export default function CourseView() {
   }, [state.points]);
 
   const isChapterLocked = useCallback((idx) => {
-    if (idx === 0) return false; // Ch1 always free
+    if (idx === 0) return false;
     if (isDemoMode) return false;
     if (state.purchases?.fullAccess || state.purchases?.familyPlan) return false;
     if (state.purchases?.[courseId]) return false;
@@ -40,37 +40,27 @@ export default function CourseView() {
   const loadChapter = useCallback((idx) => {
     if (isChapterLocked(idx)) return;
     setChapterIdx(idx);
-    if (state.currentChapter !== idx) {
-      state.currentChapter = idx;
-    }
     window.scrollTo(0, 0);
-  }, [isChapterLocked, state]);
+  }, [isChapterLocked]);
 
   // Load lesson content imperatively via LESSONS generators
   useEffect(() => {
     if (!lessonRef.current || !courseId || isChapterLocked(chapterIdx)) return;
     const gen = LESSONS[courseId]?.[chapterIdx];
     if (gen) {
-      // Create a mutable STATE bridge for lesson generators
       window.STATE = {
         currentCourse: courseId,
         currentChapter: chapterIdx,
-        name: state.name || '',
+        name: '',
         points: state.points || 0,
         completed: state.completed || {},
-        parentEmail: state.parentEmail || ''
+        parentEmail: ''
       };
 
-      // Set up globals that lesson generators reference
       window.addPoints = (n) => addPoints(n);
       window.gsap = window.gsap || { to: () => {}, fromTo: () => {} };
+      window._reactLoadChapter = (idx) => setChapterIdx(idx);
 
-      // React bridge for loadChapter calls from lesson content
-      window._reactLoadChapter = (idx) => {
-        setChapterIdx(idx);
-      };
-
-      // completeChapter: update React state AND append celebration DOM
       window.completeChapter = () => {
         completeChapter(courseId, chapterIdx);
         const area = lessonRef.current;
@@ -80,18 +70,17 @@ export default function CourseView() {
           div.innerHTML = `
             <span class="emoji">🎉</span>
             <h3>Chapter Complete!</h3>
-            <p>+25 XP earned! Great job${state.name ? ', ' + state.name : ''}!</p>
+            <p>+25 XP earned!</p>
             ${chapterIdx < 7 ? `<button class="btn btn-primary" onclick="window._reactLoadChapter(${chapterIdx + 1})">Next Chapter →</button>` : `<button class="btn btn-gold" onclick="window.location.hash='#badges'">🏆 View Badges</button>`}
           `;
           area.appendChild(div);
-          div.scrollIntoView({behavior: 'smooth', block: 'center'});
+          div.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       };
 
       lessonRef.current.innerHTML = '';
       gen(lessonRef.current);
 
-      // Add "Complete & Continue" button if not already completed
       if (!state.completed?.[`${courseId}_${chapterIdx}`]) {
         const btnDiv = document.createElement('div');
         btnDiv.style.cssText = 'text-align:center;margin:24px 0;';
@@ -99,19 +88,22 @@ export default function CourseView() {
         lessonRef.current.appendChild(btnDiv);
       }
     }
-  }, [chapterIdx, courseId, addPoints, completeChapter, state, isChapterLocked]);
-
-  const handleComplete = () => {
-    if (completeChapter) {
-      completeChapter(courseId, chapterIdx);
-    }
-  };
+  }, [chapterIdx, courseId, addPoints, completeChapter, state.completed, isChapterLocked]);
 
   if (!course) {
     return (
       <div style={{ padding: '60px 20px', textAlign: 'center' }}>
         <h2>Course not found</h2>
         <button className="btn btn-primary" onClick={() => navigate('landing')}>← Back Home</button>
+      </div>
+    );
+  }
+
+  if (state.dataLoading) {
+    return (
+      <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+        <span className="auth-spinner" style={{ width: 40, height: 40 }} />
+        <p style={{ color: 'var(--text2)', marginTop: 16 }}>Loading course data...</p>
       </div>
     );
   }
@@ -177,9 +169,7 @@ export default function CourseView() {
                 key={i}
                 onClick={() => loadChapter(i)}
               >
-                <div className="ch-num">
-                  {completed ? '✓' : locked ? '🔒' : i + 1}
-                </div>
+                <div className="ch-num">{completed ? '✓' : locked ? '🔒' : i + 1}</div>
                 <div className="ch-title">
                   {ch.emoji} {ch.title}
                   {locked && <div className="chapter-lock">🔒 Locked</div>}
@@ -195,13 +185,10 @@ export default function CourseView() {
             <div className="unlock-banner">
               <h3>🔒 Chapter Locked</h3>
               <p>This chapter requires a subscription. Unlock it to continue your adventure!</p>
-              <button className="btn btn-primary" onClick={() => navigate('landing', '#pricing')}>
-                View Plans →
-              </button>
+              <button className="btn btn-primary" onClick={() => navigate('landing', '#pricing')}>View Plans →</button>
             </div>
           ) : (
             <>
-              {/* LESSONS generator fills this div imperatively */}
               {!LESSONS[courseId]?.[chapterIdx] && (
                 <>
                   <h2>{currentChapter?.emoji} {currentChapter?.title}</h2>
@@ -212,15 +199,11 @@ export default function CourseView() {
                 <div className="chapter-complete show">
                   <span className="emoji">🎉</span>
                   <h3>Chapter Complete!</h3>
-                  <p>+25 XP earned! Great job{state.name ? `, ${state.name}` : ''}!</p>
+                  <p>+25 XP earned!</p>
                   {chapterIdx < totalChapters - 1 ? (
-                    <button className="btn btn-primary" onClick={() => loadChapter(chapterIdx + 1)}>
-                      Next Chapter →
-                    </button>
+                    <button className="btn btn-primary" onClick={() => loadChapter(chapterIdx + 1)}>Next Chapter →</button>
                   ) : (
-                    <button className="btn btn-gold" onClick={() => navigate('badges')}>
-                      🏆 View Badges
-                    </button>
+                    <button className="btn btn-gold" onClick={() => navigate('badges')}>🏆 View Badges</button>
                   )}
                 </div>
               )}
