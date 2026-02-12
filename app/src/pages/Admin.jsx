@@ -108,19 +108,20 @@ export default function Admin({ onBack }) {
             <button className="btn btn-primary" onClick={handlePasswordCheck}>Access →</button>
           </div>
         ) : (
-          <div id="admin-content">
-            <div className="admin-tabs">
+          <div id="admin-content" className="admin-layout">
+            <aside className="admin-sidebar">
+              <div className="admin-sidebar-title">⚡ Admin</div>
               {TABS.map(tab => (
                 <button
                   key={tab.id}
-                  className={`admin-tab ${activeTab === tab.id ? 'active' : ''}`}
+                  className={`admin-sidebar-item${activeTab === tab.id ? ' active' : ''}`}
                   onClick={() => setActiveTab(tab.id)}
                 >
                   {tab.label}
                 </button>
               ))}
-            </div>
-            <div id="admin-tab-content" className="admin-content">
+            </aside>
+            <div id="admin-tab-content" className="admin-main">
               <ActiveComponent />
             </div>
           </div>

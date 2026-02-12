@@ -1057,3 +1057,20 @@ select.admin-input{cursor:pointer;appearance:auto}
   .dg-search-input{width:100%}
   .admin-settings-grid{grid-template-columns:1fr}
 }
+
+/* ── Admin Sidebar Layout (Educative-style) ────────────── */
+.admin-layout{display:flex;gap:0;min-height:calc(100vh - 120px);margin:-20px -20px 0;border-radius:16px;overflow:hidden}
+.admin-sidebar{width:220px;min-width:220px;background:rgba(255,255,255,0.03);border-right:1px solid var(--glass-border);padding:20px 0;display:flex;flex-direction:column;gap:2px}
+.admin-sidebar-title{padding:12px 20px 16px;font-size:.85rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.admin-sidebar-item{display:flex;align-items:center;gap:8px;width:100%;padding:12px 20px;background:none;border:none;color:var(--text2);font-size:.9rem;cursor:pointer;text-align:left;transition:all .2s;border-left:3px solid transparent;font-family:inherit}
+.admin-sidebar-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
+.admin-sidebar-item.active{background:rgba(139,92,246,0.1);color:var(--purple);border-left-color:var(--purple);font-weight:600}
+.admin-main{flex:1;min-width:0;padding:24px;overflow-y:auto}
+@media(max-width:768px){
+  .admin-layout{flex-direction:column;margin:0}
+  .admin-sidebar{width:100%;min-width:100%;flex-direction:row;overflow-x:auto;padding:8px;gap:4px;border-right:none;border-bottom:1px solid var(--glass-border)}
+  .admin-sidebar-title{display:none}
+  .admin-sidebar-item{white-space:nowrap;padding:8px 14px;border-left:none;border-bottom:2px solid transparent;font-size:.8rem;border-radius:8px}
+  .admin-sidebar-item.active{border-left:none;border-bottom-color:var(--purple);background:rgba(139,92,246,0.15);border-radius:8px}
+  .admin-main{padding:16px}
+}
