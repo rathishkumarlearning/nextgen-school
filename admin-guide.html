@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NextGen School — Admin Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050508;
+    --bg2: #0a0a10;
+    --purple: #8b5cf6;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+    --green: #10b981;
+    --text1: #fff;
+    --text2: rgba(255,255,255,0.7);
+    --text3: rgba(255,255,255,0.4);
+    --glass: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text1);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(139,92,246,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(6,182,212,0.06) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 24px; position: relative; z-index: 1; }
+
+  /* Header */
+  .hero {
+    text-align: center;
+    padding: 60px 0 40px;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff, var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+  .hero p { color: var(--text2); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+  /* TOC */
+  .toc {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin: 32px 0 48px;
+    backdrop-filter: blur(20px);
+  }
+  .toc h3 { font-size: 1rem; color: var(--cyan); margin-bottom: 12px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin: 6px 0; }
+  .toc a { color: var(--text2); text-decoration: none; transition: color .2s; }
+  .toc a:hover { color: var(--purple); }
+
+  /* Sections */
+  .section {
+    margin-bottom: 56px;
+    scroll-margin-top: 24px;
+  }
+  .section-num {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 700;
+    width: 28px; height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 8px;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section p, .section li { color: var(--text2); margin-bottom: 8px; }
+  .section ul { padding-left: 20px; }
+  .section li { margin: 4px 0; }
+
+  /* Screenshot */
+  .screenshot {
+    margin: 20px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .screenshot img {
+    width: 100%;
+    display: block;
+  }
+  .screenshot-caption {
+    background: var(--glass);
+    padding: 10px 16px;
+    font-size: .8rem;
+    color: var(--text3);
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Info boxes */
+  .info-box {
+    background: var(--glass);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    backdrop-filter: blur(10px);
+  }
+  .info-box.tip { border-left: 3px solid var(--green); }
+  .info-box.warning { border-left: 3px solid #f59e0b; }
+  .info-box.important { border-left: 3px solid var(--pink); }
+  .info-box strong { color: var(--text1); }
+
+  /* Code */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(139,92,246,0.15);
+    color: var(--purple);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: .85em;
+  }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th { text-align: left; color: var(--cyan); font-size: .8rem; font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; color: var(--text2); font-size: .9rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+  /* Footer */
+  .footer { text-align: center; padding: 40px 0; color: var(--text3); font-size: .8rem; border-top: 1px solid var(--border); margin-top: 40px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 1.8rem; }
+    .container { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge">📖 Admin Documentation</div>
+    <h1>NextGen School<br>Admin Guide</h1>
+    <p>Complete guide to managing your school platform — users, courses, payments, coupons, and analytics.</p>
+  </div>
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h3>📋 Table of Contents</h3>
+    <ol>
+      <li><a href="#access">Accessing the Admin Panel</a></li>
+      <li><a href="#dashboard">Dashboard — Overview & Stats</a></li>
+      <li><a href="#users">Managing Users</a></li>
+      <li><a href="#students">Managing Students</a></li>
+      <li><a href="#courses">Managing Courses</a></li>
+      <li><a href="#enrollments">Enrollments</a></li>
+      <li><a href="#payments">Payments</a></li>
+      <li><a href="#coupons">Coupons & Discounts</a></li>
+      <li><a href="#analytics">Analytics</a></li>
+      <li><a href="#settings">Settings</a></li>
+      <li><a href="#parent-flow">Parent & Child Flow</a></li>
+      <li><a href="#quick-ref">Quick Reference</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. Access -->
+  <div class="section" id="access">
+    <h2><span class="section-num">1</span> Accessing the Admin Panel</h2>
+    <p>Navigate to the admin panel using the sidebar link or by adding <code>#admin</code> to the URL.</p>
+    <ul>
+      <li><strong>URL:</strong> <code>https://rathishkumarlearning.github.io/nextgen-school/#admin</code></li>
+      <li><strong>Password Gate:</strong> <code>admin123</code></li>
+      <li>After entering the password, you'll see the admin sidebar with all management tabs.</li>
+    </ul>
+    <div class="info-box tip">
+      <strong>💡 Tip:</strong> Bookmark the admin URL for quick access. The password gate protects against casual access — for production, ensure admin users also log in with their Supabase account.
+    </div>
+    <div class="screenshot">
+      <img src="guide/01-landing.png" alt="Landing Page">
+      <div class="screenshot-caption">NextGen School landing page — click "Admin Panel" in sidebar or navigate to #admin</div>
+    </div>
+  </div>
+
+  <!-- 2. Dashboard -->
+  <div class="section" id="dashboard">
+    <h2><span class="section-num">2</span> Dashboard — Overview & Stats</h2>
+    <p>The dashboard gives you a real-time bird's-eye view of your school's performance.</p>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">📊 Stat Cards (Top Row)</h3>
+    <table>
+      <tr><th>Metric</th><th>Description</th></tr>
+      <tr><td>👨‍👩‍👧‍👦 Families</td><td>Total parent accounts registered</td></tr>
+      <tr><td>👧 Children</td><td>Total children added by parents</td></tr>
+      <tr><td>💰 Revenue</td><td>Total payments received</td></tr>
+      <tr><td>🧾 Transactions</td><td>Number of payment attempts</td></tr>
+      <tr><td>📚 Chapters Done</td><td>Total chapters completed across all students</td></tr>
+      <tr><td>⚠️ Failed Payments</td><td>Payment failures to investigate</td></tr>
+    </table>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">📈 Charts</h3>
+    <ul>
+      <li><strong>Revenue (7 Days)</strong> — Bar chart of daily revenue</li>
+      <li><strong>Enrollments (7 Days)</strong> — Line chart of new signups</li>
+      <li><strong>Course Completion</strong> — Doughnut chart showing completion % per course</li>
+    </ul>
+
+    <div class="screenshot">
+      <img src="guide/06-admin-dashboard.png" alt="Admin Dashboard">
+      <div class="screenshot-caption">Admin Dashboard — real-time stats, revenue chart, enrollment trends, course completion</div>
+    </div>
+  </div>
+
+  <!-- 3. Users -->
+  <div class="section" id="users">
+    <h2><span class="section-num">3</span> Managing Users</h2>
+    <p>View all registered users (parents and admins), search, and manage accounts.</p>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">Features</h3>
+    <ul>
+      <li><strong>Search:</strong> Filter by name or email</li>
+      <li><strong>Columns:</strong> Name, Email, Role (Parent/Admin), Children count, Status, Joined date</li>
+      <li><strong>Actions:</strong> View details, Edit, Delete</li>
+      <li><strong>Pagination:</strong> Navigate large user lists with page controls</li>
+      <li><strong>Create User:</strong> Click "+ Create User" to manually add users</li>
+    </ul>
+
+    <div class="info-box important">
+      <strong>🔐 Roles:</strong> <code>admin</code> users can access the admin panel. <code>parent</code> users can only access the parent portal. To make someone an admin, edit their role in the Supabase dashboard or database.
+    </div>
+
+    <div class="screenshot">
+      <img src="guide/11-admin-users.png" alt="Users Tab">
+      <div class="screenshot-caption">Users tab — all registered users with roles, children count, and management actions</div>
+    </div>
+  </div>
+
+  <!-- 4. Students -->
+  <div class="section" id="students">
+    <h2><span class="section-num">4</span> Managing Students</h2>
+    <p>Track all enrolled children, their progress, and achievements.</p>
+
+    <ul>
+      <li><strong>Columns:</strong> Name, Age, Parent, Progress (chapters), Badges, Last Active</li>
+      <li><strong>Search:</strong> Find students by name or parent name</li>
+      <li>Click any student row to see detailed progress per course</li>
+    </ul>
+
+    <div class="info-box tip">
+      <strong>💡 Note:</strong> Students are children added by parents. A parent must first add their child (with name, age, and 4-digit PIN) before the child appears here.
+    </div>
+
+    <div class="screenshot">
+      <img src="guide/12-admin-students.png" alt="Students Tab">
+      <div class="screenshot-caption">Students tab — track each child's progress, badges, and activity</div>
+    </div>
+  </div>
+
+  <!-- 5. Courses -->
+  <div class="section" id="courses">
+    <h2><span class="section-num">5</span> Managing Courses</h2>
+    <p>View all courses with enrollment and revenue metrics.</p>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">Current Courses</h3>
+    <table>
+      <tr><th>Course</th><th>Theme</th><th>Chapters</th></tr>
+      <tr><td>🤖 AI Adventures</td><td>Artificial Intelligence basics</td><td>8</td></tr>
+      <tr><td>🚀 Space Explorers</td><td>AI in space discovery</td><td>8</td></tr>
+      <tr><td>🔧 Robotics Lab</td><td>Robotics & problem-solving</td><td>8</td></tr>
+      <tr><td>🎨 AI Art Studio</td><td>AI-powered creativity</td><td>8</td></tr>
+    </table>
+
+    <ul>
+      <li>Each card shows: Students enrolled, Completion %, Revenue, Chapter count</li>
+      <li>Dropdown menu on each card for additional actions</li>
+    </ul>
+
+    <div class="screenshot">
+      <img src="guide/10-admin-courses.png" alt="Courses Tab">
+      <div class="screenshot-caption">Courses tab — 4 courses with enrollment stats and revenue tracking</div>
+    </div>
+  </div>
+
+  <!-- 6. Enrollments -->
+  <div class="section" id="enrollments">
+    <h2><span class="section-num">6</span> Enrollments</h2>
+    <p>View all family enrollments with search, filtering, and pagination.</p>
+    <ul>
+      <li>See which families signed up and when</li>
+      <li>Track children per family</li>
+      <li>Search by parent name or email</li>
+    </ul>
+    <div class="screenshot">
+      <img src="guide/07-admin-enrollments.png" alt="Enrollments Tab">
+      <div class="screenshot-caption">Enrollments tab — family signups with children details</div>
+    </div>
+  </div>
+
+  <!-- 7. Payments -->
+  <div class="section" id="payments">
+    <h2><span class="section-num">7</span> Payments</h2>
+    <p>Track all payment transactions — successful, pending, and failed.</p>
+    <ul>
+      <li><strong>Columns:</strong> Parent, Course, Amount, Method (Stripe/Razorpay), Status, Date</li>
+      <li><strong>Status filters:</strong> All, Completed, Pending, Failed</li>
+      <li>Click any payment for full details</li>
+    </ul>
+    <div class="info-box warning">
+      <strong>⚠️ Note:</strong> Payments are currently in test mode. Configure your Stripe/Razorpay live keys in Settings before accepting real payments.
+    </div>
+    <div class="screenshot">
+      <img src="guide/08-admin-payments.png" alt="Payments Tab">
+      <div class="screenshot-caption">Payments tab — transaction history with status tracking</div>
+    </div>
+  </div>
+
+  <!-- 8. Coupons -->
+  <div class="section" id="coupons">
+    <h2><span class="section-num">8</span> Coupons & Discounts</h2>
+    <p>Create, manage, and track discount codes for your courses.</p>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">Stats Bar</h3>
+    <ul>
+      <li><strong>Active Coupons</strong> — Currently usable codes</li>
+      <li><strong>Total Redeemed</strong> — Times coupons have been used</li>
+      <li><strong>Revenue Impact</strong> — Total discounts given</li>
+    </ul>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">Creating Coupons</h3>
+    <ul>
+      <li><strong>Single:</strong> Create one coupon with a custom code</li>
+      <li><strong>Bulk:</strong> Generate multiple codes with a prefix (e.g., SUMMER26-XXXXX)</li>
+      <li><strong>Type:</strong> Percentage (%) or Fixed amount ($)</li>
+      <li><strong>Scope:</strong> Global (all courses) or Specific courses</li>
+      <li><strong>Limits:</strong> Max uses and expiry date</li>
+    </ul>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">Managing Coupons</h3>
+    <ul>
+      <li>✏️ <strong>Edit</strong> — Change value, uses, expiry, courses</li>
+      <li>⏸ <strong>Toggle</strong> — Activate/deactivate coupons</li>
+      <li>🗑 <strong>Delete</strong> — Remove with confirmation</li>
+      <li><strong>Filters:</strong> All, Active, Expired, Depleted</li>
+    </ul>
+
+    <div class="screenshot">
+      <img src="guide/13-admin-coupons.png" alt="Coupons Tab">
+      <div class="screenshot-caption">Coupons tab — generate, manage, and track discount codes</div>
+    </div>
+  </div>
+
+  <!-- 9. Analytics -->
+  <div class="section" id="analytics">
+    <h2><span class="section-num">9</span> Analytics</h2>
+    <p>Deeper insights into platform performance and trends.</p>
+    <ul>
+      <li>Enrollment trends over time</li>
+      <li>Revenue breakdown</li>
+      <li>Course popularity</li>
+      <li>Student engagement metrics</li>
+    </ul>
+    <div class="screenshot">
+      <img src="guide/09-admin-analytics.png" alt="Analytics Tab">
+      <div class="screenshot-caption">Analytics tab — deeper insights and trend analysis</div>
+    </div>
+  </div>
+
+  <!-- 10. Settings -->
+  <div class="section" id="settings">
+    <h2><span class="section-num">10</span> Settings</h2>
+    <p>Configure platform settings, payment providers, and notification preferences.</p>
+    <ul>
+      <li><strong>Payment:</strong> Stripe & Razorpay API keys (test/live mode toggle)</li>
+      <li><strong>Email:</strong> EmailJS service & template configuration</li>
+      <li><strong>School Info:</strong> Name, logo, contact details</li>
+      <li><strong>Pricing:</strong> Per-course and bundle pricing tiers</li>
+    </ul>
+    <div class="screenshot">
+      <img src="guide/14-admin-settings.png" alt="Settings Tab">
+      <div class="screenshot-caption">Settings tab — payment providers, email config, and school info</div>
+    </div>
+  </div>
+
+  <!-- 11. Parent & Child Flow -->
+  <div class="section" id="parent-flow">
+    <h2><span class="section-num">11</span> Parent & Child Flow</h2>
+    <p>Understanding the end-to-end user journey:</p>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">👨‍👩‍👧 Parent Journey</h3>
+    <ol style="padding-left: 20px;">
+      <li><strong>Sign Up</strong> — Parent creates account (email + password)</li>
+      <li><strong>Add Child</strong> — Go to Parent Portal → "+ Add Child" (name, age, 4-digit PIN)</li>
+      <li><strong>Browse Courses</strong> — Chapter 1 is always free; unlock rest via payment</li>
+      <li><strong>Payment</strong> — Choose plan → Stripe/Razorpay checkout</li>
+      <li><strong>Edit Child</strong> — Click ✏️ Edit on child card to change name, age, or PIN</li>
+      <li><strong>Track Progress</strong> — Parent Dashboard shows per-child, per-course progress</li>
+    </ol>
+
+    <div class="screenshot">
+      <img src="guide/04-parent-portal.png" alt="Parent Portal">
+      <div class="screenshot-caption">Parent Portal — manage children, view progress, purchase history</div>
+    </div>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">🧒 Child Journey</h3>
+    <ol style="padding-left: 20px;">
+      <li><strong>Login</strong> — Click "Log In" → "🧒 Child PIN" tab → enter 4-digit PIN</li>
+      <li><strong>Learn</strong> — Drag-and-drop activities, quizzes, visual lessons</li>
+      <li><strong>Earn</strong> — Complete chapters → earn XP and badges</li>
+      <li><strong>Progress</strong> — Tracked automatically per course</li>
+    </ol>
+
+    <div class="screenshot">
+      <img src="guide/02-login-modal.png" alt="Login Modal">
+      <div class="screenshot-caption">Login modal — Parent tab (email/password) and Child PIN tab</div>
+    </div>
+
+    <div class="screenshot">
+      <img src="guide/05-courses.png" alt="Courses Page">
+      <div class="screenshot-caption">Course browser — 4 interactive courses with chapter 1 free</div>
+    </div>
+  </div>
+
+  <!-- 12. Quick Reference -->
+  <div class="section" id="quick-ref">
+    <h2><span class="section-num">12</span> Quick Reference</h2>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">🔑 Important URLs</h3>
+    <table>
+      <tr><th>Page</th><th>URL</th></tr>
+      <tr><td>Live Site</td><td><code>rathishkumarlearning.github.io/nextgen-school/</code></td></tr>
+      <tr><td>Admin Panel</td><td><code>...nextgen-school/#admin</code></td></tr>
+      <tr><td>Parent Portal</td><td><code>...nextgen-school/#parent</code></td></tr>
+      <tr><td>This Guide</td><td><code>...nextgen-school/admin-guide.html</code></td></tr>
+    </table>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">🔐 Credentials</h3>
+    <table>
+      <tr><th>What</th><th>Value</th></tr>
+      <tr><td>Admin Password Gate</td><td><code>admin123</code></td></tr>
+      <tr><td>Admin Login</td><td><code>robustrathish@gmail.com</code> / <code>nextgen123</code></td></tr>
+      <tr><td>Supabase Dashboard</td><td><code>vatjiadgkwgrwijwoasi.supabase.co</code></td></tr>
+    </table>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">📱 Pricing Tiers</h3>
+    <table>
+      <tr><th>Plan</th><th>Price</th><th>Access</th></tr>
+      <tr><td>Free</td><td>$0</td><td>Chapter 1 of each course</td></tr>
+      <tr><td>Single Course</td><td>$19</td><td>All 8 chapters of one course</td></tr>
+      <tr><td>All Access</td><td>$39</td><td>All courses, all chapters</td></tr>
+      <tr><td>Family Plan</td><td>$59</td><td>All courses + up to 3 children</td></tr>
+    </table>
+
+    <h3 style="font-size:1.1rem; margin: 16px 0 8px;">⚡ Admin Tabs Cheat Sheet</h3>
+    <table>
+      <tr><th>Tab</th><th>Purpose</th></tr>
+      <tr><td>📊 Dashboard</td><td>Overview stats + charts</td></tr>
+      <tr><td>👥 Enrollments</td><td>Family signups</td></tr>
+      <tr><td>💳 Payments</td><td>Transaction history</td></tr>
+      <tr><td>📈 Analytics</td><td>Trends & insights</td></tr>
+      <tr><td>📚 Courses</td><td>Course management</td></tr>
+      <tr><td>👤 Users</td><td>Parent/admin accounts</td></tr>
+      <tr><td>🧒 Students</td><td>Children & progress</td></tr>
+      <tr><td>🎟️ Coupons</td><td>Discount code management</td></tr>
+      <tr><td>⚙️ Settings</td><td>Platform configuration</td></tr>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>NextGen School — Mind Over Machines 🚀</p>
+    <p>Founded by Sathish 🇮🇳 & Rathish 🇺🇸</p>
+    <p style="margin-top: 8px;">Generated February 14, 2026</p>
+  </div>
+
+</div>
+</body>
+</html>
